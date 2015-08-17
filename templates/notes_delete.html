@@ -1,0 +1,25 @@
+{% extends 'basic/base.html' %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="ten wide column">
+		<div class="ui breadcrumb">
+		  	<a class="section" href='/notes/'>Заметки</a>
+		  	<span class="divider">/</span>
+		  	<a class="section" href="/notes/{{id}}">{{title}}</a>
+		  	<span class="divider">/</span>
+		  	<div class="active section">Удаление</div>
+		</div>
+		<div class="ui negative message">
+		  	<i class="close icon"></i>
+		  	<div class="header">Вы действительно хотите удалить заметку "{{title}}"?</div>
+		  	<p>Если вы хотите удалить заметку, то выберите "Да". Если вы передумали, что выберите "Нет". Восстановить удаленную заметку будет невозможно</p>
+			{% csrf_token %}
+		  	<form method='post'><input type="hidden" name="delete" value="True"><button type="submit" class="ui button red">Да</button><a href="/notes/{{id}}/"><button class="ui button">Нет</button></a></form>
+		</div>	
+	<div class="one wide column"></div>
+	<div class="four wide column"></div>
+</div>
+{% endblock %}

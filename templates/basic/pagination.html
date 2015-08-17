@@ -1,0 +1,15 @@
+<center>
+<div class="ui horizontal bulleted list">
+  	{% if pagination.has_prev %}
+  		<a href="?page={{pagination.current|add:'-1'}}"><button class="ui left labeled icon button"><i class="left arrow icon"></i>Назад</button></a>
+  	{% else %}
+  		<button class="ui left labeled icon button" disabled><i class="left arrow icon"></i>Назад</button>
+  	{% endif %}
+
+	{% if pagination.has_next %}
+  		<a href="?page={{pagination.current|add:'1'}}"><button class="ui right labeled icon button"><i class="right arrow icon"></i>Вперед</button></a>
+  	{% else %}
+  		<button class="ui right labeled icon button" disabled><i class="right arrow icon"></i>Вперед</button>
+  	{% endif %}
+</div>
+</center>

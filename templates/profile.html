@@ -1,0 +1,41 @@
+{% extends 'basic/base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block bodyclass %}{{bodyclass}}{% endblock %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+{% load humanize %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="four wide column">
+		{% include 'basic/profile-side.html' %}
+	</div>
+	<div class="ten wide column">
+		{% include 'basic/profile-nav.html' %}
+		<div class="ui bottom attached padded active segment">
+			{% if last_achievements %}				
+				<h2>Последние достижения</h2>
+				<div class="ui tiny images">
+				  	{% for ach in last_achievements %}
+  						<img class="ui image altrone-popup" src="{{ach.icon}}" data-title="{{ach.title}}" data-content="{{ach.description}}">
+  					{%endfor%}  
+				</div>
+			{%endif%}
+			<h2>Активность</h2>			
+			<div class="ui comments">  
+			{% for action in actions %}
+				<div class="comment">
+					<a class="avatar"><img src="{{action.avatar}}"></a>
+				    <div class="content">
+				      	<a class="author" href="/users/{{user.id}}">{{action.username}}</a>
+				      	<div class="metadata"><span class="date altrone-popup" data-content="{{action.pub_date}}">{{action.pub_date|naturaltime}}</span></div>
+				      	<div class="text">{{action.action_text|safe}}</div>
+				    </div>
+	      		</div>				
+			{% endfor %}
+			</div>
+		</div>
+	</div>
+	<div class="one wide column"></div>
+</div>
+{% endblock %}

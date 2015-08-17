@@ -1,0 +1,110 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>Добро пожаловать!</title>
+    <link href="{% static 'css/altrone.css' %}" rel="stylesheet">
+	<link href="{% static 'css/premier.css' %}" rel="stylesheet">
+</head>
+<body>
+	<div class="container group first-slide">
+		<div class="col col-6 col-t-6 col-m-4 ">
+		</div>
+		<div class="col col-6 col-t-6 col-m-4">
+			<div class="title">
+			Добро пожаловать!
+			</div>
+		</div>
+	</div>
+
+	<div class="container group">
+		<div class="col col-4 col-t-2 col-m-4 item-column">
+			<img src="/media/img/icons/lamp.png"><br>
+			<b>Создавай и делись</b><br>
+			<span>Выкладывайте конспекты, создавайте опросы и организовывайте мероприятия. И все это в одном месте! </span>
+		</div>
+		<div class="col col-4 col-t-2 col-m-4 item-column">
+			<img src="/media/img/icons/timer.png"><br>
+			<b>Экономь</b><br>
+			<span>Сервис сам генерирует правильное расписание, учитывая переносы и отменя пар, а также выходные дни. Теперь вы всегда будете знать, где и когда у вас будет ближайшая пара</span>
+		</div>
+		<div class="col col-4 col-t-2 col-m-4 item-column">
+			<img src="/media/img/icons/love.png"><br>
+			<b>Вы полюбите это</b><br>
+			<span>Вы можете указать, какие мероприятия вам интересны и сервис обязательно оповестит о них</span>
+		</div>
+	</div>
+
+	<div class="container group">
+		<div class="col col-6 col-t-3 col-m-4">
+			<div class="left-col preview-1">
+				<h1>Динамическое расписание</h1>
+				<p>Расписание генеруется автоматически, учитывая все переносы и отмены пар. Также сервис показывает все запланированные контрольные работы и домашние задания на данную пару. </p>				
+				<p>Каждый пользователь может добавить домашнее задание, информацию о контрольной для любого предмета. Также он может добавить информацию о переносе или отмене пары. Эта информация моментально отобразится у всех остальных.</p>
+				<p>Можно посмотреть расписание у каждого преподавателя отдельно, причем сервис подсказывает, какие пары наиболее удобны для посещения</p>
+			</div>
+		</div>
+		<div class="col col-6 col-t-3 col-m-4">
+			<img src="/media/img/covers/preview1.png" class="responsive-img">
+		</div>
+	</div>
+
+	<div class="container group">
+		<div class="col col-6 col-t-3 col-m-4">
+			<img src="/media/img/covers/preview2.png" class="responsive-img">
+		</div>
+		<div class="col col-6 col-t-3 col-m-4">
+			<div class="left-col preview-2">
+				<h1>Мероприятия</h1>
+				<p>Намечается важное событие? Добавьте его! Можно создавать как обычные мероприятия, так и обязательные (например, встреча с деканом). Ближайшие мероприятия отображаются вместе с расписанием, таким образом вы не забудете о нем.</p> 
+				<p>Так же можно отметить, пойдете ли вы на данное мероприятие или нет, чтобы организатор знал на кого можно рассчитывать.</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="container group">
+		<div class="col col-6 col-t-3 col-m-4">
+			<div class="left-col preview-1">
+				<h1>Заметки</h1>
+				<p>Заметки - удобный способ для записи различной текстовой информации, например для лекций. Имеется поддержка bb-кодов, которая позволяет вам форматировать ваш текст, делая его более читабельным.</p>
+			</div>
+		</div>
+		<div class="col col-6 col-t-3 col-m-4">
+			<img src="/media/img/covers/preview5.png" class="responsive-img">
+		</div>
+	</div>
+
+	<div class="container group">
+		<div class="col col-6 col-t-3 col-m-4">
+			<img src="/media/img/covers/preview3.png" class="responsive-img">
+		</div>
+		<div class="col col-6 col-t-3 col-m-4">
+			<div class="left-col preview-2">
+				<h1>Опросы</h1>
+				<p>Сервис позволяет создавать опросы - как публичные, так и анонимные. Также можно создавать опросы с одним вариантом ответа и с несколькими. По каждому опросу можно посмотреть статистику ответов.</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="container group">
+		<div class="col col-6 col-t-3 col-m-4">
+			<div class="left-col preview-1">
+				<h1>Достижения</h1>
+				<p>За каждое действие на сайте вам дается достижение. Получайте достижения, чтобы увеличивать количество очков. Чем больше очков - тем выше ваше звание!</p>
+			</div>
+		</div>
+		<div class="col col-6 col-t-3 col-m-4">
+			<img src="/media/img/covers/preview4.png" class="responsive-img">
+		</div>
+	</div>
+
+	<div class="container group">
+		<div class="col col-4 only-d"></div>
+		<div class="col col-4 col-t-6 col-m-4">
+			<a href="/auth/up"><button class="success very-big fit button">Создать аккаунт</button></a>
+		</div>
+		<div class="col col-4 only-d"></div>
+	</div>
+</body>
+</html>

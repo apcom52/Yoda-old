@@ -1,0 +1,41 @@
+{% extends 'basic/base.html' %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="ten wide column">
+		<div class="ui breadcrumb">
+		  	<a class="section" href='/'>Расписание</a>
+		  	<span class="divider">/</span>
+		  	<div class="active section"> Добавить контрольную </div>
+		</div>
+		{% if error %}
+			<div class="ui negative message">
+			  	<i class="close icon"></i>
+			  	<div class="header">
+			    	Не удалось добавить контрольную
+			  	</div>
+			  <p>{{ error_text }}
+			</p></div>
+		{% endif %}
+
+		<div class="ui form">
+			<form action='' method='post'>
+				<h1> Добавить контрольную </h1>
+				{% csrf_token %}
+				{{form.as_p}}
+				<button class="ui labeled icon green button" type="submit"> <i class="checkmark icon"></i>Добавить</button>
+			</form>	
+		</div>
+	</div>
+	<div class="one wide column"></div>
+	<div class="three wide column">
+		<h3>Примечание</h3>
+		Контрольная назначается на конкретную дату и номер пары. Если пара перенесена, то назначать контрольную нужно на новую дату
+		<br>
+		<br>
+		<a href="/timetable" target="_blank">Посмотреть на расписание</a>
+	</div>
+</div>
+{% endblock %}

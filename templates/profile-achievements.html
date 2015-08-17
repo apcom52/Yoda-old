@@ -1,0 +1,53 @@
+{% extends 'basic/base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block bodyclass %}{{bodyclass}}{% endblock %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="four wide column">
+		{% include 'basic/profile-side.html' %}
+	</div>
+	<div class="ten wide column">
+		{% include 'basic/profile-nav.html' %}
+		<div class="ui bottom attached padded active segment">
+			<h2>Достижения</h2>		
+			{% if my_ach %}
+			<h3>Полученные достижения</h3>
+				<div class="ui minimal comments">
+					{% for ach in my_ach %}
+						<div class="comment">
+						    <a class="avatar"><img src="{{ach.icon}}"></a>
+						    <div class="content">
+						      	<span class="author">{{ach.title}}</span>
+						      	<div class="metadata"><span class="date"><i class="icon trophy"></i> +{{ach.xp}} XP</span></div>
+						      	<div class="text">{{ach.description}}</div>						      
+						    </div>
+						</div>
+					{%endfor%}
+				</div>
+			{%endif%}
+
+			{% if achs %}
+			<h3>Неполученные достижения</h3>
+				<div class="ui minimal comments">
+					{% for ach in achs %}
+						<div class="comment ghost">
+						    <a class="avatar"><img src="{{ach.icon}}"></a>
+						    <div class="content">
+						      	<span class="author">{{ach.title}}</span>
+						      	<div class="metadata"><span class="date"><i class="icon trophy"></i> +{{ach.xp}} XP</span></div>
+						      	<div class="text">{{ach.description}}</div>						      
+						    </div>
+						</div>
+					{%endfor%}
+				</div>
+			{%else%}
+			Вы получили все достижения!
+			{%endif%}
+		</div>
+	</div>
+	<div class="one wide column"></div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{%endblock%}</title>
+    <link href="{% static 'css/semantic.css' %}" rel="stylesheet">
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+    <script src="{% static 'js/jqold.js' %}"></script>
+    <script src="{% static 'js/semantic.js' %}"></script>
+    <script src="{% static 'js/jquery.cookie.js' %}"></script>
+    <script src="{% static 'js/actions.js' %}"></script>
+    {% block more_head %}
+    {%endblock%}
+</head>
+<body class="{% block bodyclass %}{%endblock%}">
+	{% block content %}{% endblock %}
+</body>
+</html>

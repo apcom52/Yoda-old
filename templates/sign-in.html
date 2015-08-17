@@ -1,0 +1,10 @@
+{% extends 'basic/sign-basic.html' %}
+
+{% block title %} Вход {%endblock%}
+{% block sign-styles %} sign-up-body sign-in-body {%endblock%}
+{% block sign-title %} Вход {%endblock%}
+{% block sign-error-data %} {{error_text}} {%endblock%}
+{% block sign-form %} {{form.as_p}} {%endblock%}
+{% block sign-submit-value %} Войти {%endblock%}
+{% block sign-button-value %} Регистрация {%endblock%}
+{% block sign-subaction-link %} up {%endblock%}

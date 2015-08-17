@@ -1,0 +1,111 @@
+{% extends 'basic/base.html' %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+{% load humanize %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="ten wide column">
+		<div class="ui breadcrumb">
+		  	<a class="section" href='/events/'>Мероприятия</a>
+		  	<span class="divider">/</span>
+		  	<div class="active section">{{event.title}}</div>
+		</div>
+		<div class="ui segment">
+			<h1 class="ui header">{{event.title}}</h1>
+			<p><b>Дата мероприятия:</b> <span class="ui red horizontal label altrone-popup" data-content="{{event.date}}">{{event.date|naturaltime}}</span></p>
+			{% if event.description %}
+				<b>Подробности:</b><br>
+				<p>{{event.description|linebreaks}}</p>
+			{%endif%}
+			{% if event.is_required %}
+				<div class="ui negative icon message">
+				  	<i class="warning sign icon"></i>
+				  	<div class="content">
+				    	<div class="header">Обязательное мероприятие</div>
+				    	<p>Явка на данное мероприятие обязательна</p>
+				  	</div>
+				</div>
+			{% else %}
+				{% if your_answer == 1 %}
+					<div class="ui green visible message"><p>Вы пойдете на это мероприятие</p></div>
+				{% elif your_answer == 2 %}
+					<div class="ui yellow visible message"><p>Вы возможно пойдете на данное мероприятие</p></div>
+				{% elif your_answer == 3 %}
+					<div class="ui red visible message"><p>Вы отказались от посещения этого мероприятия</p></div>
+				{% endif %}				
+				<div class="ui info message">
+				  	<div class="content">
+				    	<div class="header">Посетите ли вы данное мероприятие?</div>
+				    	<p><a href="/users/{{author.id}}">{{author_username}}</a> хочет узнать, пойдете ли вы на мероприятие <b>"{{event.title|capfirst}}"</b>?</p>
+				    	<p>
+					    	<a href="/events/answer/?id={{event.id}}&answer=1"><button class="ui green button">Да</button></a>
+					    	<a href="/events/answer/?id={{event.id}}&answer=2"><button class="ui button">Возможно пойду</button></a>
+					    	<a href="/events/answer/?id={{event.id}}&answer=3"><button class="ui red button">Нет</button></a>
+				    	</p>
+				  	</div>
+				</div>
+				{% if visit or not_sure or no_visit %}
+					<h2>Статистика</h2>
+					{% if visit %}
+					<div class="ui green visible message">
+						Пойдут:
+						{% for user in visit %}
+							<a class="ui image label" href="/users/{{user.user_id}}"><img src="{{user.avatar}}">{{user.username}}</a>
+						{% endfor %}
+					</div>
+					{%endif%}
+					{% if not_sure %}
+					<div class="ui yellow visible message">
+						Возможно пойдут:
+						{% for user in not_sure %}
+							<a class="ui image label" href="/users/{{user.user_id}}"><img src="{{user.avatar}}">{{user.username}}</a>
+						{% endfor %}
+					</div>
+					{%endif%}
+					{% if no_visit %}
+					<div class="ui red visible message">
+						Не пойдут:
+						{% for user in no_visit %}
+							<a class="ui image label" href="/users/{{user.user_id}}"><img src="{{user.avatar}}">{{user.username}}</a>
+						{% endfor %}
+					</div>
+					{%endif%}
+				{% endif %}
+			{% endif %}
+		</div>
+	</div>
+	<div class="one wide column"></div>
+	<div class="four wide column">
+		<div class="ui button labeled icon mini">
+			<i class="icon heart"></i>Добавить в избранное
+		</div>
+		<h3>Сведения о мероприятии</h3>
+		<div class="ui list">
+		  	<div class="item">
+		    	<div class="header">Организатор</div>
+		    	<div class="ui middle aligned selection list">
+				  	<div class="item altrone-author-style">
+				    	<a href="/users/{{user.id}}/"><img class="ui avatar image" src="{{author_avatar}}">
+				    	<span class="content">
+				      		<div class="header">{{author_username}}</div>
+				    	</span>
+				    	</a>
+				  	</div>
+				</div>
+		  	</div><br>
+		</div>
+		
+		{% if user_is_author %}
+			<h3> Управление заметкой </h3>
+			<div class="ui list">
+				<a href="/notes/edit/{{id}}/" class="item">Редактировать заметку</a>
+				<a href="/notes/delete/{{id}}/" class="item">Удалить заметку</a>
+			</div>
+		{% endif %}
+	</div>
+</div>
+<div class="ui form">
+	
+</div>
+{% endblock %}

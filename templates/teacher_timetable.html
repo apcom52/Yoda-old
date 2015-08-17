@@ -1,0 +1,93 @@
+{% extends 'basic/base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block bodyclass %}{{bodyclass}}{% endblock %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="four wide column">
+		<div class="ui card">
+		  	<div class="image">
+		    	<img src="{{avatar}}" class="visible content">		    
+		  	</div>
+		  	<div class="content">
+		    	<div class="header">{{name}}</div>
+		    	<div class="meta">
+		      		<span class="date">Преподаватель</span>
+		    	</div>
+		  	</div>
+		</div>
+	</div>
+	<!--<div class="one wide column"></div>-->
+	<div class="ten wide column">
+		{% include 'basic/teacher-profile-nav.html' %}
+		<div class="ui bottom attached padded active segment">
+			<h3>Условные обозначения</h3>
+			<div class="item">
+			    <div class="ui teal horizontal label">   </div>Пара у нашей группы
+			</div>
+			<div class="item">
+			    <div class="ui orange horizontal label">   </div>В данное время у нас пара
+			</div>
+			<div class="item">
+			    <div class="ui yellow horizontal label">   </div>В данное время у нас нет пары
+			</div>
+			<div class="item">
+			    <div class="ui olive empty circular label"></div>  Лекция
+			</div>
+			<div class="item">
+			    <div class="ui blue empty circular label"></div>  Практика
+			</div>
+			<div class="item">
+			    <div class="ui red empty circular label"></div>  Лабораторная работа
+			</div>
+			<h1>Нечетная неделя</h1>
+			<div class="ui grid altrone-table" >		
+				<div class="row">
+					<div class="two wide column"></div>
+					<div class="two wide column" >8.20 - 9.50</div>
+					<div class="two wide column">10.00 - 11.30</div>
+					<div class="two wide column">11.45 - 13.15</div>
+					<div class="two wide column">14.00 - 15.30</div>
+					<div class="two wide column">15.45 - 17.15</div>
+					<div class="two wide column">17.20 - 18.50</div>
+					<div class="two wide column">18.55 - 20.25</div>
+				</div>
+				{% for day in week1 %}
+					<div class="row">
+					{% for lesson in day %}
+						<div class="two wide {{lesson.intersect}} column altrone-small">
+						{% if lesson.title and lesson.place %}<div class="ui {{lesson.color}} empty circular label"></div><br>{%endif%}{{lesson.title}}<br>
+						<b>{{lesson.place}}<br>{{lesson.group}}</b></div>
+					{% endfor %}
+					</div>
+				{% endfor %}		
+			</div>
+			<h1>Четная неделя</h1>
+			<div class="ui grid altrone-table" >		
+				<div class="row">
+					<div class="two wide column"></div>
+					<div class="two wide column" >8.20 - 9.50</div>
+					<div class="two wide column">10.00 - 11.30</div>
+					<div class="two wide column">11.45 - 13.15</div>
+					<div class="two wide column">14.00 - 15.30</div>
+					<div class="two wide column">15.45 - 17.15</div>
+					<div class="two wide column">17.20 - 18.50</div>
+					<div class="two wide column">18.55 - 20.25</div>
+				</div>
+				{% for day in week2 %}
+					<div class="row">
+					{% for lesson in day %}
+						<div class="two wide {{lesson.intersect}} column altrone-small">
+						{% if lesson.title and lesson.place %}<div class="ui {{lesson.color}} empty circular label"></div><br>{%endif%}{{lesson.title}}<br>
+						<b>{{lesson.place}}<br>{{lesson.group}}</b></div>
+					{% endfor %}
+					</div>
+				{% endfor %}		
+			</div>
+		</div>
+	</div>
+	<div class="one wide column"></div>
+</div>
+{% endblock %}

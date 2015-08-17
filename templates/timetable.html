@@ -1,0 +1,61 @@
+{% extends 'basic/base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+<div class="item"><a href="/homework/add"><div class="ui labeled icon primary button"><i class="write icon"></i>Добавить домашнее задание</div></a></div>
+{% include 'basic/taskbar_end.html' %}
+<div class="ui segment">
+	
+	<h3>Условные обозначения</h3>
+	<div class="item">
+	    <div class="ui olive horizontal label">   </div>Лекция
+	</div>
+	<div class="item">
+	    <div class="ui blue horizontal label">   </div>Практика
+	</div>
+	<div class="item">
+	    <div class="ui red horizontal label">   </div>Лабораторная работа
+	</div>
+	
+	<h1>Нечетная неделя</h1>
+	<div class="ui relaxed grid" >		
+		<div class="row">
+			<div class="two wide column"></div>
+			<div class="two wide column" >8.20 - 9.50</div>
+			<div class="two wide column">10.00 - 11.30</div>
+			<div class="two wide column">11.45 - 13.15</div>
+			<div class="two wide column">14.00 - 15.30</div>
+			<div class="two wide column">15.45 - 17.15</div>
+			<div class="two wide column">17.20 - 18.50</div>
+			<div class="two wide column">18.55 - 20.25</div>
+		</div>
+		{% for day in week1 %}
+			<div class="row">
+			{% for lesson in day %}
+				<div class="two wide {{lesson.color}} column">{{lesson.title}}</div>
+			{% endfor %}
+			</div>
+		{% endfor %}		
+	</div>
+	<h1>Четная неделя</h1>
+	<div class="ui relaxed grid" >		
+		<div class="row">
+			<div class="two wide column"></div>
+			<div class="two wide column" >8.20 - 9.50</div>
+			<div class="two wide column">10.00 - 11.30</div>
+			<div class="two wide column">11.45 - 13.15</div>
+			<div class="two wide column">14.00 - 15.30</div>
+			<div class="two wide column">15.45 - 17.15</div>
+			<div class="two wide column">17.20 - 18.50</div>
+			<div class="two wide column">18.55 - 20.25</div>
+		</div>
+		{% for day in week2 %}
+			<div class="row">
+			{% for lesson in day %}
+				<div class="two wide {{lesson.color}} column">{{lesson.title}}</div>
+			{% endfor %}
+			</div>
+		{% endfor %}		
+	</div>
+</div>
+{% endblock %}

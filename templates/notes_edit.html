@@ -1,0 +1,53 @@
+{% extends 'basic/base.html' %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="ten wide column">
+		<div class="ui breadcrumb">
+		  	<a class="section" href='/notes/'>Заметки</a>
+		  	<span class="divider">/</span>
+		  	<a class="section" href="/notes/{{id}}">{{title}}</a>
+		  	<span class="divider">/</span>
+		  	<div class="active section">Редактирование</div>
+		</div>
+		{% if error %}
+			<div class="ui negative message">
+			  	<i class="close icon"></i>
+			  	<div class="header">
+			    	Не удалось отредактировать заметку
+			  	</div>
+			  <p>{{ error_text }}
+			</p></div>
+		{% endif %}
+
+		<div class="ui form">
+			<form action='' method='post'>
+				<h1> Редактирование заметки </h1>
+				{% csrf_token %}
+				{{form.as_p}}
+				<button class="ui labeled icon green button" type="submit"> <i class="checkmark icon"></i>Обновить</button>
+			</form>	
+		</div>
+	</div>
+	<div class="one wide column"></div>
+	<div class="four wide column">
+		<h3>Правила разметки</h3>
+		<p>Сайт автоматически
+
+		 размечает установленные вами теги. На данный момент поддерживаются следующие теги: <br>
+		<ul>
+			<li><b>[header]</b> - Весь текст, заключенный в квадратные скобки становится заголовком</li>
+			<li><b>[[sub-header]]</b> - Весь текст, заключенный в двойные квадратные скобки становится подзаголовком</li>
+			<li><b>&ltlink&gt</b> - Весь текст, заключенный в угловые скобки - становится ссылкой</li>
+			<li><b>&lt&ltimage_url&gt&gt</b> - Ссылка на картинку, заключенная в угловые скобки становится изображением</li>
+		</ul>
+		<a href="#">Подробнее о разметке...</a>
+		</p>
+	</div>
+</div>
+<div class="ui form">
+	
+</div>
+{% endblock %}

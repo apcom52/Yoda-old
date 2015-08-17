@@ -1,0 +1,89 @@
+{% extends 'basic/base.html' %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="nine wide column">
+		<div class="ui breadcrumb">
+		  	<a class="section" href='/polls/'>Опросы</a>
+		  	<span class="divider">/</span>
+		  	<div class="active section"> {{poll.title}} </div>
+		</div>
+		<h2>{{poll.title}}</h2>
+		{% if not you_voted and poll.is_closed == False %}
+		<form method="POST" action='' class="ui form" name="optionform">
+			{% if poll.type == 2 %}
+				Вы можете выбрать несколько вариантов ответа
+			{%endif%}
+			{% if poll.is_anon %}
+				Опрос анонимен
+			{%endif%}
+			<div class="field">
+			{% for option in poll.choices.all %}			
+		      	<div class="ui {% if poll.type == 1 %}radio{%endif%} checkbox checked">
+		        	<input type="{% if poll.type == 1 %}radio{%else%}checkbox{%endif%}" name="options"  tabindex="0" value="{{option.id}}">
+		        	<label>{{option.text}}</label>
+		      	</div><br>
+			{% endfor %}
+			</div>
+			<button class="ui labeled icon green button" type="submit"> <i class="checkmark icon"></i>Проголосовать</button>
+		</form>
+		{% else %}
+			<div class="ui celled ordered list">
+				{% for option in votes %}
+				<div class="item">{{option.text}} {% if poll.is_anon %} <div class="ui label">{{option.users|length}} голос{% if option.users|length >= 2 and option.users|length <= 4%}а{% elif option.users|length == 0 or option.users|length >= 5%}ов{%endif%}</div>{%endif%}<br><br>
+					{% if not poll.is_anon %}
+						{% for users in option.users %}
+							<a class="ui label {% if request.user == users.user %}blue{%else%}gray{%endif%}">
+							  	<img class="ui right spaced avatar image" src="{{users.avatar}}">{{users.user.first_name}} {{users.user.last_name}}			  	
+							</a><br><br>
+						{% endfor %}
+					{% endif %}
+				</div>
+				{% endfor %}
+			</div>
+		{%endif%}
+
+		{% include 'basic/comments.html' %}
+	</div>
+	<div class="one wide column"></div>
+	<div class="five wide column">
+		<h3>Подробности</h3>
+		<div class="ui list">
+			{% if poll.is_closed %}
+			<div class="ui red label">Опрос закрыт</div>
+			{%endif%}
+		  	<div class="item">
+		    	<div class="header">Автор опроса</div>
+		    	<div class="ui middle aligned selection list">
+				  	<div class="item altrone-author-style">
+				    	<a href="/users/{{poll.login.id}}/"><img class="ui avatar image" src="{{avatar}}">
+				    	<span class="content">
+				      		<div class="header">{{poll.login.first_name}} {{poll.login.last_name}}</div>
+				    	</span>
+				    	</a>
+				  	</div>
+				</div>
+		  	</div><br>
+		  	<div class="item">
+		    	<div class="header">Дата публикации</div>
+		    	{{poll.pub_date}}
+		  	</div><br>
+		  	<div class="item">
+		    	<div class="header">Количество голосов</div>
+		    	{{voted_count}}	    	
+		  	</div>
+		</div>	
+		{% if is_author %}
+		<h3>Управление опросом</h3>
+		{% if not poll.is_closed %}<a href="/polls/close/{{poll.id}}">Закрыть опрос</a> {%endif%}
+		{% if poll.is_closed %}<a href="/polls/open/{{poll.id}}">Открыть опрос</a> {%endif%}
+		{% endif %}	
+	</div>
+</div>
+<div class="ui form">
+	
+</div>
+{% endblock %}

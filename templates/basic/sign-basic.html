@@ -1,0 +1,31 @@
+{% extends 'basic/base.html' %}
+{% block content %}
+    {% include 'basic/taskbar.html' %}
+    {% include 'basic/taskbar_end.html' %}
+    <div class="ui grid container">
+        <div class="two wide column"></div>
+        <div class="ten wide column">
+            <div class="ui cards">
+                <div class="card">
+                    <div class="content">
+                        <div class="header">
+							{% block sign-title %}{%endblock%}
+                        </div>
+                        {% if error %}                            
+                            <br><a class="ui red ribbon label"> {% block sign-error-data %}{%endblock%} </a><br>
+                        {% endif %}
+                        <div class="description">
+                            <form action="" method="post" class="ui form" autocomplete="off">
+                                {% csrf_token %}
+                                {% block sign-form %}{%endblock%}<br>
+                                <button type="submit" class="ui green button">{% block sign-submit-value %}{%endblock%}</button>
+                                <a href="{% block sign-subaction-link %}{%endblock%}"><button type="button" class="ui button">{% block sign-button-value %}{%endblock%}</button></a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="four wide column"></div>
+    </div>
+{% endblock %}

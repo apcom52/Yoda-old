@@ -1,0 +1,152 @@
+{% extends 'basic/base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+{% load humanize %}
+<div class="ui stackable grid">
+	<div class="one wide column"></div>
+	<div class="eight wide column">
+		{% if new_achievements %}
+			<div class="ui teal segment">
+				<h2>Новые достижения</h2>
+				Вы получили новые достижения:<br>
+				<div class="ui tiny images">
+				  	{% for ach in new_achievements %}
+						<img class="ui image altrone-popup" src="{{ach.icon}}" data-title="{{ach.title}}" data-content="{{ach.description}}">
+					{%endfor%}  
+				</div>
+				<a href="/users/achievements/{{request.user.id}}">Мои достижения</a>
+			</div>
+		{%endif%}
+		{% if today_events %}
+			<h2>Ближайшие события</h2>
+			<div class="ui relaxed divided list">
+				{% for event in today_events %}
+					<div class="item">
+			    	<i class="large calendar outline middle aligned icon"></i>
+			    	<div class="content">
+			      		<a class="header" href="/events/{{event.id}}">{{event.title}}</a>
+			      		<div class="description">
+							{{event.date|naturaltime}} 
+							{% if event.is_required %}
+								 | <span class="ui red horizontal label">ОБЯЗАТЕЛЬНО ДЛЯ ПОСЕЩЕНИЯ</span>
+							{% else %}
+								{% if event.answer == 1 %} | <span class="ui green horizontal label">Вы пойдете</span>
+								{% elif event.answer == 2 %} | <span class="ui yellow horizontal label">Вы возможно пойдете</span>
+								{% endif %}
+							{% endif %}
+			      		</div>
+			    	</div>
+			  	</div>
+				{% endfor %}
+			</div>
+		{%endif%}
+		<h2>Активность</h2>
+		<div class="ui comments">  
+		{% for action in actions_list %}
+			<div class="comment">
+				<a class="avatar"><img src="{{action.avatar}}"></a>
+			    <div class="content">
+			      	<a class="author" href="/users/{{action.userlogin}}">{{action.username}}</a>
+			      	<div class="metadata"><span class="date altrone-popup" data-content="{{action.pub_date}}">{{action.pub_date|naturaltime}}</span></div>
+			      	<div class="text">{{action.action_text|safe}}</div>
+			    </div>
+      		</div>
+		{% endfor %}
+		</div>
+
+		{% include 'basic/pagination.html' %}
+	</div>
+	<div class="one wide column"></div>
+	<div class="five wide column">		
+		{% if timetable and not is_weekend %}
+			<h3>Расписание на сегодня</h3>
+			<div class="ui cards">
+			{% for lesson in timetable %}
+				 <div class="{{lesson.type_color }} fluid card">
+				    <div class="content">
+					    <div class="header">{{lesson.title}}</div>
+					    {% if not lesson.is_end %}
+					    <div class="meta">
+					      <span class="right floated time">{{lesson.start_time}}</span>
+					      <span class="category">{{lesson.place}}</span>
+					    </div>					    
+					    <div class="description">
+					      	<a class="ui {{lesson.type_color}} ribbon label">{{lesson.type}}</a>
+					      	<p>
+					      		<br>
+					      		{% if lesson.double %} <span class="ui teal tag label">Сдвоенная пара</span>{% endif %}
+					      		{% if lesson.has_control %} <span class="ui purple tag label">Контрольная</span>{% endif %}
+					      		{% if lesson.changePlace %}
+					      		<div class="ui tertiary inverted red segment">
+					      			<b>Изменена аудитория</b><br>
+								  	<p>Пара будет проходить в {{lesson.place}}</p>
+								</div>
+								{% endif %}
+					      		{% if lesson.control %}
+					      		<div class="ui tertiary inverted purple segment">
+					      			<b>Контрольная работа:</b><br>
+								  	<p>{{lesson.control}}</p>
+								</div>
+								{% endif %}
+					      		{% if lesson.homework %}
+					      		<div class="ui tertiary inverted segment">
+					      			<b>Домашнее задание:</b><br>
+								  	<p>{{lesson.homework}}</p>
+								</div>
+								{% endif %}
+					      	</p>
+					    </div>
+					    {% endif %}
+					</div>
+					<div class="extra content">
+					    <div class="right floated author">
+					      	<a href="/teacher/{{lesson.teacher_id}}"><img class="ui avatar image" src="{{lesson.teacher_avatar}}"> {{lesson.teacher}}</a>
+					    </div>
+					</div>
+				</div>
+			{% endfor %}
+			</div>
+		{% else %}
+			<h2 class="ui center aligned icon header">
+			  	<i class="circular cocktail icon"></i>
+			  	Расслабьтесь<br>Сегодня выходной!
+			</h2>
+		{% endif %}
+		<div class="ui list">
+		  	<a class="item" href="/timetable">Открыть расписание</a>
+		  	<a class="item" href="/homework/add">Добавить домашнее задание</a>
+		  	<a class="item" href="/control/add">Добавить информацию о контрольной</a>
+		  	<a class="item" href="/change/place">Изменить аудиторию</a>
+		</div>
+
+		{% if events %}
+		<h2>Ближайшие события</h2>
+			{% for event in events %}
+				<div class="ui card">
+				  	<div class="content">
+					    <a class="header" href="/events/{{event.id}}">{{event.title}}</a>
+					    <div class="meta">{{event.date|naturaltime}}</div>
+					    <div class="description"><p>{{event.description}}</p>
+					    {% if event.is_required %}<div class="ui tertiary red inverted segment">Обязательное мероприятие!</div>{%endif%}</div>
+				  	</div>
+				  	{% if not event.is_required %}
+				  	<div class="extra content">
+				    	{% if event.answer == 1 %} <i class="check icon"></i>Вы пойдете
+				    	{% elif event.answer == 2%} <i class="help icon"></i>Вы возможно пойдете
+				    	{% elif event.answer == False %} <i class="warning icon"></i>Вы не ответили
+				    	{% endif %}
+				  	</div>
+				  	{% endif %}
+				</div>
+			{% endfor %}
+			<div class="ui list">
+		  	<a class="item" href="/events">Все мероприятия</a>
+		  	<a class="item" href="/events/add">Добавить мероприятие</a>
+		</div>
+		{% endif %}
+	</div>
+	<div class="one wide column"></div>
+</div>
+{% endblock %}

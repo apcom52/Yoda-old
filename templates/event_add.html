@@ -1,0 +1,38 @@
+{% extends 'basic/base.html' %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="ten wide column">
+		<div class="ui breadcrumb">
+		  	<a class="section" href='/notes/'>Мероприятия</a>
+		  	<span class="divider">/</span>
+		  	<div class="active section"> Добавление мероприятия </div>
+		</div>
+		{% if error %}
+			<div class="ui negative message">
+			  	<i class="close icon"></i>
+			  	<div class="header">
+			    	Добавить мероприятие не удалось
+			  	</div>
+			  <p>{{ error_text }}
+			</p></div>
+		{% endif %}
+
+		<div class="ui form">			
+			<form action='' method='post'>
+				<h1> Добавление мероприятия </h1>
+				{% csrf_token %}				
+				{{form.as_p}}
+				<button class="ui labeled icon green button" type="submit"> <i class="checkmark icon"></i>Добавить</button>
+			</form>	
+		</div>
+	</div>
+	<div class="one wide column"></div>
+	<div class="four wide column">
+		<h3>Примечание</h3>
+		<p>Указывайте дату мероприятия в формате YYYY-MM-DD HH:MM. Например для даты 14 января 2015 года 14 часов 16 минут дата будет выглядеть так: 2015-01-14 14:16</p>
+	</div>
+</div>
+{% endblock %}

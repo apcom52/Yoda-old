@@ -1,0 +1,15 @@
+{% load staticfiles %}
+<!--<div class="ui inverted top cd menu">
+  	<a class="icon item" href="/"><i class="sidebar icon"></i></a>
+  	{#{% if user.is_superuser %}
+		<a href="/admin/" class="item"><img src="/media/img/ubuntu.png"></a>
+	{% endif %}#}
+  	<a class="item">{# title #}</a>
+  	<div class="right menu">-->
+
+<div class="taskbar">
+	<div class="menu-icon menu-open"><i></i></div>	
+	<div class="actions">
+	{% if request.user.is_superuser %}
+		<a href="/admin"><button class="ui icon button"><i class="privacy icon"></i></button></a>
+	{% endif %}

@@ -1,0 +1,34 @@
+{% extends 'basic/base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block bodyclass %}{{bodyclass}}{% endblock %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="four wide column">
+		<div class="ui card">
+		  	<div class="image">
+		    	<img src="{{avatar}}" class="visible content">		    
+		  	</div>
+		  	<div class="content">
+		    	<div class="header">{{name}}</div>
+		    	<div class="meta">
+		      		<span class="date">Преподаватель</span>
+		    	</div>
+		  	</div>
+		</div>
+	</div>
+	<!--<div class="one wide column"></div>-->
+	<div class="ten wide column">
+		{% include 'basic/teacher-profile-nav.html' %}
+		<div class="ui bottom attached padded active segment">
+			<h2>Предметы</h2>
+			{% for lesson in lessons %}
+				<div class="ui {{lesson.color}} segment"><b>{{lesson.title}}</b><br>{{lesson.semester}} семестр</div>
+			{% endfor %}
+		</div>
+	</div>
+	<div class="one wide column"></div>
+</div>
+{% endblock %}
