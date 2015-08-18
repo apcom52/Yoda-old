@@ -6,9 +6,9 @@ from django.db.models.fields import related
 from django.core.exceptions import ObjectDoesNotExist 
 from django.core.paginator import Paginator
 from django.utils import timezone
-from .models import Lesson, Teacher, Timetable, Homework, Control, NewPlace, TeacherTimetable, NotStudyTime
+from .models import Lesson, Teacher, Timetable, Homework, Control, NewPlace, TeacherTimetable, NotStudyTime, TransferredLesson
 from events.models import Event, UserVisitEvent
-from .utils import DTControl, addAction, checkAchievements
+from .utils import DTControl, addAction, checkAchievements, setAch, dateInfo
 from .forms import *
 import datetime
 
@@ -21,7 +21,6 @@ def index(request):
 	new_achievements = []
 	try:
 		my_new_ach = AchUnlocked.objects.all().filter(login = request.user).filter(is_new = True)
-		print(len(my_new_ach))		
 		for ach in my_new_ach:
 			ach.is_new = False
 			ach.save()
@@ -62,7 +61,7 @@ def index(request):
 		sc = NotStudyTime.objects.filter(start_date__lte = datetime.date.today()).filter(end_date__gte = datetime.date.today())		
 		if len(sc) > 0: is_weekend = True
 	except ObjectDoesNotExist:
-		print('=== = = = I do not that!')
+		pass
 	
 	#Получение списка предметов
 	today = DTControl()	
@@ -111,6 +110,18 @@ def index(request):
 		except ObjectDoesNotExist:
 			pass
 
+		#Проверка на перенос пары
+		is_transfered = False
+		try:
+			new_lesson_tr = TransferredLesson.objects.get(last_date = today_date, last_time = lesson.time)
+			is_transfered = {
+				'place': new_lesson_tr.new_place,
+				'date': new_lesson_tr.new_date,
+				'lesson': new_lesson_tr.new_time,
+			}
+		except ObjectDoesNotExist:
+			pass
+
 		cur_lesson = {
 			'title': lesson.lesson.title,
 			'teacher': lesson.teacher.name,
@@ -118,7 +129,7 @@ def index(request):
 			'teacher_avatar': teacher_avatar,
 			'type': type,
 			'type_color': type_color,
-			'num': lesson.time,
+			'num': int(lesson.time),
 			'is_end': lesson_is_end,
 			'start_time': today.getTimeFromNum(lesson.time),
 			'place': lesson.place,
@@ -127,9 +138,71 @@ def index(request):
 			'control': control,
 			'homework': homework,
 			'changePlace': changePlace,		
+			'is_transfered': is_transfered,
 		}
 
 		timetable.append(cur_lesson)
+
+	#Получение перенесенных пар
+	new_lesson_tr = TransferredLesson.objects.all().filter(new_date = timezone.now())
+	new_timetable = []
+	for new_lesson in new_lesson_tr:
+		lesson = new_lesson.lesson
+		title = lesson.lesson.title
+		lesson_is_end = False
+		try:
+			teacher_avatar = lesson.teacher.avatar.url
+		except ValueError:
+			teacher_avatar = '/media/img/2015/08/04/ufo.jpg'
+		result_time = lesson.time
+		if lesson.double: result_time += 1
+		if today.gettimesummend(result_time) < today.timesumm: lesson_is_end = True
+		type = 'Лекция'; type_color = 'olive'
+		if lesson.lesson.type == 2: type='Практика'; type_color = 'blue'
+		elif lesson.lesson.type == 3: type='Лабораторная работа'; type_color = 'red'
+
+		now = datetime.date.today()
+		today_date = now.strftime("%Y-%m-%d")
+		#Проверка на наличие контрольной на этой паре
+		has_control = False
+		control = ''
+		try:
+			ctrl = Control.objects.get(date = today_date, time = lesson.time)
+			control = ctrl.info
+			has_control = True
+		except ObjectDoesNotExist:
+			pass
+
+		#Проверка на наличие домашнего задания
+		homework = False
+		try:
+			hw = Homework.objects.get(date = today_date, time = lesson.time)
+			homework = hw.homework
+		except ObjectDoesNotExist:
+			pass
+
+		cur_lesson = {
+			'title': lesson.lesson.title,
+			'teacher': lesson.teacher.name,
+			'teacher_id': lesson.teacher.id,
+			'teacher_avatar': teacher_avatar,
+			'type': type,
+			'type_color': type_color,
+			'num': int(new_lesson.new_time),
+			'is_end': lesson_is_end,
+			'start_time': today.getTimeFromNum(new_lesson.new_time),
+			'place': new_lesson.new_place,
+			'double': lesson.double,
+			'has_control': has_control,
+			'control': control,
+			'last_date': new_lesson.last_date,
+		}
+		new_timetable.append(cur_lesson)
+
+	#Проходимся по списку перенесенных пар и заменяем текущие пары на них
+	for tt in new_timetable:
+		cur_lesson = tt['num'] - 1
+		timetable[cur_lesson] = tt
 
 	#Получение списка мероприятий
 	start_event_date = timezone.now()
@@ -159,7 +232,6 @@ def index(request):
 	my_canceled_events_list = UserVisitEvent.objects.all().filter(login = request.user, answer = 3)
 	my_canceled_events = []
 	for c in my_canceled_events_list: my_canceled_events.append(c.event.id)
-	print(my_canceled_events)
 	today_events_list = Event.objects.all().filter(date__gte = time_now).filter(date__lte = end_time_now).exclude(id__in = my_canceled_events)#filter(date__gte = end_time_now).filter(date__lte = my_canceled_events).exclude(id__in = my_canceled_events)
 	today_events = []
 	for event in today_events_list:
@@ -397,6 +469,7 @@ def change_place(request):
 				addAction(request.user, 'изменил аудиторию "%s (%s.%s.%s - %s пара)" на %s' % (lesson.lesson.title, set_date[2], set_date[1], set_date[0], data['time'], data['new_place']))	
 			except ObjectDoesNotExist:
 				addAction(request.user, 'добавил информацию о смене аудитории')	
+			setAch(request.user, 6)
 			return redirect('/')
 		else:
 			error[0] = True
@@ -498,3 +571,47 @@ def teacher_timetable(request, id):
 		'active_page': 2,
 	}
 	return render(request, 'teacher_timetable.html', context)
+
+def transfer_lesson(request):
+	error = [False, '']
+	form = ChangeLessonForm()	
+	if request.method == 'POST':
+		data = request.POST
+		form = ChangeLessonForm(data)
+		if form.is_valid() and data['new_place']:
+			try:
+				has_changing = TransferredLesson.objects.get(last_date = data['last_date'], last_time = data['last_time'], new_date = data['new_date'], new_time = data['new_time'])
+			except ObjectDoesNotExist:				
+				newlesson = TransferredLesson()
+				try: 
+					set_date = data['date'].split('-')
+					dt = datetime.date(int(set_date[0]), int(set_date[1]), int(set_date[2]))
+					weekday = dt.isoweekday()
+					weeknumber = int(dt.strftime('%U'))
+					week = 1
+					if (weeknumber + settings.WEEK_SHIFT) % 2 == 0: week = 2
+					lesson = Timetable.objects.get(semester = settings.SEMESTER, week = week, day = weekday, time = data['time'])
+				except ObjectDoesNotExist:
+					raise ObjectDoesNotExist
+				newlesson.login = request.user
+				newlesson.lesson = lesson
+				newlesson.last_date = data['last_date']
+				newlesson.last_time = data['last_time']
+				newlesson.new_date = data['new_date']		
+				newlesson.new_time = data['new_time']	
+				newlesson.new_place = data['new_place']	
+				newlesson.save()	
+			addAction(request.user, 'добавил информацию о переносе пары')	
+			setAch(request.user, 6)
+			
+			return redirect('/')
+		else:
+			error[0] = True
+			error[1] = 'Произошла ошибка при переносе пары'
+	context = {
+		'title': 'Перенести пару',
+		'form': form,
+		'error': error[0],
+		'error_message': error[1],
+	}
+	return render(request, 'transfer_lesson.html', context)

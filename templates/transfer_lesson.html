@@ -1,0 +1,41 @@
+{% extends 'basic/base.html' %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="ten wide column">
+		<div class="ui breadcrumb">
+		  	<a class="section" href='/'>Расписание</a>
+		  	<span class="divider">/</span>
+		  	<div class="active section"> Перенос пары </div>
+		</div>
+		{% if error %}
+			<div class="ui negative message">
+			  	<i class="close icon"></i>
+			  	<div class="header">
+			    	Не удалось добавить информацию о переносе пары
+			  	</div>
+			  <p>{{ error_text }}
+			</p></div>
+		{% endif %}
+
+		<div class="ui form">
+			<form action='' method='post'>
+				<h1> Перенести пару </h1>
+				{% csrf_token %}
+				{{form.as_p}}
+				<button class="ui labeled icon green button" type="submit"> <i class="checkmark icon"></i>Перенести</button>
+			</form>	
+		</div>
+	</div>
+	<div class="one wide column"></div>
+	<div class="three wide column">
+		<h3>Примечание</h3>
+		Для добавления информации о переносе пары нужно указать дату исходной пары и перенесенной пары. Также для "новой" пары необходимо указать аудиторию проведения
+		<br>
+		<br>
+		<a href="/timetable" target="_blank">Посмотреть на расписание</a>
+	</div>
+</div>
+{% endblock %}

@@ -51,6 +51,18 @@ class DTControl:
 		elif lessonnum == 6: return '17:20'
 		elif lessonnum == 7: return '18:55'
 
+def dateInfo(info):
+	date = datetime.datetime(info['year'], info['month'], info['day'])
+	weekday = date.weekday() + 1
+	weeknumber = date.isocalendar()[1]
+	week = 1
+	if (weeknumber + settings.WEEK_SHIFT) % 2 == 0: week = 2
+	return {
+		'weekday': weekday,
+		'weeknumber': weeknumber,
+		'week': week,
+	}
+
 def addAction(user, action_text):
 	action = Action()
 	action.login = user

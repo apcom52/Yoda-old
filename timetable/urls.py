@@ -10,4 +10,5 @@ urlpatterns = [
 	url('^homework/add/', views.add_homework, name='add_homework'),
 	url('^control/add/', views.add_control, name='add_control'),
 	url('^change/place/', views.change_place, name='change_place'),
+	url('^change/lesson/', views.transfer_lesson, name='transfer_lesson'),
 ]

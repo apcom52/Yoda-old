@@ -65,7 +65,7 @@ class Timetable(models.Model):
 	double = models.BooleanField('Сдвоенная пара', default = False)
 
 	def __str__(self):
-		return str(self.lesson) + ' - ' + str(self.teacher)
+		return '%s (%s = %s %s %s)' % (self.lesson, self.teacher, self.week, self.day, self.time)
 
 class TimetableAdmin(admin.ModelAdmin):	
 	list_display = ('lesson', 'teacher', 'semester', 'week', 'day', 'time', 'place', 'double')
@@ -167,3 +167,23 @@ class NotStudyTime(models.Model):
 
 class NotStudyTimeAdmin(admin.ModelAdmin):
 	list_display = ('info', 'start_date', 'end_date')
+
+class TransferredLesson(models.Model):
+	lesson_nums = (
+		(1, '1 пара'), (2, '2 пара'), (3, '3 пара'), 
+		(4, '4 пара'), (5, '5 пара'), (6, '6 пара'), 
+		(7, '7 пара'), 
+	)
+	login = models.ForeignKey(User)
+	lesson = models.ForeignKey(Timetable)
+	last_date = models.DateField('Старая дата')
+	last_time = models.IntegerField('Старый номер пары', choices = lesson_nums)
+	new_date = models.DateField('Новая дата')
+	new_time = models.IntegerField('Новый номер пары', choices = lesson_nums)
+	new_place = models.CharField('Аудитория', max_length = 16)
+
+	def __str__(self):
+		return '%s -> %s (%s - %s)' % (self.last_date, self.new_date, self.new_time, self.new_place)
+
+class TransferredLessonAdmin(admin.ModelAdmin):
+	list_display = ('last_date', 'new_date', 'last_time', 'new_time', 'login')
