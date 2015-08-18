@@ -187,3 +187,16 @@ class TransferredLesson(models.Model):
 
 class TransferredLessonAdmin(admin.ModelAdmin):
 	list_display = ('last_date', 'new_date', 'last_time', 'new_time', 'login')
+
+class CanceledLesson(models.Model):
+	lesson_nums = (
+		(1, '1 пара'), (2, '2 пара'), (3, '3 пара'), 
+		(4, '4 пара'), (5, '5 пара'), (6, '6 пара'), 
+		(7, '7 пара'), 
+	)
+	login = models.ForeignKey(User)
+	date = models.DateField('Дата')
+	time = models.IntegerField('Номер пары', choices = lesson_nums)
+
+class CanceledLessonAdmin(admin.ModelAdmin):
+	list_display = ('date', 'time', 'login')

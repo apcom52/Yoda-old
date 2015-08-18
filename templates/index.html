@@ -69,13 +69,13 @@
 					    <div class="header">{{lesson.title}}</div>
 					    {% if not lesson.is_end %}
 					    <div class="meta">
-					      	{% if not lesson.is_transfered %}
+					      	{% if not lesson.is_transfered and not lesson.is_canceled %}
 					      	<span class="right floated time">{{lesson.start_time}}</span>
 					      	<span class="category">{{lesson.place}}</span>
 					      	{%endif%}
 					    </div>					    
 					    <div class="description">
-					      	{% if not lesson.is_transfered %}
+					      	{% if not lesson.is_transfered and not lesson.is_canceled %}
 					      	<a class="ui {{lesson.type_color}} ribbon label">{{lesson.type}}</a>
 					      	<p>
 					      		<br>				      		
@@ -104,13 +104,18 @@
 						      			<p>Пара была перенесена с {{lesson.last_date}}</p>
 									</div>
 									{% endif %}
-								{% else %}
+								{% elif lesson.is_transfered %}
 									<span class="ui red tag label">Пара перенесена</span>
 									<div class="ui tertiary inverted red segment">
 						      			<b>Пары не будет</b><br>
 									  	<p>Она будет {{lesson.is_transfered.date}} в {{lesson.is_transfered.place}}</p>
 									</div>
 								{% endif %}
+								{% if lesson.is_canceled %}
+									<div class="ui inverted red segment">
+						      			<b>Пара отменена</b>
+									</div>
+								{%endif%}
 					      	</p>
 					    </div>
 					    {% endif %}

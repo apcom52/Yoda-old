@@ -6,7 +6,7 @@ from django.db.models.fields import related
 from django.core.exceptions import ObjectDoesNotExist 
 from django.core.paginator import Paginator
 from django.utils import timezone
-from .models import Lesson, Teacher, Timetable, Homework, Control, NewPlace, TeacherTimetable, NotStudyTime, TransferredLesson
+from .models import Lesson, Teacher, Timetable, Homework, Control, NewPlace, TeacherTimetable, NotStudyTime, TransferredLesson, CanceledLesson
 from events.models import Event, UserVisitEvent
 from .utils import DTControl, addAction, checkAchievements, setAch, dateInfo
 from .forms import *
@@ -139,6 +139,7 @@ def index(request):
 			'homework': homework,
 			'changePlace': changePlace,		
 			'is_transfered': is_transfered,
+			'is_canceled': False,
 		}
 
 		timetable.append(cur_lesson)
@@ -196,13 +197,33 @@ def index(request):
 			'has_control': has_control,
 			'control': control,
 			'last_date': new_lesson.last_date,
+			'is_canceled': False,
 		}
 		new_timetable.append(cur_lesson)
 
+	#Получаем информацию об отмененных парах
+	canceled_lessons_list = CanceledLesson.objects.all().filter(date = timezone.now())
+	print('===== %s' % (len(canceled_lessons_list),))
+	canceled_lessons = []
+	for l in canceled_lessons_list:
+		canceled_lessons.append({
+			'num': l.time,
+		})
+
+
 	#Проходимся по списку перенесенных пар и заменяем текущие пары на них
-	for tt in new_timetable:
-		cur_lesson = tt['num'] - 1
-		timetable[cur_lesson] = tt
+	for tt in new_timetable:		
+		for i, t in enumerate(timetable):
+			if t['num'] == tt['num']:
+				timetable[i] = tt
+				break
+
+	print('!!!!! %s' % (len(canceled_lessons),))
+	for tt in canceled_lessons:		
+		for t in timetable:
+			if t['num'] == tt['num']:
+				t['is_canceled'] = True
+				break			
 
 	#Получение списка мероприятий
 	start_event_date = timezone.now()
@@ -615,3 +636,33 @@ def transfer_lesson(request):
 		'error_message': error[1],
 	}
 	return render(request, 'transfer_lesson.html', context)
+
+def canceled_lesson(request):
+	error = [False, '']
+	form = CanceledLessonForm()	
+	if request.method == 'POST':
+		data = request.POST
+		form = CanceledLessonForm(data)
+		if form.is_valid():
+			try:
+				has_changing = CanceledLesson.objects.get(date = data['date'], time = data['time'])
+			except ObjectDoesNotExist:				
+				newlesson = CanceledLesson()
+				newlesson.login = request.user
+				newlesson.date = data['date']
+				newlesson.time = data['time']
+				newlesson.save()	
+			addAction(request.user, 'добавил информацию об отмене пары')	
+			setAch(request.user, 6)
+			
+			return redirect('/')
+		else:
+			error[0] = True
+			error[1] = 'Произошла ошибка при отмене пары'
+	context = {
+		'title': 'Отменить пару',
+		'form': form,
+		'error': error[0],
+		'error_message': error[1],
+	}
+	return render(request, 'cancel_lesson.html', context)

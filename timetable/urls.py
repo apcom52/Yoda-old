@@ -11,4 +11,5 @@ urlpatterns = [
 	url('^control/add/', views.add_control, name='add_control'),
 	url('^change/place/', views.change_place, name='change_place'),
 	url('^change/lesson/', views.transfer_lesson, name='transfer_lesson'),
+	url('^change/cancel/', views.canceled_lesson, name='canceled_lesson'),
 ]
