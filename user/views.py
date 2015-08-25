@@ -12,6 +12,7 @@ import pymorphy2
 
 # Create your views here.
 def profile(request, id):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	try:
 		checkAchievements(request.user)
 		user = User.objects.get(id = id)
@@ -49,17 +50,17 @@ def profile(request, id):
 
 		ach_counter_morph = morph.parse('достижение')[0]
 		my_last_achievements = []
-		try:
-			my_ach = AchUnlocked.objects.all().filter(login = user).order_by('-pub_date')
-			last_achievements = my_ach[:5]
-			for ach in last_achievements:
-				my_last_achievements.append({
-					'title': ach.ach_id.title,
-					'icon': ach.ach_id.icon,
-					'description': ach.ach_id.description,
-				})
-		except ObjectDoesNotExist:
-			my_ach = []
+		#try:
+		my_ach = AchUnlocked.objects.all().filter(login = user).order_by('-pub_date')
+		last_achievements = my_ach[:5]
+		for ach in last_achievements:
+			my_last_achievements.append({
+				'title': ach.ach_id.title,
+				'icon': ach.ach_id.icon,
+				'description': ach.ach_id.description,
+			})
+		#except ObjectDoesNotExist:
+		#	my_ach = []
 
 		#получение звания пользователя
 		rank = getrank(user)
@@ -91,6 +92,7 @@ def profile(request, id):
 		return redirect('/')
 
 def achievements(request, id):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	try:
 		user = User.objects.get(id = id)
 		username = user.first_name + ' ' + user.last_name
@@ -178,8 +180,9 @@ def achievements(request, id):
 		return redirect('/')
 
 def settings(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	avatar_upload = UploadAvatarForm()
-	change_password = PasswordChangeForm(request.user)
+	change_password = ChangePasswordForm()
 	set_contacts = SetContactForm(initial = {'vk': request.user.userprofile.vk, 'facebook': request.user.userprofile.facebook, 'twitter': request.user.userprofile.twitter, 'phone': request.user.userprofile.phone})
 	error_password = request.GET.get('error_password', False)
 	context = {
@@ -192,15 +195,8 @@ def settings(request):
 	}
 	return render(request, 'settings.html', context)
 
-'''def upload_avatar(request):
-	if request.method == 'POST':
-		form = UploadAvatarForm(request.POST, request.FILES)
-		if form.is_valid():
-			handle_uploaded_file(request.FILES['file'])
-			return redirect('/users/%s' % (request.user.id,))
-	return redirect('/users/%s' % (request.user.id,))'''
-
 def upload_photo(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	if request.method == 'POST':
 		form = UploadAvatarForm(request.POST, request.FILES)		
 
@@ -217,6 +213,7 @@ def upload_photo(request):
 	return redirect('/users/settings/')
 
 def set_contacts(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	if request.method == 'POST':
 		form = SetContactForm(request.POST)
 		data = request.POST
@@ -234,19 +231,14 @@ def set_contacts(request):
 	return redirect('/users/settings/')
 
 def change_password(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	if request.method == 'POST':
 		from django.contrib.auth.hashers import check_password
 		data = request.POST
-		print(check_password(data['old_password'], request.user.password))
-		form = PasswordChangeForm(request.user, request.POST)
-		print(data)
-		print('*' * 8)
-		print(form.errors)
-		print(form.is_valid())
-		'''	user = User.objects.get(id = request.user.id)
-			user.set_password(data['new_password1'])
+		form = ChangePasswordForm(request.POST)
+		if form.is_valid() and check_password(data['password_old'], request.user.password) and data['password_new'] == data['password_new2'] and len(data['password_new']) >= 6:
+			user = User.objects.get(id = request.user.id)
+			user.set_password(data['password_new'])
 			user.save()	
-			return redirect('/auth/in')	
-		else:
-			return redirect('/users/settings/?error_password=1')	'''
+			return redirect('/auth/in')			
 	redirect('/users/settings/?error_password=1')

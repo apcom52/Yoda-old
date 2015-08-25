@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from achievements.models import Action, AchUnlocked, Rank, Achievement
+from django.contrib.auth.models import User
 import datetime
 
 class DTControl:
@@ -89,7 +90,7 @@ def pointsumm(user):
 	return summ
 
 def getrank(user):
-	summ = pointsumm(user)
+	if user: summ = pointsumm(user)
 	rank = '???'
 	try:
 		rank_list = Rank.objects.get(start_points__lte = summ, end_points__gte = summ)
@@ -157,3 +158,176 @@ def checkAchievements(user, params = ['404', 'actives', 'admin', 'comments', 'vi
 			setAch(user, 9)
 		if my_profile.phone:
 			setAch(user, 11)
+
+def getTimetable(semester = settings.SEMESTER, week = 1, day = 1, date = ''):
+	from .models import Lesson, Teacher, Timetable, Homework, Control, NewPlace, TeacherTimetable, NotStudyTime, TransferredLesson, CanceledLesson
+
+	is_weekend = False
+	try:
+		sc = NotStudyTime.objects.filter(start_date__lte = datetime.date.today()).filter(end_date__gte = datetime.date.today())		
+		if len(sc) > 0: is_weekend = True
+	except ObjectDoesNotExist:
+		return -1
+
+	today = DTControl()	
+	timetable = []	
+	tm_list = Timetable.objects.all().filter(semester = semester, week = week, day = day)
+	for lesson in tm_list:
+		title = lesson.lesson.title
+		lesson_is_end = False
+		try:
+			teacher_avatar = lesson.teacher.avatar.url
+		except ValueError:
+			teacher_avatar = '/media/img/2015/08/04/ufo.jpg'
+		result_time = lesson.time
+		if lesson.double: result_time += 1
+		if today.gettimesummend(result_time) < today.timesumm: lesson_is_end = True
+		type = 'Лекция'; type_color = 'olive'
+		if lesson.lesson.type == 2: type='Практика'; type_color = 'blue'
+		elif lesson.lesson.type == 3: type='Лабораторная работа'; type_color = 'red'
+
+		now = datetime.date.today()
+		today_date = now.strftime("%Y-%m-%d")
+		#Проверка на наличие контрольной на этой паре
+		has_control = False
+		control = ''
+		try:
+			ctrl = Control.objects.get(date = date, time = lesson.time)
+			control = ctrl.info
+			has_control = True
+		except ObjectDoesNotExist:
+			pass
+
+		#Проверка на наличие домашнего задания
+		homework = False
+		try:
+			hw = Homework.objects.get(date = date, time = lesson.time)
+			homework = hw.homework
+		except ObjectDoesNotExist:
+			pass
+		
+		#проверка на смену аудитории
+		changePlace = False
+		try:
+			new_place = NewPlace.objects.get(date = date, time = lesson.time)
+			place = new_place.new_place
+			changePlace = True
+		except ObjectDoesNotExist:
+			pass
+
+		#Проверка на перенос пары
+		is_transfered = False
+		try:
+			new_lesson_tr = TransferredLesson.objects.get(last_date = date, last_time = lesson.time)
+			is_transfered = {
+				'place': new_lesson_tr.new_place,
+				'date': new_lesson_tr.new_date,
+				'lesson': new_lesson_tr.new_time,
+			}
+		except ObjectDoesNotExist:
+			pass
+
+		cur_lesson = {
+			'title': lesson.lesson.title,
+			'teacher': lesson.teacher.name,
+			'teacher_id': lesson.teacher.id,
+			'teacher_avatar': teacher_avatar,
+			'type': type,
+			'type_color': type_color,
+			'num': int(lesson.time),
+			'is_end': lesson_is_end,
+			'start_time': today.getTimeFromNum(lesson.time),
+			'place': lesson.place,
+			'double': lesson.double,
+			'has_control': has_control,
+			'control': control,
+			'homework': homework,
+			'changePlace': changePlace,		
+			'is_transfered': is_transfered,
+			'is_canceled': False,
+		}
+
+		timetable.append(cur_lesson)
+
+	#Получение перенесенных пар
+	new_lesson_tr = TransferredLesson.objects.all().filter(new_date = date)
+	new_timetable = []
+	for new_lesson in new_lesson_tr:
+		lesson = new_lesson.lesson
+		title = lesson.lesson.title
+		lesson_is_end = False
+		try:
+			teacher_avatar = lesson.teacher.avatar.url
+		except ValueError:
+			teacher_avatar = '/media/img/2015/08/04/ufo.jpg'
+		result_time = lesson.time
+		if lesson.double: result_time += 1
+		if today.gettimesummend(result_time) < today.timesumm: lesson_is_end = True
+		type = 'Лекция'; type_color = 'olive'
+		if lesson.lesson.type == 2: type='Практика'; type_color = 'blue'
+		elif lesson.lesson.type == 3: type='Лабораторная работа'; type_color = 'red'
+
+		now = datetime.date.today()
+		today_date = now.strftime("%Y-%m-%d")
+		#Проверка на наличие контрольной на этой паре
+		has_control = False
+		control = ''
+		try:
+			ctrl = Control.objects.get(date = date, time = lesson.time)
+			control = ctrl.info
+			has_control = True
+		except ObjectDoesNotExist:
+			pass
+
+		#Проверка на наличие домашнего задания
+		homework = False
+		try:
+			hw = Homework.objects.get(date = date, time = lesson.time)
+			homework = hw.homework
+		except ObjectDoesNotExist:
+			pass
+
+		cur_lesson = {
+			'title': lesson.lesson.title,
+			'teacher': lesson.teacher.name,
+			'teacher_id': lesson.teacher.id,
+			'teacher_avatar': teacher_avatar,
+			'type': type,
+			'type_color': type_color,
+			'num': int(new_lesson.new_time),
+			'is_end': lesson_is_end,
+			'start_time': today.getTimeFromNum(new_lesson.new_time),
+			'place': new_lesson.new_place,
+			'double': lesson.double,
+			'has_control': has_control,
+			'control': control,
+			'last_date': new_lesson.last_date,
+			'is_canceled': False,
+		}
+		new_timetable.append(cur_lesson)
+
+	#Получаем информацию об отмененных парах
+	canceled_lessons_list = CanceledLesson.objects.all().filter(date = date)
+	canceled_lessons = []
+	for l in canceled_lessons_list:
+		canceled_lessons.append({
+			'num': l.time,
+		})
+
+
+	#Проходимся по списку перенесенных пар и заменяем текущие пары на них
+	for tt in new_timetable:		
+		for i, t in enumerate(timetable):
+			if t['num'] == tt['num']:
+				timetable[i] = tt
+				break
+
+	for tt in canceled_lessons:		
+		for t in timetable:
+			if t['num'] == tt['num']:
+				t['is_canceled'] = True
+				break	
+
+	if len(timetable) == 0: return -1
+
+	return timetable

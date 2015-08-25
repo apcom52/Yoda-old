@@ -8,5 +8,5 @@ urlpatterns = [
 	url('^answer', views.answer, name='answer'),
 	#url('^edit/(?P<id>[0-9]+)/$', views.edit, name='edit'),
 	#url('^delete/(?P<id>[0-9]+)/$', views.delete, name='delete'),
-	#url('^comment/', views.note_comment, name='note_comment'),
+	url('^comment/', views.event_comment, name='event_comment'),
 ]

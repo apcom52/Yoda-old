@@ -8,29 +8,29 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 from .models import Lesson, Teacher, Timetable, Homework, Control, NewPlace, TeacherTimetable, NotStudyTime, TransferredLesson, CanceledLesson
 from events.models import Event, UserVisitEvent
-from .utils import DTControl, addAction, checkAchievements, setAch, dateInfo
+from .utils import DTControl, addAction, checkAchievements, setAch, dateInfo, getTimetable
 from .forms import *
 import datetime
 
 # Create your views here.
 def index(request):
-	#Получение списка новых достижений
-	checkAchievements(request.user)
 	page = request.GET.get('page', 1)
-	
 	new_achievements = []
-	try:
-		my_new_ach = AchUnlocked.objects.all().filter(login = request.user).filter(is_new = True)
-		for ach in my_new_ach:
-			ach.is_new = False
-			ach.save()
-			new_achievements.append({
-				'title': ach.ach_id.title,
-				'icon': ach.ach_id.icon,
-				'description': ach.ach_id.description,
-			})
-	except ObjectDoesNotExist:
-		new_achievements = []
+	if request.user.is_authenticated():
+	#Получение списка новых достижений
+		checkAchievements(request.user)			
+		try:
+			my_new_ach = AchUnlocked.objects.all().filter(login = request.user).filter(is_new = True)
+			for ach in my_new_ach:
+				ach.is_new = False
+				ach.save()
+				new_achievements.append({
+					'title': ach.ach_id.title,
+					'icon': ach.ach_id.icon,
+					'description': ach.ach_id.description,
+				})
+		except ObjectDoesNotExist:
+			new_achievements = []
 
 
 	#Получение списка активностей	
@@ -233,10 +233,11 @@ def index(request):
 	for event in events_list:
 		opinion = False
 		if event.is_required == False:
-			try:
-				you_opin = UserVisitEvent.objects.get(login = request.user, event = event)
-				opinion = you_opin.answer
-			except ObjectDoesNotExist: pass
+			if request.user.is_authenticated():
+				try:
+					you_opin = UserVisitEvent.objects.get(login = request.user, event = event)
+					opinion = you_opin.answer
+				except ObjectDoesNotExist: pass
 		if opinion != 3:
 			events.append({
 				'id': event.id,
@@ -248,27 +249,28 @@ def index(request):
 			})
 
 	#Получение списка сегодняшних мероприятий (обязательных и тех, на которые подписался пользователь)
-	time_now = timezone.now()
-	end_time_now = time_now + datetime.timedelta(days = 1)
-	my_canceled_events_list = UserVisitEvent.objects.all().filter(login = request.user, answer = 3)
-	my_canceled_events = []
-	for c in my_canceled_events_list: my_canceled_events.append(c.event.id)
-	today_events_list = Event.objects.all().filter(date__gte = time_now).filter(date__lte = end_time_now).exclude(id__in = my_canceled_events)#filter(date__gte = end_time_now).filter(date__lte = my_canceled_events).exclude(id__in = my_canceled_events)
 	today_events = []
-	for event in today_events_list:
-		opinion = False
-		if event.is_required == False:
-			try:
-				you_opin = UserVisitEvent.objects.get(login = request.user, event = event)
-				opinion = you_opin.answer
-			except ObjectDoesNotExist: pass
-		today_events.append({
-			'id': event.id,
-			'title': event.title,
-			'date': event.date,
-			'is_required': event.is_required,
-			'answer': opinion,
-		})
+	if request.user.is_authenticated():
+		time_now = timezone.now()
+		end_time_now = time_now + datetime.timedelta(days = 1)
+		my_canceled_events_list = UserVisitEvent.objects.all().filter(login = request.user, answer = 3)
+		my_canceled_events = []
+		for c in my_canceled_events_list: my_canceled_events.append(c.event.id)
+		today_events_list = Event.objects.all().filter(date__gte = time_now).filter(date__lte = end_time_now).exclude(id__in = my_canceled_events)
+		for event in today_events_list:
+			opinion = False
+			if event.is_required == False:
+				try:
+					you_opin = UserVisitEvent.objects.get(login = request.user, event = event)
+					opinion = you_opin.answer
+				except ObjectDoesNotExist: pass
+			today_events.append({
+				'id': event.id,
+				'title': event.title,
+				'date': event.date,
+				'is_required': event.is_required,
+				'answer': opinion,
+			})
 
 	context = {
 		'title': 'Главная',
@@ -290,6 +292,7 @@ def index(request):
 
 
 def teacher(request, id):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	try:
 		teacher = Teacher.objects.get(id = id)
 		lessons = teacher.lessons.all()
@@ -325,6 +328,7 @@ def teacher(request, id):
 
 
 def all_timetable(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	weeks = []
 	week1 = []
 	week2 = []
@@ -388,6 +392,7 @@ def all_timetable(request):
 
 
 def add_homework(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	error = [False, '']
 	form = AddHomeworkForm()	
 	if request.method == 'POST':
@@ -426,6 +431,7 @@ def add_homework(request):
 	return render(request, 'add_homework.html', context)
 
 def add_control(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	error = [False, '']
 	form = AddControlForm()	
 	if request.method == 'POST':
@@ -462,6 +468,7 @@ def add_control(request):
 	return render(request, 'add_control.html', context)
 
 def change_place(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	error = [False, '']
 	form = ChangePlaceForm()	
 	if request.method == 'POST':
@@ -506,6 +513,7 @@ def change_place(request):
 
 
 def teacher_timetable(request, id):	
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	try:
 		teacher = Teacher.objects.get(id = id)		
 		try:
@@ -594,6 +602,7 @@ def teacher_timetable(request, id):
 	return render(request, 'teacher_timetable.html', context)
 
 def transfer_lesson(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	error = [False, '']
 	form = ChangeLessonForm()	
 	if request.method == 'POST':
@@ -638,6 +647,7 @@ def transfer_lesson(request):
 	return render(request, 'transfer_lesson.html', context)
 
 def canceled_lesson(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	error = [False, '']
 	form = CanceledLessonForm()	
 	if request.method == 'POST':
@@ -666,3 +676,22 @@ def canceled_lesson(request):
 		'error_message': error[1],
 	}
 	return render(request, 'cancel_lesson.html', context)
+
+def timetableByDate(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
+	today = timezone.localtime(timezone.now())
+	tomorrow = today + datetime.timedelta(days = 1)
+	second = today + datetime.timedelta(days = 2)
+	third = today + datetime.timedelta(days = 3)
+	tomorrow_info = dateInfo({'year': tomorrow.year, 'month': tomorrow.month, 'day': tomorrow.day})
+	second_info = dateInfo({'year': second.year, 'month': second.month, 'day': second.day})
+	third_info = dateInfo({'year': third.year, 'month': third.month, 'day': third.day})	
+	first = getTimetable(week = tomorrow_info['week'], day = tomorrow_info['weekday'], date = tomorrow)
+	second = getTimetable(week = second_info['week'], day = second_info['weekday'], date = second)
+	third = getTimetable(week = third_info['week'], day = third_info['weekday'], date = third)
+	context = {
+		'first': first,
+		'second': second,
+		'third': third,
+	}
+	return render(request, 'tomorrow_timetable.html', context)

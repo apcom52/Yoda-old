@@ -4,3 +4,4 @@ from .models import *
 
 admin.site.register(Event, EventAdmin)
 admin.site.register(UserVisitEvent, UserVisitEventAdmin)
+admin.site.register(EventComment, EventCommentAdmin)

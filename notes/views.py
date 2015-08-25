@@ -12,11 +12,13 @@ import bbcode
 
 # Create your views here.
 def index(request):	
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	notes = Note.objects.order_by('-pub_date').all()
 	context = {'title': 'Заметки', 'notes':notes}
 	return render(request, 'notes_index.html', context)
 
 def add(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	error = [False, '']
 	form = NoteAddForm()
 	if request.method == 'POST':
@@ -44,6 +46,7 @@ def add(request):
 	return render(request, 'notes_add.html', context)
 
 def note(request, id):	
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	try:
 		context = {}	
 		note = Note.objects.get(id = id)
@@ -83,12 +86,14 @@ def note(request, id):
 			'note': note,
 			'comments': comments,
 			'comment_url': '/notes/comment/',
+			'comment_item_id': note.id,
 		}
 		return render(request, 'note.html', context)
 	except ObjectDoesNotExist: 
 		return redirect('/notes/')	
 
 def edit(request, id):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	if request.method == 'POST':
 		try:
 			data = request.POST
@@ -116,6 +121,7 @@ def edit(request, id):
 
 @csrf_exempt
 def delete(request, id):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	if request.method == 'POST' and request.POST['delete'] == 'True':
 		try:		
 			note = Note.objects.get(id = id)		
@@ -138,9 +144,10 @@ def delete(request, id):
 			return redirect('/notes/')
 
 def note_comment(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	if request.method == 'POST':
 		data = request.POST
-		note_id = data['note_id']
+		note_id = data['item_id']
 		try:
 			note = Note.objects.get(id = int(note_id))
 			user = request.user

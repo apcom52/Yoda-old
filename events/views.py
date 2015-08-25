@@ -12,6 +12,7 @@ import pymorphy2
 
 # Create your views here.
 def index(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	events_list = Event.objects.all().filter(date__gte = timezone.now()).order_by('date')
 	events = []
 	for event in events_list:
@@ -41,6 +42,7 @@ def index(request):
 	return render(request, 'events_index.html', context)
 
 def add(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	error = [False, '']
 	form = EventAddForm()
 	if request.method == 'POST':
@@ -70,9 +72,9 @@ def add(request):
 	return render(request, 'event_add.html', context)
 
 def event(request, id):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	try:
 		event = Event.objects.get(id = id)	
-
 		visit = []
 		not_sure = []
 		no_visit = []
@@ -96,6 +98,17 @@ def event(request, id):
 		except ObjectDoesNotExist:
 			pass
 
+		comments = []
+		comments_list = EventComment.objects.all().filter(event = event)
+		for comment in comments_list:
+			comments.append({
+				'username': '%s %s' %(comment.login.first_name, comment.login.last_name),
+				'avatar': avatar(comment.login),
+				'text': comment.comment,
+				'date': comment.pub_date,
+				'user_id': comment.login.id,
+			})
+
 		context = {
 			'event': event,
 			'visit': visit,
@@ -105,7 +118,9 @@ def event(request, id):
 			'author': event.login,
 			'author_username': '%s %s' % (event.login.first_name, event.login.last_name),
 			'author_avatar': avatar(event.login),
+			'comments': comments,
 			'comment_url': '/events/comment/',
+			'comment_item_id': event.id,
 		}
 		return render(request, 'event.html', context)
 	except ObjectDoesNotExist:		
@@ -113,6 +128,7 @@ def event(request, id):
 
 @csrf_exempt
 def answer(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	if request.GET:
 		data = request.GET		
 		event_id = data.get('id', 0)
@@ -131,3 +147,24 @@ def answer(request):
 				my_answer.save()
 			return redirect('/events/%s' % (event_id,))
 	return redirect('/events/')
+
+def event_comment(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
+	if request.method == 'POST':
+		data = request.POST
+		event_id = data['item_id']
+		try:
+			event = Event.objects.get(id = int(event_id))
+			user = request.user
+			text = data['comment']
+			if len(text) >= 1:
+				comment = EventComment()
+				comment.login = user
+				comment.event = event
+				comment.comment = text
+				comment.pub_date = timezone.now()
+				comment.save()		
+				addAction(user, 'добавил комментарий о мероприятии <a href="/events/%s">%s</a>' % (event.id, event.title))
+		except ObjectDoesNotExist:
+			pass	
+	return redirect('/events/%s/' % (event_id,))

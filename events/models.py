@@ -27,3 +27,13 @@ class UserVisitEvent(models.Model):
 
 class UserVisitEventAdmin(admin.ModelAdmin):
 	list_display = ('login', 'event', 'answer')
+
+class EventComment(models.Model):
+	login = models.ForeignKey(User)
+	event = models.ForeignKey(Event)
+	comment = models.CharField('Комментарий', max_length = 4096)
+	attaches = models.CharField('Прикрепления', max_length = 6144, default = '', blank = True, null = True)
+	pub_date = models.DateTimeField('Дата публикации', editable = False)
+
+class EventCommentAdmin(admin.ModelAdmin):
+	list_display = ('login', 'event', 'comment')

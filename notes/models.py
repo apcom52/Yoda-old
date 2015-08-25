@@ -17,7 +17,7 @@ class Note(models.Model):
 
 	def __str__(self):
 		return self.title
-
+ 
 class NoteAdmin(admin.ModelAdmin):
 	fields = ('title', 'content', 'login')
 	list_display = ('title', 'pub_date', 'login')

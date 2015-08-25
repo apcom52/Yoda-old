@@ -1,0 +1,217 @@
+{% extends 'basic/base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+<div class="ui stackable grid">
+	<div class="one wide column"></div>
+	<div class="five wide column">		
+			<h3>Расписание на завтра</h3>
+			<div class="ui cards">
+			{% if first != -1 %}
+			{% for lesson in first %}
+				 <div class="{{lesson.type_color }} fluid card">
+				    <div class="content">
+					    <div class="header">{{lesson.title}}</div>					   
+					    <div class="meta">					      	
+					      	<span class="right floated time">{{lesson.start_time}}</span>
+					      	<span class="category">{{lesson.place}}</span>					      	
+					    </div>					    
+					    <div class="description">					      	
+					      	<a class="ui {{lesson.type_color}} ribbon label">{{lesson.type}}</a>
+					      	<p>
+					      		<br>				      		
+						      		{% if lesson.double %} <span class="ui teal tag label">Сдвоенная пара</span>{% endif %}
+						      		{% if lesson.has_control %} <span class="ui purple tag label">Контрольная</span>{% endif %}
+						      		{% if lesson.changePlace %}
+						      		<div class="ui tertiary inverted red segment">
+						      			<b>Изменена аудитория</b><br>
+									  	<p>Пара будет проходить в {{lesson.place}}</p>
+									</div>
+									{% endif %}
+						      		{% if lesson.control %}
+						      		<div class="ui tertiary inverted purple segment">
+						      			<b>Контрольная работа:</b><br>
+									  	<p>{{lesson.control}}</p>
+									</div>
+									{% endif %}
+						      		{% if lesson.homework %}
+						      		<div class="ui tertiary inverted segment">
+						      			<b>Домашнее задание:</b><br>
+									  	<p>{{lesson.homework}}</p>
+									</div>
+									{% endif %}
+									{% if lesson.last_date %}
+						      		<div class="ui tertiary inverted segment">
+						      			<p>Пара была перенесена с {{lesson.last_date}}</p>
+									</div>
+									{% endif %}	
+									{% if lesson.is_transfered %}
+										<div class="ui tertiary inverted red segment">
+							      			<b>Пары не будет</b><br>
+										  	<p>Она будет {{lesson.is_transfered.date}} в {{lesson.is_transfered.place}}</p>
+										</div>
+									{% endif %}							
+					      	</p>
+					    </div>					    
+					</div>
+					<div class="extra content">
+					    <div class="right floated author">
+					      	<a href="/teacher/{{lesson.teacher_id}}"><img class="ui avatar image" src="{{lesson.teacher_avatar}}"> {{lesson.teacher}}</a>
+					    </div>
+					</div>
+				</div>
+			{% endfor %}
+			{% else %}
+				<h4 style="margin-top: 50px; margin-left: 100px;">Выходной</h4>
+			{% endif %}
+			</div>
+	</div>
+	<div class="five wide column">
+			<h3>Расписание на послезавтра</h3>
+			<div class="ui cards">
+			{% if second != -1 %}
+			{% for lesson in second %}
+				 <div class="{{lesson.type_color }} fluid card">
+				    <div class="content">
+					    <div class="header">{{lesson.title}}</div>
+					    {% if not lesson.is_end %}
+					    <div class="meta">
+					      	{% if not lesson.is_transfered and not lesson.is_canceled %}
+					      	<span class="right floated time">{{lesson.start_time}}</span>
+					      	<span class="category">{{lesson.place}}</span>
+					      	{%endif%}
+					    </div>					    
+					    <div class="description">
+					      	{% if not lesson.is_transfered and not lesson.is_canceled %}
+					      	<a class="ui {{lesson.type_color}} ribbon label">{{lesson.type}}</a>
+					      	<p>
+					      		<br>				      		
+						      		{% if lesson.double %} <span class="ui teal tag label">Сдвоенная пара</span>{% endif %}
+						      		{% if lesson.has_control %} <span class="ui purple tag label">Контрольная</span>{% endif %}
+						      		{% if lesson.changePlace %}
+						      		<div class="ui tertiary inverted red segment">
+						      			<b>Изменена аудитория</b><br>
+									  	<p>Пара будет проходить в {{lesson.place}}</p>
+									</div>
+									{% endif %}
+						      		{% if lesson.control %}
+						      		<div class="ui tertiary inverted purple segment">
+						      			<b>Контрольная работа:</b><br>
+									  	<p>{{lesson.control}}</p>
+									</div>
+									{% endif %}
+						      		{% if lesson.homework %}
+						      		<div class="ui tertiary inverted segment">
+						      			<b>Домашнее задание:</b><br>
+									  	<p>{{lesson.homework}}</p>
+									</div>
+									{% endif %}
+									{% if lesson.last_date %}
+						      		<div class="ui tertiary inverted segment">
+						      			<p>Пара была перенесена с {{lesson.last_date}}</p>
+									</div>
+									{% endif %}
+								{% elif lesson.is_transfered %}
+									<span class="ui red tag label">Пара перенесена</span>
+									<div class="ui tertiary inverted red segment">
+						      			<b>Пары не будет</b><br>
+									  	<p>Она будет {{lesson.is_transfered.date}} в {{lesson.is_transfered.place}}</p>
+									</div>
+								{% endif %}
+								{% if lesson.is_canceled %}
+									<div class="ui inverted red segment">
+						      			<b>Пара отменена</b>
+									</div>
+								{%endif%}
+					      	</p>
+					    </div>
+					    {% endif %}
+					</div>
+					<div class="extra content">
+					    <div class="right floated author">
+					      	<a href="/teacher/{{lesson.teacher_id}}"><img class="ui avatar image" src="{{lesson.teacher_avatar}}"> {{lesson.teacher}}</a>
+					    </div>
+					</div>
+				</div>
+			{% endfor %}
+			{% else %}
+				<h4 style="margin-top: 50px; margin-left: 100px;">Выходной</h4>
+			{% endif %}
+			</div>
+	</div>
+	<div class="five wide column">
+			<h3>Расписание на послепослезавтра</h3>
+			<div class="ui cards">
+			{% if third != -1 %}
+			{% for lesson in third %}
+				 <div class="{{lesson.type_color }} fluid card">
+				    <div class="content">
+					    <div class="header">{{lesson.title}}</div>
+					    {% if not lesson.is_end %}
+					    <div class="meta">
+					      	{% if not lesson.is_transfered and not lesson.is_canceled %}
+					      	<span class="right floated time">{{lesson.start_time}}</span>
+					      	<span class="category">{{lesson.place}}</span>
+					      	{%endif%}
+					    </div>					    
+					    <div class="description">
+					      	{% if not lesson.is_transfered and not lesson.is_canceled %}
+					      	<a class="ui {{lesson.type_color}} ribbon label">{{lesson.type}}</a>
+					      	<p>
+					      		<br>				      		
+						      		{% if lesson.double %} <span class="ui teal tag label">Сдвоенная пара</span>{% endif %}
+						      		{% if lesson.has_control %} <span class="ui purple tag label">Контрольная</span>{% endif %}
+						      		{% if lesson.changePlace %}
+						      		<div class="ui tertiary inverted red segment">
+						      			<b>Изменена аудитория</b><br>
+									  	<p>Пара будет проходить в {{lesson.place}}</p>
+									</div>
+									{% endif %}
+						      		{% if lesson.control %}
+						      		<div class="ui tertiary inverted purple segment">
+						      			<b>Контрольная работа:</b><br>
+									  	<p>{{lesson.control}}</p>
+									</div>
+									{% endif %}
+						      		{% if lesson.homework %}
+						      		<div class="ui tertiary inverted segment">
+						      			<b>Домашнее задание:</b><br>
+									  	<p>{{lesson.homework}}</p>
+									</div>
+									{% endif %}
+									{% if lesson.last_date %}
+						      		<div class="ui tertiary inverted segment">
+						      			<p>Пара была перенесена с {{lesson.last_date}}</p>
+									</div>
+									{% endif %}
+								{% elif lesson.is_transfered %}
+									<span class="ui red tag label">Пара перенесена</span>
+									<div class="ui tertiary inverted red segment">
+						      			<b>Пары не будет</b><br>
+									  	<p>Она будет {{lesson.is_transfered.date}} в {{lesson.is_transfered.place}}</p>
+									</div>
+								{% endif %}
+								{% if lesson.is_canceled %}
+									<div class="ui inverted red segment">
+						      			<b>Пара отменена</b>
+									</div>
+								{%endif%}
+					      	</p>
+					    </div>
+					    {% endif %}
+					</div>
+					<div class="extra content">
+					    <div class="right floated author">
+					      	<a href="/teacher/{{lesson.teacher_id}}"><img class="ui avatar image" src="{{lesson.teacher_avatar}}"> {{lesson.teacher}}</a>
+					    </div>
+					</div>
+				</div>
+			{% endfor %}
+			{% else %}				
+				<h4 style="margin-top: 50px; margin-left: 100px;">Выходной</h4>
+			{% endif %}
+			</div>
+	</div>
+</div>
+{% endblock %}

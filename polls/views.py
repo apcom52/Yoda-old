@@ -10,11 +10,13 @@ from .utils import changePollState
 
 # Create your views here.
 def index(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	polls = Question.objects.order_by('-pub_date').all()
 	context = {'title':'Опросы', 'polls':polls}
 	return render(request, 'polls_index.html', context)
 
 def add(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	error = [False, '']
 	form = AddPollForm()	
 	if request.method == 'POST':
@@ -55,6 +57,7 @@ def add(request):
 
 @csrf_exempt
 def poll(request, id):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	try:
 		poll = Question.objects.get(id = id)
 		voted_count = len(QueAns.objects.all().filter(question = poll))
@@ -111,27 +114,31 @@ def poll(request, id):
 			'votes': votes,
 			'comments': comments,
 			'comment_url': '/polls/comment/',
+			'comment_item_id': poll.id,
 		}
 		return render(request, 'poll.html', context)
 	except ObjectDoesNotExist:		
 		return redirect('/polls/')
 
 def close(request, id):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	if changePollState(request, id, 'close'):
 		return redirect('/polls/' + id)
 	else:
 		return redirect('/polls/')
 
 def open(request, id):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	if changePollState(request, id, 'open'):
 		return redirect('/polls/' + id)
 	else:
 		return redirect('/polls/')
 
 def poll_comment(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	if request.method == 'POST':
 		data = request.POST
-		poll_id = data['poll_id']
+		poll_id = data['item_id']
 		try:
 			poll = Question.objects.get(id = poll_id)
 			user = request.user

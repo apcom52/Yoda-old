@@ -4,7 +4,7 @@
 <form class="ui form" method="POST" action="{{comment_url}}">
 	{% csrf_token %}
 	<textarea name="comment" rows="3" placeholder="Напишите комментарий..." required="true"></textarea>
-	<input type="hidden" name="note_id" value="{{note.id}}"><br><br>
+	<input type="hidden" name="item_id" value="{{comment_item_id}}"><br><br>
 	<button class="ui primary mini button" type="submit">Отправить</button>
 </form>
 {%endif%}

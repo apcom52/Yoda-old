@@ -28,11 +28,12 @@
 			<a href="/timetable"><li><i class="ai timetable"></i><span>Расписание</span></li></a>
 			<a href="/notes/"><li><i class="ai notes"></i><span>Заметки</span></li></a>
 			<a href="/polls/"><li><i class="ai polls"></i><span>Опросы</span></li></a>
-			<a href="/users/achievements/{{request.user.id}}"><li><i class="ai trophy"></i><span>Достижения</span></li>			
+			<a href="/users/achievements/{{request.user.id}}"><li><i class="ai event"></i><span>Мероприятия</span></li>		
+			<a href="/users/achievements/{{request.user.id}}"><li><i class="ai trophy"></i><span>Достижения</span></li>		
 		</ul>
 		<ul>
 			{% if request.user.is_authenticated %}
-				<a href="settings.php"><li><span>Настройки</span></li></a>
+				<a href="/users/settings"><li><span>Настройки</span></li></a>
 				<a href="/auth/out"><li><span>Выйти</span></li></a>
 			{% else %}
 				<a href="/auth/in"><li><span>Войти</span></li></a>
