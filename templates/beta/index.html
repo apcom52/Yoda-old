@@ -1,0 +1,165 @@
+{% extends 'basic/beta_base.html' %}
+{% load humanize %}
+{% block title %}{{title}} - Yoda{%endblock%}
+
+{% block more_head %}
+<!--[if gte IE 9]>
+  <style type="text/css">
+    .gradient {
+       filter: none;
+    }
+  </style>
+<![endif]-->
+<style>
+body {
+	background: rgb(255,255,255); /* Old browsers */;
+	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjIyJSIgc3RvcC1jb2xvcj0iI2EyYWNjYSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjM4JSIgc3RvcC1jb2xvcj0iI2IzOTFhMSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjU4JSIgc3RvcC1jb2xvcj0iI2QxNjU2ZCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjgxJSIgc3RvcC1jb2xvcj0iIzczYTFhNiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNkN2IwNjciIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+	background: -moz-linear-gradient(top,  rgb(210, 177, 136)  0%, rgb(162,172,202) 22%, rgb(179,145,161) 38%, rgb(209,101,109) 58%, rgb(115,161,166) 81%, rgb(215,176,103) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgb(210, 177, 136)), color-stop(22%,rgb(162,172,202)), color-stop(38%,rgb(179,145,161)), color-stop(58%,rgb(209,101,109)), color-stop(81%,rgb(115,161,166)), color-stop(100%,rgb(215,176,103))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgb(210, 177, 136) 0%, rgb(162,172,202) 22%,rgb(179,145,161) 38%,rgb(209,101,109) 58%,rgb(115,161,166) 81%, rgb(215,176,103) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgb(210, 177, 136) 0%, rgb(162,172,202) 22%, rgb(179,145,161) 38%, rgb(209,101,109) 58%, rgb(115,161,166) 81%, rgb(215,176,103) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgb(210, 177, 136) 0%, rgb(162,172,202) 22%, rgb(1	79,145,161) 38%, rgb(209,101,109) 58%, rgb(115,161,166) 81%, rgb(215,176,103) 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  rgb(210, 177, 136) 0%, rgb(162,172,202) 22%, rgb(179,145,161) 38%, rgb(209,101,109) 58%, rgb(115,161,166) 81%, rgb(215,176,103) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#73A1A6', endColorstr='#d7b067',GradientType=0 ); /* IE6-8 */
+}
+</style>
+{% endblock %}
+{% block content %}
+<a name="top"></a>
+<div class="container group">
+	<div class="col col-12 col-t-6 col-m-4">
+		<div class="taskbar invert">
+			<div class="items">
+				<div class="item"><i class="fa fa-th"></i></div>
+				<div class="item"><i class="fa fa-puzzle-piece"></i></div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container group">
+	<div class="col col-8 col-t-4 col-m-4">
+		<div class="card only-m">
+			<div class="header"><h1>Быстрая навигация</h1></div>
+			<div class="content">
+				<ul class="list list-nav">
+					<a href="#chronicle"><li>Активность</li></a>
+					<a href="#timetable"><li>Расписание</li></a>
+					<a href="#events"><li>Мероприятия</li></a>
+				</ul>
+			</div>
+		</div>
+		<div class="card">
+			<div class="header"><h1>Новые достижения</h1></div>
+			<div class="content"><p>Активность</p></div>
+		</div>
+		<a name="chronicle"></a>
+		<div class="card">
+			<div class="header"><h1>Активность</h1></div>
+			<div class="content feed actions_feed">
+				{% for action in actions %}
+					<div class="item">
+						<img src="{{action.avatar}}" class="photo">
+						<div class="content">
+							<div class="author">{{action.username}}</div>
+							<div class="time" data-tooltip="{{action.pub_date}}">{{action.pub_date|naturaltime}}</div>
+							<div class="text">{{action.text|safe}}</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+			<div class="footer">
+				<center>
+					<div class="button-group">
+					  	{% if pagination.has_prev %}
+					  		<a href="?page={{pagination.current|add:'-1'}}"><button class="icon"><i class="fa fa-angle-left"></i>Назад</button></a>
+					  	{% else %}
+					  		<button class="icon" disabled><i class="fa fa-angle-left"></i>Назад</button>
+					  	{% endif %}
+
+						{% if pagination.has_next %}
+					  		<a href="?page={{pagination.current|add:'1'}}"><button class="icon">Вперед<i class="fa fa-angle-right"></i></button></a>
+					  	{% else %}
+					  		<button class="icon" disabled>Вперед<i class="fa fa-angle-right"></i></button>
+					  	{% endif %}
+					</div>
+					</center>
+			</div>
+		</div>
+	</div>
+	<div class="col col-4 col-t-2 col-m-4">
+		<a name="timetable"></a>
+		<div class="card">
+			<div class="header"><h1>Расписание</h1>
+				<span class="card-button pin-left only-d" data-tooltip="Изменить день" data-dropdown-target="dropdown_timetable_date"><i class="fa fa-calendar-o"></i><i class="fa fa-caret-down"></i></span>
+				<div class="meta">5 сентября 2015</div>
+			</div>
+			<ul class="tabs mobile-tabs three hide-d" data-tabs>
+				<li class="active">Сегодня</li>
+				<li>Завтра</li>
+				<li>Послезавтра</li>
+			</ul>			
+			{% for lesson in timetable %}
+				<div class="card">
+					<div class="header"><h3>{{lesson.title}}</h3>
+					<div class="container group">
+						<div class="col col-6 col-t-3 col-m-2 m-gray-fg" style="text-align: left;">{{lesson.place}}</div>
+						<div class="col col-6 col-t-3 col-m-2 m-gray-fg" style="text-align: right;">{{lesson.time}}</div>
+					</div>
+					<span class="{{lesson.type.color}} badge">{{lesson.type.name}}</span></div>
+					<div class="content">
+						<p></p>
+					</div>
+				</div>
+			{% endfor %}			
+			
+			<ul class="dropdown invert" id="dropdown_timetable_date">
+				<li>Сегодня</li>
+				<li>Завтра</li>
+				<li>Послезавтра</li>
+				<li>Послепослезавтра</li>
+			</ul>
+		</div>
+		<a name="events"></a>
+		<div class="card">
+			<div class="header"><h1>Мероприятия</h1><span class="card-button pin-right" title="Добавить" data-tooltip-position='top-left'><i class="fa fa-plus"></i></span></div>
+			<div class="content"><p>Активность</p></div>
+		</div>
+		{% if polls %}
+		<div class="card">
+			<div class="header"><h1>Последние опросы</h1><a href="/polls/add"><span class="card-button pin-right" title="Добавить" data-tooltip-position="top-left"><i class="fa fa-plus"></i></span></a></div>
+			<div class="content">
+				<ul class="list list-nav gray-accent">
+					{% for poll in polls %}
+						<a href="/polls/{{poll.id}}"><li>{{poll.title|capfirst}}</li></a>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+		{% endif %}
+		{% if notes %}
+		<div class="card">
+			<div class="header"><h1>Последние заметки</h1><a href="/notes/add"><span class="card-button pin-right" title="Добавить" data-tooltip-position="top-left"><i class="fa fa-plus"></i></span></a></div>
+			<div class="content">
+				<ul class="list list-nav gray-accent">
+					{% for note in notes %}
+						<a href="/notes/{{note.id}}"><li>{{note.title|capfirst}}</li></a>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+		{% endif %}
+
+		<div class="card only-m">
+			<a href="#top"><button class="ghost icon fit"><i class="fa fa-angle-up"></i> НАВЕРХ</button></a>
+		</div>
+	</div>
+</div>
+<div class="tooltip"></div>
+{% endblock %}
+
+
+- Предмет философии. Предмет ее исследования
+- Определение философии
+- Структура философского знания
+- Специфика философии
+- Философия и мировозрение

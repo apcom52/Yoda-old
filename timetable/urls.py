@@ -13,4 +13,6 @@ urlpatterns = [
 	url('^change/lesson/', views.transfer_lesson, name='transfer_lesson'),
 	url('^change/cancel/', views.canceled_lesson, name='canceled_lesson'),
 	url('^timetable/next_days/', views.timetableByDate, name='timetableByDate'),
+	url('^teachers/', views.teacher_index, name='teacher_index'),
+	url('^beta/', views.beta_index, name='beta_index'),
 ]

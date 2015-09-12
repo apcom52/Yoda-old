@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django import forms
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth 
 from timetable.utils import addAction, setAch
 from user.models import UserProfile
@@ -90,6 +91,7 @@ def signup(request):
 	context = {"form": form, 'title': 'Регистрация', 'error': error[0], 'error_text': error[1]}
 	return render(request, 'sign-up.html', context)
 
+@csrf_exempt
 def signin(request):
 	print(request.user)
 	error = [False, '']

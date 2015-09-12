@@ -3,7 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError 
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-from timetable.utils import addAction, avatar, setAch
+from timetable.utils import addAction, avatar, setAch, UpdateStatus
 from .models import *
 from .forms import AddPollForm
 from .utils import changePollState
@@ -11,12 +11,14 @@ from .utils import changePollState
 # Create your views here.
 def index(request):
 	if not request.user.is_authenticated(): return redirect('/auth/in')
+	UpdateStatus(request.user)
 	polls = Question.objects.order_by('-pub_date').all()
 	context = {'title':'Опросы', 'polls':polls}
 	return render(request, 'polls_index.html', context)
 
 def add(request):
 	if not request.user.is_authenticated(): return redirect('/auth/in')
+	UpdateStatus(request.user)
 	error = [False, '']
 	form = AddPollForm()	
 	if request.method == 'POST':
@@ -59,6 +61,7 @@ def add(request):
 def poll(request, id):
 	if not request.user.is_authenticated(): return redirect('/auth/in')
 	try:
+		UpdateStatus(request.user)
 		poll = Question.objects.get(id = id)
 		voted_count = len(QueAns.objects.all().filter(question = poll))
 		you_voted = False
@@ -143,6 +146,7 @@ def poll_comment(request):
 			poll = Question.objects.get(id = poll_id)
 			user = request.user
 			text = data['comment']
+			text = text.strip()
 			if len(text) >= 1:
 				comment = PollComment()
 				comment.login = user

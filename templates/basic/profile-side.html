@@ -1,9 +1,17 @@
+{% load humanize %}
 <div class="ui card">
   	<div class="image">
     	<img src="{{avatar}}" class="visible content">		    
   	</div>
   	<div class="content">
-    	<div class="header">{{title}}</div>		  
+    	<div class="header">{{title}}
+    	{% if is_online %}
+    	<span style="float: right;" class="altrone-popup" data-content="Онлайн"><span class="ui olive empty circular label"></span></span>
+    	</div>
+    	{% elif last_visit %}
+    	</div>
+    	<div style="color: #666;">Был на сайте {{last_visit|naturaltime}}</div>
+    	{% else %}</div>{% endif %}
     	<br>
     	<div class="ui two statistics">
 		  	<div class="red statistic">
@@ -67,7 +75,7 @@
 		  	<div class="item">
 		    	<i class="large phone middle aligned icon"></i>
 			    <div class="content">
-			      	<a class="header">Номер телефона</a>
+			      	<span class="header">Номер телефона</span>
 			      	<div class="description">{{phone}}</div>
 			    </div>
 		  	</div>	
@@ -75,7 +83,7 @@
 		  	<div class="item">
 		    	<i class="large mail outline middle aligned icon"></i>
 			    <div class="content">
-			      	<a class="header">Электронная почта</a>
+			      	<span class="header">Электронная почта</span>
 			      	<div class="description">{{user.email}}</div>
 			    </div>
 		  	</div>	
@@ -93,6 +101,9 @@
 			<div class="item">						
 			    <img class="ui avatar image" src="{{friend.avatar}}">
 			    <div class="content"><a href="/users/{{friend.user_id}}"><div class="header">{{friend.username}}</div></a></div>
+			    {% if friend.is_online %}
+			    	<span style="float: right; position: relative; top: 0.5em" class="altrone-popup" data-content="Онлайн"><span class="ui olive empty circular label"></span></span>			    	
+			    {% endif %}
 		  	</div>				  	
     		{%endfor%}
     		{% if not friends %}У вас нет друзей :( {%endif%}

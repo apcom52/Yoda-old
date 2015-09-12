@@ -85,7 +85,7 @@ class Homework(models.Model):
 	homework = models.CharField('Домашнее задание', max_length = 1024)
 
 	def __str__(self):
-		return str(homework)
+		return str(self.homework)
 
 class HomeworkAdmin(admin.ModelAdmin):	
 	fields = ('user', 'date', 'time', 'homework')

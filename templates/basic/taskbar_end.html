@@ -7,8 +7,11 @@
 </div>-->
 	</div>
 	<div class="right-menu">
-		{% if request.user.is_authenticated %}<div class="ui middle aligned selection list">
+		{% if request.user.is_authenticated %}		
+		<div class="ui middle aligned selection list">				
 			<div class="item user">
+				<span  class="altrone-popup" id="notification_center_opened" data-title="У вас 1 новое уведомление" data-content="Нажмите, чтобы просмотреть" style="float: left; margin-right: 1.5em;"><span class="ui red label"><i class="alarm icon"></i> 1</span></span>
+				<!--<span class="altrone-popup" id="notification_center_opened" data-content="Новых уведомлений нет" data-position="bottom left"  style="float: left; margin-right: 1.5em;"><span class="ui label" style="background-color: rgb(51, 51, 51) !important; color: white;"><i class="alarm outline icon"></i></span></span>-->
 			    <img class="ui avatar image" src="{{request.user.userprofile.avatar.url|default:'/media/img/noavatar.jpg'}}">
 			    <span class="content"><a href="/users/{{request.user.id}}"><span class="header">{{request.user.first_name}} {{request.user.last_name}}</span></a></span>
 			</div>
@@ -26,9 +29,10 @@
 		<ul class="border">
 			<a href="/"><li><i class="ai home"></i><span>Главная</span></li></a>
 			<a href="/timetable"><li><i class="ai timetable"></i><span>Расписание</span></li></a>
+			<a href="/teachers"><li><i class="ai profile"></i><span>Преподаватели</span></li></a>
 			<a href="/notes/"><li><i class="ai notes"></i><span>Заметки</span></li></a>
 			<a href="/polls/"><li><i class="ai polls"></i><span>Опросы</span></li></a>
-			<a href="/users/achievements/{{request.user.id}}"><li><i class="ai event"></i><span>Мероприятия</span></li>		
+			<a href="/events/"><li><i class="ai event"></i><span>Мероприятия</span></li>		
 			<a href="/users/achievements/{{request.user.id}}"><li><i class="ai trophy"></i><span>Достижения</span></li>		
 		</ul>
 		<ul>
@@ -44,3 +48,13 @@
 </div>
 <br>
 <br>
+
+<div class="notification-center">
+	<h1>Центр уведомлений</h1>
+	<div class="content">
+	</div>
+	<div class="footer">
+		<button class="ui basic inverted button">Выслать уведомление</button>
+		<button class="ui basic inverted button">История</button>
+	</div>
+</div>

@@ -1,0 +1,448 @@
+.ui.menu {
+  border-radius: 0px;
+}
+.profile-page {
+  background-image: url(/media/img/geometry.png);
+}
+.ui .event .label img {
+  width: 32px !important;
+  height: 32px !important;
+}
+.altrone-author-style img,
+.altrone-author-style span {
+  float: left;
+}
+.altrone-table .altrone-small {
+  font-size: 14px;
+  text-align: center;
+  padding-left: 0rem;
+  padding-right: 0rem;
+}
+.ghost .author,
+.ghost .text {
+  color: #666666 !important;
+}
+.ghost .avatar img {
+  opacity: .7;
+}
+.altrone-achievement-icon {
+  width: 32px !important;
+  height: 32px !important;
+}
+.shadows {
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+.taskbar {
+  width: 100%;
+  height: 48px;
+  background-color: #333333;
+  color: white;
+  padding: 0px;
+  z-index: 3;
+}
+.taskbar .menu-icon {
+  display: inline-block;
+  float: left;
+  width: 5%;
+  height: 100%;
+  text-align: center;
+  min-width: 48px;
+  padding: 12px 0px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: all 0.3s linear;
+}
+.taskbar .menu-icon i {
+  width: 24px;
+  height: 24px;
+  display: block;
+  margin: auto;
+  background-image: url(/media/img/icons/list-white.png);
+  background-size: cover;
+}
+.taskbar .menu-icon:hover {
+  background-color: #51d2b7;
+  transition: all 0.3s linear;
+}
+.taskbar .actions {
+  float: left;
+  padding-top: 6px;
+  min-width: 50%;
+}
+.taskbar .actions a,
+.taskbar .actions button {
+  float: left;
+  margin-left: 10px;
+}
+.taskbar .action-panel {
+  display: inline-block;
+  float: left;
+  width: 75%;
+  height: 100%;
+  min-width: 75%;
+}
+.taskbar .action-panel ul {
+  list-style: none;
+  padding: 0px;
+  height: 100%;
+}
+.taskbar .action-panel ul li {
+  cursor: pointer;
+  display: inline-block;
+  height: 100%;
+  width: auto;
+  box-sizing: border-box;
+  padding: 12px 15px;
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.3s linear;
+  font-weight: 300;
+  float: left;
+}
+.taskbar .action-panel ul li i.icon {
+  margin: 0px 5px;
+}
+.taskbar .action-panel ul li span {
+  position: relative;
+  top: -5px;
+}
+.taskbar .action-panel ul li:hover {
+  background-color: #f5f5f5;
+  transition: all 0.3s linear;
+}
+.taskbar .action-panel ul li.success:hover {
+  background-color: #93E580;
+  transition: all 0.3s linear;
+}
+.taskbar .right-icons {
+  display: inline-block;
+  float: left;
+  width: 20%;
+  height: 100%;
+  background-color: #f5f5f5;
+  padding: 12px 0px;
+  box-sizing: border-box;
+}
+.taskbar .right-icons i {
+  float: left;
+}
+.taskbar .right-icons i.me {
+  min-width: 90px;
+  width: auto;
+  font-style: normal;
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  text-align: right;
+  padding-top: 3px;
+  color: #333333;
+}
+.taskbar .right-icons i.me img {
+  width: 48px;
+  height: 48px;
+  position: fixed;
+  right: 0px;
+  top: 0px;
+}
+.taskbar .right-menu {
+  float: right;
+  padding-top: 6px;
+  padding-right: 10px;
+}
+.taskbar .right-menu .user .content .header {
+  cursor: pointer;
+  color: white !important;
+  font-weight: 300;
+}
+.taskbar .right-menu .user .content .header a {
+  color: white;
+}
+.overlay {
+  display: none;
+  position: fixed;
+  width: 100%;
+  z-index: 4;
+  height: 100%;
+  background-color: #333333;
+  opacity: 0.8;
+  top: 0px;
+}
+.sidebar {
+  display: block;
+  position: fixed;
+  background-color: white;
+  width: 20%;
+  left: -45%;
+  top: 0px;
+  box-shadow: 3px 0px 17px 0px rgba(50, 50, 50, 0.5);
+  height: 100%;
+  z-index: 4;
+  font-family: 'Roboto', sans-serif;
+}
+.sidebar .cover {
+  width: 100%;
+  height: 200px;
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url(/media/img/covers/default.jpg);
+  text-align: center;
+  padding-top: 48px;
+  box-sizing: border-box;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(220, 204, 204, 0.75);
+}
+.sidebar .cover img {
+  background-color: white;
+  border-radius: 3px;
+  border: 2px solid white;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  width: 64px;
+  height: 64px;
+}
+.sidebar .list li {
+  background-color: white;
+  transition: all 0.3s linear;
+}
+.sidebar .list li:hover {
+  background-color: #f5f5f5;
+  transition: all 0.3s linear;
+}
+.sidebar a {
+  text-decoration: none;
+}
+.list ul {
+  list-style: none;
+  padding: 0px;
+  margin-top: 20px;
+}
+.list ul li {
+  clear: both;
+  width: 100%;
+  padding: 12px 0px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  cursor: pointer;
+  font-weight: 400;
+  box-sizing: border-box;
+}
+.list ul li i {
+  text-align: center;
+  font-size: 20px;
+  float: left;
+}
+.list ul li span {
+  margin-left: 20px;
+  color: #333333;
+  position: relative;
+  top: 0px;
+  width: 100%;
+}
+.list ul li.active {
+  background-color: #b2dbfb;
+  transition: all 0.3s linear;
+}
+.list ul.border {
+  border-bottom: 1px solid #dcdcdc;
+}
+i.ai {
+  width: 24px;
+  height: 24px;
+  display: block;
+  cursor: pointer;
+  background-size: cover;
+  margin: 0px 15px;
+  display: inline-block;
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/logo.gif', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/logo.gif', sizingMethod='scale')";
+}
+i.ai.bell {
+  background-image: url(/media/img/icons/bell.png);
+}
+i.ai.heart {
+  background-image: url(/media/img/icons/heart.png);
+}
+i.ai.home {
+  background-image: url(/media/img/icons/home.png);
+}
+i.ai.timetable {
+  background-image: url(/media/img/icons/timetable.png);
+}
+i.ai.event {
+  background-image: url(/media/img/icons/event.png);
+}
+i.ai.notes {
+  background-image: url(/media/img/icons/notes.png);
+}
+i.ai.trophy {
+  background-image: url(/media/img/icons/trophy.png);
+}
+i.ai.phone {
+  background-image: url(/media/img/icons/phone.png);
+}
+i.ai.mail {
+  background-image: url(/media/img/icons/mail.png);
+}
+i.ai.star {
+  background-image: url(/media/img/icons/star.png);
+}
+i.ai.redstar {
+  background-image: url(/media/img/icons/red-star.png);
+}
+i.ai.cogs {
+  background-image: url(/media/img/icons/cogs.png);
+}
+i.ai.filter {
+  background-image: url(/media/img/icons/filter.png);
+}
+i.ai.refresh {
+  background-image: url(/media/img/icons/refresh.png);
+}
+i.ai.download {
+  background-image: url(/media/img/icons/download.png);
+}
+i.ai.profile {
+  background-image: url(/media/img/icons/profile.png);
+}
+i.ai.lock {
+  background-image: url(/media/img/icons/lock.png);
+}
+i.ai.theme {
+  background-image: url(/media/img/icons/theme.png);
+}
+i.ai.beta {
+  background-image: url(/media/img/icons/beta.png);
+}
+i.ai.ok {
+  background-image: url(/media/img/icons/ok.png);
+}
+i.ai.remove {
+  background-image: url(/media/img/icons/remove.png);
+}
+i.ai.remove-white {
+  background-image: url(/media/img/icons/remove-white.png);
+}
+i.ai.photo {
+  background-image: url(/media/img/icons/photo.png);
+}
+i.ai.link {
+  background-image: url(/media/img/icons/link.png);
+}
+i.ai.back-white {
+  background-image: url(/media/img/icons/back_white.png);
+}
+i.ai.forward-white {
+  background-image: url(/media/img/icons/forward_white.png);
+}
+i.ai.ring {
+  background-image: url(/media/img/icons/ring.png);
+}
+i.ai.up {
+  background-image: url(/media/img/icons/up.png);
+}
+i.ai.bottom {
+  background-image: url(/media/img/icons/bottom.png);
+}
+i.ai.loading {
+  background-image: url(/media/img/icons/loading.gif);
+}
+i.ai.coffee {
+  background-image: url(/media/img/icons/coffee.png);
+}
+i.ai.add-list {
+  background-image: url(/media/img/icons/add_list.png);
+}
+i.ai.yoda {
+  background-image: url(/media/img/icons/yoda.gif);
+}
+i.ai.yoda-white {
+  background-image: url(/media/img/icons/yoda_white.png);
+}
+i.ai.empty {
+  background-image: url(/media/img/icons/empty.png);
+}
+i.ai.w-partly-rain-white {
+  background-image: url(/media/img/icons/w-partly-rain-white.png);
+}
+i.ai.w-storm-white {
+  background-image: url(/media/img/icons/w-storm-white.png);
+}
+i.ai.w-snow-white {
+  background-image: url(/media/img/icons/w-snow-white.png);
+}
+i.ai.w-sun-white {
+  background-image: url(/media/img/icons/w-sun-white.png);
+}
+i.ai.w-partly-cloud-white {
+  background-image: url(/media/img/icons/w-partly-cloud-white.png);
+}
+i.ai.w-rain-white {
+  background-image: url(/media/img/icons/w-rain-white.png);
+}
+i.ai.w-cloud-white {
+  background-image: url(/media/img/icons/w-cloud-white.png);
+}
+i.ai.eye {
+  background-image: url(/media/img/icons/eye.png);
+}
+i.ai.clock {
+  background-image: url(/media/img/icons/clock.png);
+}
+i.ai.hashtag {
+  background-image: url(/media/img/icons/hashtag.png);
+}
+i.ai.polls {
+  background-image: url(/media/img/icons/polls.png);
+}
+i.ai.list-white {
+  background-image: url(/media/img/icons/list-white.png);
+}
+i.ai.size16 {
+  width: 16px;
+  height: 16px;
+}
+i.ai.size32 {
+  width: 32px;
+  height: 32px;
+}
+i.ai.size64 {
+  width: 64px;
+  height: 64px;
+}
+i.ai.margin5 {
+  margin: 0px 5px;
+}
+.altrone-up {
+  display: none;
+  position: fixed !important;
+  left: 1em;
+  bottom: 1.5em;
+}
+/* Центр уведомлений */
+.notification-center {
+  display: block;
+  position: fixed;
+  width: 350px;
+  height: 100%;
+  top: 0px;
+  right: -45%;
+  background-color: rgba(81, 210, 183, 0.7);
+  font-family: 'Roboto', sans-serif;
+  color: #f5f5f5;
+  z-index: 5;
+}
+.notification-center h1 {
+  font-size: 20px;
+  margin: 1em;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.notification-center .content {
+  overflow-y: auto;
+  height: calc(100% - 125px);
+  width: 100%;
+}
+.notification-center .footer {
+  height: 100px;
+  width: 100%;
+  margin: 0 1em;
+}

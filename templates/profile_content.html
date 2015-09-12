@@ -1,0 +1,70 @@
+{% extends 'basic/base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block bodyclass %}{{bodyclass}}{% endblock %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+{% load humanize %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="four wide column">
+		{% include 'basic/profile-side.html' %}
+	</div>
+	<div class="ten wide column">
+		{% include 'basic/profile-nav.html' %}
+		<div class="ui bottom attached padded active segment">
+			{% if not notes and not polls and not events %}
+				<div class="ui message">
+  					<div class="header">:(</div>
+  					<p>{{title}} не проявил еще никакой активности</p>
+				</div>
+			{% else %}				
+				{% if notes %}
+					<h1>Заметки</h1>
+					<div class="ui relaxed divided list">
+					{% for note in notes %}
+						<div class="item">
+					    	<i class="large file text outline middle aligned icon"></i>
+					    	<div class="content">
+					      		<a class="header" href="/notes/{{note.id}}">{{note.title}}</a>
+					      		<div class="description"><i class="unhide icon"></i> {{note.views}}</div>
+					    	</div>
+					  	</div><br>  
+					{% endfor %}
+					</div>
+				{% endif %}				
+				{% if polls %}
+					<h1>Опросы</h1>
+					<div class="ui relaxed divided list">
+					{% for poll in polls %}
+						<div class="item">
+					    	<i class="large list outline middle aligned icon"></i>
+					    	<div class="content">
+					      		<a class="header" href="/polls/{{poll.id}}">{{poll.title}}</a>
+					    	</div>
+					  	</div><br>  
+					{% endfor %}
+					</div>
+				{% endif %}				
+				{% if events %}
+					<h1>Мероприятия</h1>
+					<div class="ui relaxed divided list">
+					{% for event in events %}
+						<div class="item">
+					    	<i class="large calendar outline middle aligned icon"></i>
+					    	<div class="content">
+					      		<a class="header" href="/events/{{event.id}}">{{event.title}}</a>
+					      		{% if event.is_ended %} 
+					      		<div class="description">Мероприятие закончилось</div>
+					      		{% endif %}
+					    	</div>
+					  	</div><br>  
+					{% endfor %}
+					</div>
+				{% endif %}
+			{%endif%}			
+		</div>
+	</div>
+	<div class="one wide column"></div>
+</div>
+{% endblock %}

@@ -2,6 +2,8 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from achievements.models import Action, AchUnlocked, Rank, Achievement
 from django.contrib.auth.models import User
+from django.utils import timezone
+from user.models import UserProfile
 import datetime
 
 class DTControl:
@@ -62,6 +64,7 @@ def dateInfo(info):
 		'weekday': weekday,
 		'weeknumber': weeknumber,
 		'week': week,
+		'date': date,
 	}
 
 def addAction(user, action_text):
@@ -121,7 +124,7 @@ def handle_uploaded_file(f):
 			user.userprofile.avatar = url
 			user.save()
 
-def checkAchievements(user, params = ['404', 'actives', 'admin', 'comments', 'visiter', 'contacts']):
+def checkAchievements(user, params = ['404', 'actives', 'admin', 'comments', 'visiter', 'contacts', '228']):
 	if '404' in params:
 		summ = pointsumm(user)
 		if summ >= 404:
@@ -144,8 +147,11 @@ def checkAchievements(user, params = ['404', 'actives', 'admin', 'comments', 'vi
 		comments_notes = NoteComment.objects.all().filter(login = user).count()
 		comments_polls = PollComment.objects.all().filter(login = user).count()
 		summ = comments_notes + comments_polls
-		if summ >= 5:
+		if summ >= 5 and summ <= 24:
 			setAch(user, 7)
+		elif summ >= 25:
+			setAch(user, 26)
+
 	if 'visiter' in params:
 		from events.models import UserVisitEvent
 		events_visit = UserVisitEvent.objects.all().filter(login = user).count()
@@ -158,10 +164,13 @@ def checkAchievements(user, params = ['404', 'actives', 'admin', 'comments', 'vi
 			setAch(user, 9)
 		if my_profile.phone:
 			setAch(user, 11)
+	if '404' in params:
+		summ = pointsumm(user)
+		if summ >= 228:
+			setAch(user, 27)
 
 def getTimetable(semester = settings.SEMESTER, week = 1, day = 1, date = ''):
 	from .models import Lesson, Teacher, Timetable, Homework, Control, NewPlace, TeacherTimetable, NotStudyTime, TransferredLesson, CanceledLesson
-
 	is_weekend = False
 	try:
 		sc = NotStudyTime.objects.filter(start_date__lte = datetime.date.today()).filter(end_date__gte = datetime.date.today())		
@@ -211,7 +220,7 @@ def getTimetable(semester = settings.SEMESTER, week = 1, day = 1, date = ''):
 		try:
 			new_place = NewPlace.objects.get(date = date, time = lesson.time)
 			place = new_place.new_place
-			changePlace = True
+			changePlace = new_place.new_place
 		except ObjectDoesNotExist:
 			pass
 
@@ -331,3 +340,19 @@ def getTimetable(semester = settings.SEMESTER, week = 1, day = 1, date = ''):
 	if len(timetable) == 0: return -1
 
 	return timetable
+
+def UpdateStatus(_user):
+	user = UserProfile.objects.get(user = _user)
+	user.last_visit = datetime.datetime.now()
+	user.save()
+
+def isOnline(_user):
+	now = datetime.datetime.now()
+	try:
+		user_lv = _user.userprofile.last_visit
+		user_last = datetime.datetime(user_lv.year, user_lv.month, user_lv.day, user_lv.hour, user_lv.minute)
+		user_last += datetime.timedelta(hours = 3)
+		if (now - user_last) <= datetime.timedelta(minutes = 10): return True
+		return False
+	except AttributeError:
+		return False	

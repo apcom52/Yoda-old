@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from achievements.models import Action
-from timetable.utils import addAction, setAch, avatar
+from timetable.utils import addAction, setAch, avatar, UpdateStatus
 from .forms import *
 from .models import *
 import pymorphy2
@@ -13,6 +13,7 @@ import pymorphy2
 # Create your views here.
 def index(request):
 	if not request.user.is_authenticated(): return redirect('/auth/in')
+	UpdateStatus(request.user)
 	events_list = Event.objects.all().filter(date__gte = timezone.now()).order_by('date')
 	events = []
 	for event in events_list:
@@ -43,6 +44,7 @@ def index(request):
 
 def add(request):
 	if not request.user.is_authenticated(): return redirect('/auth/in')
+	UpdateStatus(request.user)
 	error = [False, '']
 	form = EventAddForm()
 	if request.method == 'POST':
@@ -74,6 +76,7 @@ def add(request):
 def event(request, id):
 	if not request.user.is_authenticated(): return redirect('/auth/in')
 	try:
+		UpdateStatus(request.user)
 		event = Event.objects.get(id = id)	
 		visit = []
 		not_sure = []
@@ -157,6 +160,7 @@ def event_comment(request):
 			event = Event.objects.get(id = int(event_id))
 			user = request.user
 			text = data['comment']
+			text = text.strip()
 			if len(text) >= 1:
 				comment = EventComment()
 				comment.login = user

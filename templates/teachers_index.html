@@ -1,0 +1,25 @@
+{% extends 'basic/base.html' %}
+{% block content %}
+
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+{% load humanize %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="ten wide column">
+		<h1> Преподаватели: </h1>
+		<div class="ui comments">
+		{% for teacher in teachers %}
+		  	<div class="comment">
+			    <a class="avatar"><img src="{{teacher.image}}"></a>
+			    <div class="content">
+			    	<a class="author" href="/teacher/{{teacher.id}}">{{teacher.name}}</a>
+			    </div>
+			</div> <br>
+		{% endfor %}
+		</div>
+	</div>
+	<div class="five wide grid"></div>
+</div>
+
+{% endblock %}

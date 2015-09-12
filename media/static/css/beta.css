@@ -1,0 +1,42 @@
+@media (max-width: 480px) {
+  .mobile-left-pin {
+    float: left;
+  }
+  .comments .comment {
+    font-size: 0.8em;
+  }
+}
+.actions_feed .item .content .text img.ui {
+  width: 128px;
+  height: auto;
+  display: block;
+}
+.actions_feed .item .content a {
+  color: #00b5ad;
+  text-decoration: none;
+}
+.actions_feed .item .content a:hover {
+  color: #009c95;
+}
+.comments .comment {
+  clear: both;
+  overflow: hidden;
+  width: 100%;
+}
+.comments .comment .avatar img {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  margin: 5px 10px;
+  float: left;
+}
+.comments .comment .content .author {
+  float: left;
+  font-weight: bold;
+  width: calc(100% - 56px);
+}
+.comments .comment .content .text {
+  display: block;
+  margin-left: 0px !important;
+  word-break: break-all;
+}

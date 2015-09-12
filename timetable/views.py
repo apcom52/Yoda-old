@@ -8,16 +8,20 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 from .models import Lesson, Teacher, Timetable, Homework, Control, NewPlace, TeacherTimetable, NotStudyTime, TransferredLesson, CanceledLesson
 from events.models import Event, UserVisitEvent
-from .utils import DTControl, addAction, checkAchievements, setAch, dateInfo, getTimetable
+from notes.models import Note
+from polls.models import Question
+from .utils import DTControl, avatar, addAction, checkAchievements, setAch, dateInfo, getTimetable, UpdateStatus
 from .forms import *
 import datetime
+
 
 # Create your views here.
 def index(request):
 	page = request.GET.get('page', 1)
 	new_achievements = []
 	if request.user.is_authenticated():
-	#Получение списка новых достижений
+	#Получение списка новых достижений		
+		UpdateStatus(request.user)
 		checkAchievements(request.user)			
 		try:
 			my_new_ach = AchUnlocked.objects.all().filter(login = request.user).filter(is_new = True)
@@ -106,7 +110,7 @@ def index(request):
 		try:
 			new_place = NewPlace.objects.get(date = today_date, time = lesson.time)
 			place = new_place.new_place
-			changePlace = True
+			changePlace = new_place.new_place
 		except ObjectDoesNotExist:
 			pass
 
@@ -293,6 +297,7 @@ def index(request):
 
 def teacher(request, id):
 	if not request.user.is_authenticated(): return redirect('/auth/in')
+	UpdateStatus(request.user)
 	try:
 		teacher = Teacher.objects.get(id = id)
 		lessons = teacher.lessons.all()
@@ -329,6 +334,7 @@ def teacher(request, id):
 
 def all_timetable(request):
 	if not request.user.is_authenticated(): return redirect('/auth/in')
+	UpdateStatus(request.user)
 	weeks = []
 	week1 = []
 	week2 = []
@@ -336,7 +342,7 @@ def all_timetable(request):
 	day = 1
 	week = 1
 	while i <= 6:
-		lessons = Timetable.objects.all().filter(week = week, day = i)
+		lessons = Timetable.objects.all().filter(week = week, day = i, semester = settings.SEMESTER)
 		day = []
 		if i == 1 or i == 7: dayname = 'Понедельник'
 		elif i == 2 or i == 8: dayname = 'Вторник'
@@ -409,13 +415,14 @@ def add_homework(request):
 				set_date = data['date'].split('-')
 				dt = datetime.date(int(set_date[0]), int(set_date[1]), int(set_date[2]))
 				weekday = dt.isoweekday()
-				weeknumber = int(dt.strftime('%U'))
+				weeknumber = dt.isocalendar()[1]
 				week = 1
-				if (weeknumber + settings.WEEK_SHIFT) % 2 == 0: week = 2
+				if (1 + weeknumber) % 2 == 0: week = 2
 				lesson = Timetable.objects.get(semester = settings.SEMESTER, week = week, day = weekday, time = data['time'])
 				addAction(request.user, 'добавил домашнее задание по предмету "' + lesson.lesson.title + '"')			
 			except ObjectDoesNotExist:
 				addAction(request.user, 'добавил домашнее задание')
+			setAch(request.user, 6)
 			return redirect('/')
 		else:
 			error_message = 'Произошла ошибка'
@@ -450,11 +457,12 @@ def add_control(request):
 				weekday = dt.isoweekday()
 				weeknumber = int(dt.strftime('%U'))
 				week = 1
-				if (weeknumber + settings.WEEK_SHIFT) % 2 == 0: week = 2
+				if (weeknumber) % 2 == 0: week = 2
 				lesson = Timetable.objects.get(semester = settings.SEMESTER, week = week, day = weekday, time = data['time'])
 				addAction(request.user, 'добавил информацию о контрольной по предмету "' + lesson.lesson.title + '" в базу')	
 			except ObjectDoesNotExist:
 					addAction(request.user, 'добавил информацию о контрольной в базу')	
+			setAch(request.user, 6)
 			return redirect('/')
 		else:
 			error[0] = True
@@ -492,7 +500,7 @@ def change_place(request):
 				weekday = dt.isoweekday()
 				weeknumber = int(dt.strftime('%U'))
 				week = 1
-				if (weeknumber + settings.WEEK_SHIFT) % 2 == 0: week = 2
+				if (weeknumber) % 2 == 0: week = 2
 				lesson = Timetable.objects.get(semester = settings.SEMESTER, week = week, day = weekday, time = data['time'])
 				addAction(request.user, 'изменил аудиторию "%s (%s.%s.%s - %s пара)" на %s' % (lesson.lesson.title, set_date[2], set_date[1], set_date[0], data['time'], data['new_place']))	
 			except ObjectDoesNotExist:
@@ -514,6 +522,7 @@ def change_place(request):
 
 def teacher_timetable(request, id):	
 	if not request.user.is_authenticated(): return redirect('/auth/in')
+	UpdateStatus(request.user)
 	try:
 		teacher = Teacher.objects.get(id = id)		
 		try:
@@ -529,7 +538,7 @@ def teacher_timetable(request, id):
 	day = 1
 	week = 1
 	while i <= 6:
-		lessons = TeacherTimetable.objects.all().filter(teacher = teacher, week = week, day = i)
+		lessons = TeacherTimetable.objects.all().filter(teacher = teacher, week = week, day = i, semester = settings.SEMESTER)
 		day = []
 		if i == 1 or i == 7: dayname = 'Понедельник'
 		elif i == 2 or i == 8: dayname = 'Вторник'
@@ -614,13 +623,13 @@ def transfer_lesson(request):
 			except ObjectDoesNotExist:				
 				newlesson = TransferredLesson()
 				try: 
-					set_date = data['date'].split('-')
+					set_date = data['last_date'].split('-')
 					dt = datetime.date(int(set_date[0]), int(set_date[1]), int(set_date[2]))
 					weekday = dt.isoweekday()
 					weeknumber = int(dt.strftime('%U'))
 					week = 1
-					if (weeknumber + settings.WEEK_SHIFT) % 2 == 0: week = 2
-					lesson = Timetable.objects.get(semester = settings.SEMESTER, week = week, day = weekday, time = data['time'])
+					if (weeknumber) % 2 == 0: week = 2
+					lesson = Timetable.objects.get(semester = settings.SEMESTER, week = week, day = weekday, time = data['last_time'])
 				except ObjectDoesNotExist:
 					raise ObjectDoesNotExist
 				newlesson.login = request.user
@@ -679,6 +688,7 @@ def canceled_lesson(request):
 
 def timetableByDate(request):
 	if not request.user.is_authenticated(): return redirect('/auth/in')
+	UpdateStatus(request.user)
 	today = timezone.localtime(timezone.now())
 	tomorrow = today + datetime.timedelta(days = 1)
 	second = today + datetime.timedelta(days = 2)
@@ -695,3 +705,98 @@ def timetableByDate(request):
 		'third': third,
 	}
 	return render(request, 'tomorrow_timetable.html', context)
+
+def teacher_index(request):
+	UpdateStatus(request.user)
+	teachers_list = Teacher.objects.all().filter(semester = settings.SEMESTER)
+	teachers = []
+	for teacher in teachers_list:
+		teachers.append({
+			'name': teacher.name,
+			'id': teacher.id,
+			'image': teacher.avatar.url,
+		})
+	context = {
+		'title': 'Преподаватели',
+		'teachers': teachers,
+	}
+	return render(request, 'teachers_index.html', context)
+
+def beta_index(request):
+	#Получение расписания
+	today = getTimeTable(3, 2, 1)
+	#Получение списка активности
+	page = request.GET.get('page', 1)
+	actions_list = Action.objects.all().order_by('-pub_date')
+	p = Paginator(actions_list, 25)
+	if int(page) < 1: page = 1
+	elif int(page) > p.num_pages: page = p.num_pages
+	current_page = p.page(page)
+	actions = []
+	for action in current_page.object_list:	
+		actions.append({
+			'username': action.login.get_full_name(),
+			'avatar': avatar(action.login),
+			'text': action.text,
+			'pub_date': action.pub_date,
+		})
+
+	last_week = datetime.datetime.today() - datetime.timedelta(days=7)
+	#Получение последних заметок
+	lates_notes = Note.objects.all().filter(pub_date__gte = last_week).order_by('-pub_date')
+	notes = []
+	for note in lates_notes:
+		notes.append({
+			'id': note.id,
+			'title': note.title,
+		})
+	#Получение последних заметок
+	lates_polls = Question.objects.all().filter(pub_date__gte = last_week).order_by('-pub_date')
+	polls = []
+	for poll in lates_polls:
+		polls.append({
+			'id': poll.id,
+			'title': poll.title,
+		})
+
+	context = {
+		'title': 'Главная - Yoda',
+		'timetable': today,
+		'actions': actions,
+		'notes': notes,
+		'polls': polls,
+		'pagination': {
+				'has_prev': current_page.has_previous(),
+				'has_next': current_page.has_next(),
+				'current': current_page.number,
+				'prev': current_page.number - 1,
+				'next': current_page.number + 1,
+			},
+	}
+	return render(request, 'beta/index.html', context)
+
+def getTimeTable(semester, week, day, date = datetime.datetime.now()):
+	timetable = []
+	today = DTControl()	
+	timetable_list = Timetable.objects.all().filter(semester = semester, week = week, day = day)
+	for lesson in timetable_list:
+		type_color = 'olive'
+		type_name = 'Лекция'
+		if lesson.lesson.type == 2:
+			type_color = 'blue'
+			type_name = 'Практика'
+		elif lesson.lesson.type == 3:
+			type_color = 'red'
+			type_name = 'Лабораторная работа'
+		timetable.append({
+			'title': lesson.lesson.title,
+			'teacher': lesson.teacher.name,
+			'time': today.getTimeFromNum(lesson.time),
+			'type': {
+				'type': lesson.lesson.type,
+				'color': type_color,
+				'name': type_name,
+			},
+			'place': lesson.place,			
+		})
+	return timetable

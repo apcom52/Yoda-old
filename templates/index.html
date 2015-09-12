@@ -71,7 +71,7 @@
 					    <div class="meta">
 					      	{% if not lesson.is_transfered and not lesson.is_canceled %}
 					      	<span class="right floated time">{{lesson.start_time}}</span>
-					      	<span class="category">{{lesson.place}}</span>
+					      	<span class="category">{% if lesson.changePlace %}{{lesson.changePlace}}{%else%}{{lesson.place}}{%endif%}</span>		
 					      	{%endif%}
 					    </div>					    
 					    <div class="description">
@@ -84,7 +84,7 @@
 						      		{% if lesson.changePlace %}
 						      		<div class="ui tertiary inverted red segment">
 						      			<b>Изменена аудитория</b><br>
-									  	<p>Пара будет проходить в {{lesson.place}}</p>
+									  	<p>Пара будет проходить в {{lesson.changePlace}}</p>
 									</div>
 									{% endif %}
 						      		{% if lesson.control %}
@@ -139,8 +139,8 @@
 		  	<a class="item" href="/timetable">Открыть расписание</a>
 		  	<a class="item" href="/homework/add">Добавить домашнее задание</a>
 		  	<a class="item" href="/control/add">Добавить контрольную</a>
-		  	<a class="item" href="/change/lesson">Изменить аудиторию</a>
-		  	<a class="item" href="/change/place">Перенести пару</a>
+		  	<a class="item" href="/change/place">Изменить аудиторию</a>
+		  	<a class="item" href="/change/lesson">Перенести пару</a>
 		  	<a class="item" href="/change/cancel">Отменить пару</a>
 		</div>
 

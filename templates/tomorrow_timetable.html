@@ -15,7 +15,7 @@
 					    <div class="header">{{lesson.title}}</div>					   
 					    <div class="meta">					      	
 					      	<span class="right floated time">{{lesson.start_time}}</span>
-					      	<span class="category">{{lesson.place}}</span>					      	
+					      	<span class="category">{% if lesson.changePlace %}{{lesson.changePlace}}{%else%}{{lesson.place}}{%endif%}</span>					      	
 					    </div>					    
 					    <div class="description">					      	
 					      	<a class="ui {{lesson.type_color}} ribbon label">{{lesson.type}}</a>
@@ -26,7 +26,7 @@
 						      		{% if lesson.changePlace %}
 						      		<div class="ui tertiary inverted red segment">
 						      			<b>Изменена аудитория</b><br>
-									  	<p>Пара будет проходить в {{lesson.place}}</p>
+									  	<p>Пара будет проходить в {{lesson.changePlace}}</p>
 									</div>
 									{% endif %}
 						      		{% if lesson.control %}
@@ -51,7 +51,12 @@
 							      			<b>Пары не будет</b><br>
 										  	<p>Она будет {{lesson.is_transfered.date}} в {{lesson.is_transfered.place}}</p>
 										</div>
-									{% endif %}							
+									{% endif %}	
+								{% if lesson.is_canceled %}
+									<div class="ui inverted red segment">
+						      			<b>Пара отменена</b>
+									</div>
+								{%endif%}						
 					      	</p>
 					    </div>					    
 					</div>
@@ -75,12 +80,9 @@
 				 <div class="{{lesson.type_color }} fluid card">
 				    <div class="content">
 					    <div class="header">{{lesson.title}}</div>
-					    {% if not lesson.is_end %}
 					    <div class="meta">
-					      	{% if not lesson.is_transfered and not lesson.is_canceled %}
 					      	<span class="right floated time">{{lesson.start_time}}</span>
-					      	<span class="category">{{lesson.place}}</span>
-					      	{%endif%}
+					      	<span class="category">{% if lesson.changePlace %}{{lesson.changePlace}}{%else%}{{lesson.place}}{%endif%}</span>			      	
 					    </div>					    
 					    <div class="description">
 					      	{% if not lesson.is_transfered and not lesson.is_canceled %}
@@ -92,7 +94,7 @@
 						      		{% if lesson.changePlace %}
 						      		<div class="ui tertiary inverted red segment">
 						      			<b>Изменена аудитория</b><br>
-									  	<p>Пара будет проходить в {{lesson.place}}</p>
+									  	<p>Пара будет проходить в {{lesson.changePlace}}</p>
 									</div>
 									{% endif %}
 						      		{% if lesson.control %}
@@ -126,7 +128,6 @@
 								{%endif%}
 					      	</p>
 					    </div>
-					    {% endif %}
 					</div>
 					<div class="extra content">
 					    <div class="right floated author">
@@ -148,12 +149,9 @@
 				 <div class="{{lesson.type_color }} fluid card">
 				    <div class="content">
 					    <div class="header">{{lesson.title}}</div>
-					    {% if not lesson.is_end %}
-					    <div class="meta">
-					      	{% if not lesson.is_transfered and not lesson.is_canceled %}
+					    <div class="meta">					      	
 					      	<span class="right floated time">{{lesson.start_time}}</span>
-					      	<span class="category">{{lesson.place}}</span>
-					      	{%endif%}
+					      	<span class="category">{% if lesson.changePlace %}{{lesson.changePlace}}{%else%}{{lesson.place}}{%endif%}</span>						      	
 					    </div>					    
 					    <div class="description">
 					      	{% if not lesson.is_transfered and not lesson.is_canceled %}
@@ -165,7 +163,7 @@
 						      		{% if lesson.changePlace %}
 						      		<div class="ui tertiary inverted red segment">
 						      			<b>Изменена аудитория</b><br>
-									  	<p>Пара будет проходить в {{lesson.place}}</p>
+									  	<p>Пара будет проходить в {{lesson.changePlace}}</p>
 									</div>
 									{% endif %}
 						      		{% if lesson.control %}
@@ -199,7 +197,6 @@
 								{%endif%}
 					      	</p>
 					    </div>
-					    {% endif %}
 					</div>
 					<div class="extra content">
 					    <div class="right floated author">

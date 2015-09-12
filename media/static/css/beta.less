@@ -1,0 +1,77 @@
+@red: #db2828;
+@orange: #f2711c;
+@yellow: #fbbd08;
+@olive: #b5cc18;
+@green: #21ba45;
+@teal: #00b5ad;
+@blue: #2185d0;
+@violet: #6435c9;
+@purple: #a333c8;
+@pink: #e03997;
+@brown: #a5673f;
+@u-gray: #f5f5f5;
+@l-gray: #999999;
+@m-gray: #666666;
+@d-gray: #333333;
+@black: #000000;
+@white: #ffffff;
+
+@media (max-width: 480px) {
+	.mobile-left-pin {
+		float: left;
+	}
+	.comments .comment {
+		font-size: 0.8em;
+	}
+}
+
+.actions_feed {
+	.item {
+		.content {
+			.text {
+				img.ui {
+					width: 128px;
+					height: auto;
+					display: block;
+				}
+			}
+
+			a {
+				color: @teal;
+				text-decoration: none;
+
+				&:hover {
+					color: darken(@teal, 5%);
+				}
+			}
+		}
+	}
+}
+
+.comments {
+	.comment {
+		clear: both;
+		overflow: hidden;
+		width: 100%;
+
+		.avatar img {
+			width: 36px;
+			height: 36px;
+			border-radius: 4px;
+			margin: 5px 10px;
+			float: left;
+		}
+		.content {
+			.author {
+				float: left;
+				font-weight: bold;
+				width: ~'calc(100% - 56px)';
+			}
+			.text {
+				display: block;
+				margin-left: 0px !important;
+				word-break: break-all;
+			}
+		}
+	}
+}

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import socket
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -23,9 +24,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'y&$p6p6q-iyonl%*2co03q3997e^d1kkhe)1u*gpt!bz%f&ymo'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+if socket.gethostname() == 'vsu-it.ru':
+    DEBUG = False
+else:
+    DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['vsu-it.ru', 'www.vsu-it.ru']
 
 
 # Application definition
@@ -97,7 +101,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'GMT+3'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -111,15 +115,18 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static", "static_root")
+_PATH = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+if DEBUG == False:
+    STATIC_ROOT = os.path.join(BASE_DIR, "static", "static_root")
+else:    STATIC_ROOT = os.path.join(_PATH, 'media', 'static')
 
-STATICFILES_DIRS = (
+'''STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static", "our_static"),
     #'/var/www/static/',
-)
-_PATH = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+)'''
+
 MEDIA_ROOT = os.path.join(_PATH, 'media')
-MEDIA_URL = 'http://127.0.0.1:8000/media/'
+MEDIA_URL = 'http://vsu-it.ru/media/'
 
 
 #Настройки приложения

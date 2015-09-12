@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from achievements.models import Action
-from timetable.utils import addAction, avatar, setAch
+from timetable.utils import addAction, avatar, setAch, UpdateStatus
 from .forms import NoteAddForm, NoteEditForm
 from .models import *
 
@@ -13,12 +13,14 @@ import bbcode
 # Create your views here.
 def index(request):	
 	if not request.user.is_authenticated(): return redirect('/auth/in')
+	UpdateStatus(request.user)
 	notes = Note.objects.order_by('-pub_date').all()
 	context = {'title': 'Заметки', 'notes':notes}
 	return render(request, 'notes_index.html', context)
 
 def add(request):
 	if not request.user.is_authenticated(): return redirect('/auth/in')
+	UpdateStatus(request.user)
 	error = [False, '']
 	form = NoteAddForm()
 	if request.method == 'POST':
@@ -48,6 +50,7 @@ def add(request):
 def note(request, id):	
 	if not request.user.is_authenticated(): return redirect('/auth/in')
 	try:
+		UpdateStatus(request.user)
 		context = {}	
 		note = Note.objects.get(id = id)
 		note.views += 1
@@ -152,6 +155,7 @@ def note_comment(request):
 			note = Note.objects.get(id = int(note_id))
 			user = request.user
 			text = data['comment']
+			text = text.strip()
 			if len(text) >= 1:
 				comment = NoteComment()
 				comment.login = user
