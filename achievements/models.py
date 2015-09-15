@@ -52,3 +52,16 @@ class Rank(models.Model):
 
 class RankAdmin(admin.ModelAdmin):
 	list_display = ('rank', 'start_points', 'end_points')
+
+class Notification(models.Model):
+	login = models.ForeignKey(User)
+	author = models.IntegerField('ID отправителя')
+	pub_date = models.DateTimeField('Дата отправления', auto_now = True)
+	title = models.CharField('Заголовок', max_length=64)
+	text = models.CharField('Содержимое уведомления', max_length = 140)
+	is_view = models.BooleanField('Просмотрено', default = False)
+	is_system = models.BooleanField('Системное уведомление', default = False)
+	is_anon = models.BooleanField('Анонимное уведомление', default = False)
+
+class NotificationAdmin(admin.ModelAdmin):
+	list_display = ('title', 'text', 'author', 'login', 'is_anon', 'is_system')

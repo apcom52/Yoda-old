@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth.forms import PasswordChangeForm
 from timetable.utils import avatar, pointsumm, getrank, handle_uploaded_file
-from achievements.models import Action, Achievement, AchUnlocked
+from achievements.models import Action, Achievement, AchUnlocked, Notification
 from timetable.utils import addAction, setAch, checkAchievements, isOnline, UpdateStatus
 from notes.models import Note
 from polls.models import Question
@@ -254,3 +254,37 @@ def change_password(request):
 			user.save()	
 			return redirect('/auth/in')			
 	redirect('/users/settings/?error_password=1')
+
+def addNotification(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
+	error = [False, '']
+	form = AddNotificationForm()	
+	if request.method == 'POST':
+		data = request.POST
+		form = AddNotificationForm(data)	
+		print(data)
+		if form.is_valid():
+			for notif in data['aims']:
+				print(notif)
+				user = User.objects.get(username = notif)				
+				notification = Notification()
+				notification.login = user
+				notification.author = user.username
+				notification.title = data['title']
+				notification.text = data['text']
+				notification.is_anon = data.get('is_anon', False)
+				notification.save()
+			return redirect('/')
+		else:
+			error_message = 'Произошла ошибка'
+			if (len(data['title']) < 2 or len(data['context']) < 2): error_message = 'Длина заголовка и текста уведомления должна быть более 2-х символов'	
+			if not data['aims']: error_message = 'Не выбран ни один пользователь'
+			error[0] = True
+			error[1] = error_message
+	context = {
+		'title': 'Выслать уведомление',
+		'form': form,
+		'error': error[0],
+		'error_message': error[1],
+	}
+	return render(request, 'send_notification.html', context)

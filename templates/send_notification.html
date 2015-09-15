@@ -1,0 +1,32 @@
+{% extends 'basic/base.html' %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="ten wide column">
+		{% if error %}
+			<div class="ui negative message">
+			  	<i class="close icon"></i>
+			  	<div class="header">
+			    	Выслать уведомление не удалось
+			  	</div>
+			  <p>{{ error_message }}
+			</p></div>
+		{% endif %}
+
+		<div class="ui form">
+			<form action='' method='post'>
+				<h1> Выслать уведомление </h1>
+				{% csrf_token %}				
+				{{form.as_p}}
+				<button class="ui labeled icon green button" type="submit"> <i class="checkmark icon"></i>Выслать</button>
+			</form>	
+		</div>
+	</div>
+	<div class="one wide column"></div>
+	<div class="four wide column">
+		
+	</div>
+</div>
+{% endblock %}

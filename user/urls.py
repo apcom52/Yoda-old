@@ -9,5 +9,6 @@ urlpatterns = [
 	url('^upload_photo/', views.upload_photo, name='upload_photo'),
 	url('^change_password/', views.change_password, name='change_password'),
 	url('^set_contacts/', views.set_contacts, name='set_contacts'),
+	url('^send_notification/', views.addNotification, name='addNotification'),
 	#url('^settings/' views.settings, name='settings'),
 ]

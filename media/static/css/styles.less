@@ -433,6 +433,41 @@ i {
 		overflow-y: auto;
 		height: ~'calc(100% - 125px)';
 		width: 100%;
+
+		.item {
+			width: 100%;
+			display: block;
+			margin: 3px 0px;
+			padding: 10px 0px;
+			color: white;
+			border-bottom: 1px solid rgba(255,255,255,.2);	
+			background-color: transparent;
+			.anim(0.3s);
+
+			&:hover {
+				background-color: rgba(81, 210, 183, .3);
+				.anim(0.3s);
+			}		
+
+			.title {
+				font-weight: bold;
+				font-size: 1.1em;
+				padding: 0px 8px;
+				box-sizing: border-box;
+			}
+			.text {
+				padding: 3px 16px;
+				box-sizing: border-box;		
+
+				.author {
+					font-size: 0.7em;
+
+					a {
+						color: white;
+					}
+				}		
+			}
+		}
 	}
 
 	.footer {

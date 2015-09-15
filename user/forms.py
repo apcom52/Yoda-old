@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 from django import forms
 from django.contrib.auth.models import User
+from achievements.models import Notification
 from .models import UserProfile
 
 class UploadAvatarForm(ModelForm):
@@ -18,3 +19,25 @@ class SetContactForm(forms.Form):
 	facebook = forms.CharField(label = 'Facebook')
 	twitter = forms.CharField(label = 'Twitter')
 	phone = forms.CharField(label = 'Номер телефона')
+
+class AddNotificationForm(forms.Form):
+	users = (
+		('apakin', 'Андрей Апакин'),
+		('burkov', 'Андрей Бурков'),
+		('zonov', 'Максим Зонов'),
+		('kalashnikov', 'Сергей Калашников'),
+		('kroshihina', 'Анастасия Крошихина'),
+		('leyshin', 'Влад Леушин'),
+		('apcom52', 'Александр Перевезенцев'),
+		('selivanov', 'Михаил Селиванов'),
+		('trofimenko', 'Влад Трофименко'),
+		('tsekanov', 'Алексей Цеканов'),
+		('sheromov', 'Константин Шеромов'),
+		('shyklin', 'Вячеслав Шуклин'),
+	)
+
+	title = forms.CharField(label = 'Заголовок', max_length = 64)
+	context = forms.CharField(label = 'Заголовок', max_length = 140)
+	aims = forms.MultipleChoiceField(choices=users, label="Пользователи, которые получат уведомление (удерживайте CTRL для выделения нескольких человек)") 
+	is_system = forms.BooleanField(label = 'Системное уведомление')
+	is_anon = forms.BooleanField(label = 'Анонимное уведомление')

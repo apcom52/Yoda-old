@@ -10,7 +10,7 @@ from .models import Lesson, Teacher, Timetable, Homework, Control, NewPlace, Tea
 from events.models import Event, UserVisitEvent
 from notes.models import Note
 from polls.models import Question
-from .utils import DTControl, avatar, addAction, checkAchievements, setAch, dateInfo, getTimetable, UpdateStatus
+from .utils import DTControl, avatar, addAction, checkAchievements, setAch, dateInfo, getTimetable, UpdateStatus, getNotifications
 from .forms import *
 import datetime
 
@@ -284,6 +284,7 @@ def index(request):
 		'new_achievements': new_achievements,
 		'events': events,
 		'today_events': today_events,
+		'notifications': getNotifications(request.user),
 		'pagination': {
 				'has_prev': current_page.has_previous(),
 				'has_next': current_page.has_next(),

@@ -441,6 +441,36 @@ i.ai.margin5 {
   height: calc(100% - 125px);
   width: 100%;
 }
+.notification-center .content .item {
+  width: 100%;
+  display: block;
+  margin: 3px 0px;
+  padding: 10px 0px;
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: transparent;
+  transition: all 0.3s linear;
+}
+.notification-center .content .item:hover {
+  background-color: rgba(81, 210, 183, 0.3);
+  transition: all 0.3s linear;
+}
+.notification-center .content .item .title {
+  font-weight: bold;
+  font-size: 1.1em;
+  padding: 0px 8px;
+  box-sizing: border-box;
+}
+.notification-center .content .item .text {
+  padding: 3px 16px;
+  box-sizing: border-box;
+}
+.notification-center .content .item .text .author {
+  font-size: 0.7em;
+}
+.notification-center .content .item .text .author a {
+  color: white;
+}
 .notification-center .footer {
   height: 100px;
   width: 100%;

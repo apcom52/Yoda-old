@@ -10,8 +10,11 @@
 		{% if request.user.is_authenticated %}		
 		<div class="ui middle aligned selection list">				
 			<div class="item user">
-				<span  class="altrone-popup" id="notification_center_opened" data-title="У вас 1 новое уведомление" data-content="Нажмите, чтобы просмотреть" style="float: left; margin-right: 1.5em;"><span class="ui red label"><i class="alarm icon"></i> 1</span></span>
-				<!--<span class="altrone-popup" id="notification_center_opened" data-content="Новых уведомлений нет" data-position="bottom left"  style="float: left; margin-right: 1.5em;"><span class="ui label" style="background-color: rgb(51, 51, 51) !important; color: white;"><i class="alarm outline icon"></i></span></span>-->
+				{% if notifications %}
+					<span  class="altrone-popup" id="notification_center_opened" data-title="У вас есть новые уведомления" data-content="Нажмите, чтобы просмотреть" style="float: left; margin-right: 1.5em;"><span class="ui red label"><i class="alarm icon"></i> {{notifications|length}}</span></span>
+				{% else %}
+					<span class="altrone-popup" id="notification_center_opened"	 data-content="Новых уведомлений нет" data-position="bottom left"  style="float: left; margin-right: 1.5em;"><span class="ui label" style="background-color: rgb(51, 51, 51) !important; color: white;"><i class="alarm outline icon"></i></span></span>
+				{% endif %}
 			    <img class="ui avatar image" src="{{request.user.userprofile.avatar.url|default:'/media/img/noavatar.jpg'}}">
 			    <span class="content"><a href="/users/{{request.user.id}}"><span class="header">{{request.user.first_name}} {{request.user.last_name}}</span></a></span>
 			</div>
@@ -52,6 +55,25 @@
 <div class="notification-center">
 	<h1>Центр уведомлений</h1>
 	<div class="content">
+		{% if not notifications %}
+			<center>Нет новых уведомлений</center>
+		{% else %}
+			{% for notification in notifications %}
+				<div class="item">
+					<div class="title">
+						{% if notification.is_system %}
+							<i class="settings icon altrone-popup" data-content="Системное уведомление"></i>
+						{%endif%}{{notification.title}}
+					</div>
+					<div class="text">
+						{{notification.text}}<br>
+						{% if not notification.is_anon %}
+							<div class="author"><a href="/users/{{notification.author}}">{{notification.author_username}}</a></div>
+						{% endif %}
+					</div>
+				</div>
+			{% endfor %}
+		{% endif %}
 	</div>
 	<div class="footer">
 		<button class="ui basic inverted button">Выслать уведомление</button>

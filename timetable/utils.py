@@ -1,9 +1,11 @@
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from achievements.models import Action, AchUnlocked, Rank, Achievement
+from achievements.models import Action, AchUnlocked, Rank, Achievement#, Notification
 from django.contrib.auth.models import User
 from django.utils import timezone
 from user.models import UserProfile
+from polls.models import QueAns
+from events.models import UserVisitEvent
 import datetime
 
 class DTControl:
@@ -90,6 +92,12 @@ def pointsumm(user):
 	except ObjectDoesNotExist:
 		pass
 	summ += actions_list.count()
+
+	#Прибавляем еще кол-во голосований и походов на мероприятия
+	my_votes = QueAns.objects.all().filter(login = user)
+	my_visits = UserVisitEvent.objects.all().filter(login = user)
+	summ += my_votes.count() + my_visits.count()
+
 	return summ
 
 def getrank(user):
@@ -356,3 +364,20 @@ def isOnline(_user):
 		return False
 	except AttributeError:
 		return False	
+
+'''def getNotifications(user):
+	notifications_list = Notification.objects.all().filter(login = user)
+	notifications = []
+	for notification in notifications_list:
+		user = None
+		if not notification.is_anon:
+			_user = User.objects.get(id = notification.author)
+		notifications.append({
+			'title': notification.title,
+			'text': notification.text,
+			'is_anon': notification.is_anon,
+			'is_system': notification.is_system,
+			'author': notification.author,
+			'author_username': _user.first_name + ' ' + _user.last_name
+		})
+	return notifications'''
