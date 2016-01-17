@@ -12,6 +12,12 @@
 	<div class="one wide column"></div>
 	<div class="ten wide column">
 		<h1> Последние заметки: </h1>
+		{% if bingo %}
+			{% include 'basic/bingo-bonus.html' %}
+		{% endif %}
+		{% if bonus.xp or bonus.is_item %}
+			{% include 'basic/everyday_bonus.html' %}
+		{% endif %}
 		<div class="ui relaxed divided list">
 		{% for note in notes %}
 		  	<div class="item">

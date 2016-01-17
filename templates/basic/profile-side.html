@@ -1,36 +1,64 @@
 {% load humanize %}
+{% if request.user == user %}
+<div class="ui special cards">
+	<div class="card">
+{% else %}
 <div class="ui card">
-  	<div class="image">
-    	<img src="{{avatar}}" class="visible content">		    
-  	</div>
-  	<div class="content">
-    	<div class="header">{{title}}
-    	{% if is_online %}
-    	<span style="float: right;" class="altrone-popup" data-content="Онлайн"><span class="ui olive empty circular label"></span></span>
-    	</div>
-    	{% elif last_visit %}
-    	</div>
-    	<div style="color: #666;">Был на сайте {{last_visit|naturaltime}}</div>
-    	{% else %}</div>{% endif %}
-    	<br>
-    	<div class="ui two statistics">
-		  	<div class="red statistic">
-		    	<div class="value">{{xp}}</div><div class="label">{{xp_morph}}</div>
-		  	</div>
-		  	<div class="olive statistic">
-		    	<div class="value">{{ach_counter}}</div><div class="label">{{ach_counter_morph}}</div>
-		  	</div>
-		  	<div class="blue statistic">
-		    	<div class="value">{{actions|length}}</div><div class="label">{{actions_morph}}</div>
-		  	</div>
-		  	<div class="statistic">
-		    	<div class="text value" style="font-size:1.80rem; padding-top: 10px;">{{rank}}</div><div class="label" style="margin-top:0.3rem">звание</div>
-		  	</div>				  
-		</div>  
-		<br>
-		<a href='/notes/2'>Что это?</a>	
-  	</div>
-</div>
+{% endif %}
+		{% if request.user == user %}
+			<div class="blurring dimmable image">
+		      	<div class="ui dimmer">
+		        	<div class="content">
+		          		<div class="center">
+		            		<a href="/users/settings/"><div class="ui inverted button"><i class="photo icon"></i>Загрузить фотографию</div></a>
+		          		</div>
+		        	</div>
+		      	</div>
+		      	<img src="{{avatar}}">
+		    </div>
+		{% else %}
+		<div class="image">
+	    	<img src="{{avatar}}" class="visible content">		    
+	  	</div>
+	  	{% endif %}
+	  	<div class="content">
+	    	<div class="header">{{title}}
+	    	{% if is_online %}
+	    	<span style="float: right;" class="altrone-popup" data-content="Онлайн"><span class="ui olive empty circular label"></span></span>
+	    	</div>
+	    	{% elif last_visit %}
+	    	</div>
+	    	<div style="color: #666;">Был на сайте {{last_visit|naturaltime}}</div>
+	    	{% else %}</div>{% endif %}
+	    	<br>
+	    	<div class="ui two statistics">
+			  	<div class="red statistic">
+			    	<div class="value" id="xpCounter">{{xp}}</div><div class="label">{{xp_morph}}</div>
+			  	</div>
+			  	<div class="yellow statistic">
+			    	<div class="value">{{ach_counter}}</div><div class="label">{{ach_counter_morph}}</div>
+			  	</div>
+			  	<div class="blue statistic">
+			    	<div class="value" id="actionsCounter">{{actions|length}}</div><div class="label">{{actions_morph}}</div>
+			  	</div>
+			  	<div class="green statistic">
+			    	<div class="text value" style="font-size:1.80rem; padding-top: 10px;">{{rank}}</div><div class="label" style="margin-top:0.3rem">{{level}} уровень</div>
+			  	</div>		
+			  	<div class="purple statistic">
+			    	<div class="value" style="font-size:3.6rem;">{{attendance_percent}}%</div><div class="label">Посещаемость</div>
+			  	</div>		
+			  	<div class="orange statistic">
+			    	<div class="value" style="font-size:3.6rem;">{{duties_percent}}%</div><div class="label">Долгов</div>
+			  	</div>	  
+			</div>  
+			<br>
+			<a href='/notes/2'>Что это?</a>			
+	  	</div>
+	  	<div class="ui red bottom attached progress" data-percent="{{percent}}">
+			<div class="bar" style="transition-duration: 300ms; width: {{percent}}%; min-width: 0%;"></div>
+		</div>
+	</div>
+{% if request.user == user %}</div>{% endif %}
 {% if request.user == user %}
 <div class="ui card">
 	<div class="content">
@@ -80,6 +108,7 @@
 			    </div>
 		  	</div>	
 		  	{% endif %}	
+		  	{% if not user.userprofile.hide_email %}
 		  	<div class="item">
 		    	<i class="large mail outline middle aligned icon"></i>
 			    <div class="content">
@@ -87,8 +116,11 @@
 			      	<div class="description">{{user.email}}</div>
 			    </div>
 		  	</div>	
+		  	{% else %}
+				<center>{{title}} скрыл свой адрес электронной почты</center>
+		  	{% endif %}
 		  	<br>
-		  	<p><a href="/users/settings/">Добавить контакты</a></p>
+		  	{% if request.user == user %}<p><a href="/users/settings/">Добавить контакты</a></p>{% endif %}
 		</div>		  
 	</div>
 </div>

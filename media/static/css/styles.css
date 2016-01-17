@@ -2,7 +2,8 @@
   border-radius: 0px;
 }
 .profile-page {
-  background-image: url(/media/img/geometry.png);
+  background-image: url(/media/img/christmas_pattern.png);
+  /* background-image: url(/media/img/geometry.png);*/
 }
 .ui .event .label img {
   width: 32px !important;
@@ -29,8 +30,31 @@
   width: 32px !important;
   height: 32px !important;
 }
+.altrone-grid {
+  border: 1px solid #f5f5f5;
+  text-align: center;
+  box-sizing: border-box;
+  font-size: 0.8em;
+}
+.altrone-small-value {
+  font-size: 0.8em;
+}
+.altrone-do-it {
+  background-color: #DEFFB3;
+}
+.altrone-no-do {
+  background-color: #FFB3B6;
+}
 .shadows {
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+.lights {
+  position: absolute;
+  top: 48px;
+  width: 100%;
+  background-image: url('/media/img/ny/lights.gif');
+  height: 25px;
+  z-index: 4;
 }
 .taskbar {
   width: 100%;
@@ -50,19 +74,21 @@
   padding: 12px 0px;
   box-sizing: border-box;
   cursor: pointer;
-  transition: all 0.3s linear;
-}
-.taskbar .menu-icon i {
-  width: 24px;
-  height: 24px;
-  display: block;
-  margin: auto;
-  background-image: url(/media/img/icons/list-white.png);
-  background-size: cover;
-}
-.taskbar .menu-icon:hover {
-  background-color: #51d2b7;
-  transition: all 0.3s linear;
+  /*.anim(0.3s);*/
+  /*i {			
+			width:24px;
+			height:24px;
+			display: block;
+			margin: auto;
+			//background-image:url(/media/img/icons/list-white.png);
+			background-image:url(/media/img/icons/ghost.png);
+			background-size: cover;
+		}
+
+		&:hover {
+			background-color: @orange;
+			.anim(0.3s);
+		}*/
 }
 .taskbar .actions {
   float: left;
@@ -170,7 +196,7 @@
   display: block;
   position: fixed;
   background-color: white;
-  width: 20%;
+  width: 300px;
   left: -45%;
   top: 0px;
   box-shadow: 3px 0px 17px 0px rgba(50, 50, 50, 0.5);
@@ -181,15 +207,15 @@
 .sidebar .cover {
   width: 100%;
   height: 200px;
-  background-size: auto 100%;
+  background-size: 100% auto;
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url(/media/img/covers/default.jpg);
+  background-image: url(/media/img/covers/christmas.gif);
   text-align: center;
   padding-top: 48px;
   box-sizing: border-box;
   color: white;
-  text-shadow: 1px 1px 2px rgba(220, 204, 204, 0.75);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.75);
 }
 .sidebar .cover img {
   background-color: white;
@@ -396,6 +422,9 @@ i.ai.polls {
 i.ai.list-white {
   background-image: url(/media/img/icons/list-white.png);
 }
+i.ai.ghost {
+  background-image: url(/media/img/icons/list-white.png);
+}
 i.ai.size16 {
   width: 16px;
   height: 16px;
@@ -475,4 +504,172 @@ i.ai.margin5 {
   height: 100px;
   width: 100%;
   margin: 0 1em;
+}
+.altrone-smile {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.altrone-smile:hover {
+  background-color: #f5f5f5;
+}
+.altrone-inventory {
+  border: 3px solid #7b7b7b;
+  text-align: center;
+  box-sizing: border-box;
+  font-size: 0.8em;
+}
+.altrone-inventory img {
+  width: 80%;
+  height: auto;
+  background-color: white;
+  border-radius: 3px;
+  margin: 5px 10%;
+}
+.altrone-inventory .quality {
+  color: #333333;
+}
+.altrone-inventory.high {
+  border-color: #d9534f;
+}
+.altrone-inventory.high .quality {
+  color: #d9534f;
+}
+.altrone-inventory.exclusive {
+  border-color: #b33dac;
+}
+.altrone-inventory.exclusive .quality {
+  color: #b33dac;
+}
+.rulette,
+.bingo-rulette,
+.lottery-items {
+  width: 100%;
+  margin: 0px auto;
+  overflow: hidden;
+}
+.rulette .row,
+.bingo-rulette .row,
+.lottery-items .row {
+  width: 60%;
+}
+.rulette .row .item,
+.bingo-rulette .row .item,
+.lottery-items .row .item {
+  background-color: #dfdedd;
+  padding: 1em;
+  box-sizing: border-box;
+  color: #333333;
+  font-size: 2em;
+  width: calc(25% - 10px);
+  margin: 0px 0px;
+  height: 75px;
+  text-align: center;
+  display: inline-block;
+  float: left;
+  margin: 3px;
+  overflow: hidden;
+  transition: all 0.1s linear;
+}
+.rulette .row .item.blink,
+.bingo-rulette .row .item.blink,
+.lottery-items .row .item.blink {
+  background-color: #51adf6;
+  color: white;
+  transition: all 0.1s linear;
+}
+.rulette .row .item.selected,
+.bingo-rulette .row .item.selected,
+.lottery-items .row .item.selected {
+  background-color: #00ff00;
+  color: white;
+  transition: all 0.3s linear;
+}
+.rulette .row .item.item-quality-0,
+.bingo-rulette .row .item.item-quality-0,
+.lottery-items .row .item.item-quality-0 {
+  border: 5px solid #7b7b7b;
+  padding: 0em;
+}
+.rulette .row .item.item-quality-0 img,
+.bingo-rulette .row .item.item-quality-0 img,
+.lottery-items .row .item.item-quality-0 img {
+  width: 2em;
+  height: 2em;
+  margin-top: 4px;
+}
+.rulette .row .item.item-quality-1,
+.bingo-rulette .row .item.item-quality-1,
+.lottery-items .row .item.item-quality-1 {
+  border: 5px solid #d9534f;
+  padding: 0em;
+}
+.rulette .row .item.item-quality-1 img,
+.bingo-rulette .row .item.item-quality-1 img,
+.lottery-items .row .item.item-quality-1 img {
+  width: 2em;
+  height: 2em;
+  margin-top: 4px;
+}
+.rulette .row .item.item-quality-2,
+.bingo-rulette .row .item.item-quality-2,
+.lottery-items .row .item.item-quality-2 {
+  border: 5px solid #b33dac;
+  padding: 0em;
+}
+.rulette .row .item.item-quality-2 img,
+.bingo-rulette .row .item.item-quality-2 img,
+.lottery-items .row .item.item-quality-2 img {
+  width: 2em;
+  height: 2em;
+  margin-top: 4px;
+}
+.rulette-message-img {
+  width: 100px;
+  height: auto;
+}
+.quality-1 {
+  color: #333333;
+  font-weight: 700;
+}
+.quality-2 {
+  color: #d9534f;
+  font-weight: 700;
+}
+.quality-3 {
+  color: #b33dac;
+  font-weight: 700;
+}
+.lightsaber {
+  background-image: url(/media/img/icons/lightsaber.png);
+  /*background-repeat: 	no-repeat;*/
+  background-size: 100% auto;
+  min-width: 64px !important;
+}
+.lightsaber-0 {
+  background-position: 10px -20px;
+}
+.lightsaber-1 {
+  background-position: 10px -95px;
+}
+.lightsaber-2 {
+  background-position: 10px -170px;
+}
+.profile-tabs-fix {
+  margin: 0rem !important;
+  border-radius: 5px 5px 0px 0px !important;
+}
+.profile-tabs-fix item {
+  border-radius: 0px !important;
+}
+.settings-button:hover {
+  -webkit-animation: 'rotating' 2s infinite;
+  -webkit-animation-timing-function: linear;
+}
+@-webkit-keyframes 'rotating' {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

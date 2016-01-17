@@ -1,0 +1,64 @@
+{% extends 'basic/beta_base.html' %}
+{% load humanize %}
+{% block title %}{{title}}{%endblock%}
+
+{% block content %}
+<div class="container group">
+	<div class="col col-8 col-t-4 col-m-4">
+		<div class="card">			
+			<div class="header"><h1>{{title}}</h1></div>
+			<div class="content note-text"><p>{{content|safe}}</p></div>
+		</div>
+		<div class="card">
+			<div class="header"><h1>Комментарии</h1></div>
+			<div class="content feed">
+				{% if request.user.is_authenticated %}
+					<form class="fit form" method="POST" action="{{comment_url}}">
+						{% csrf_token %}
+						<textarea name="comment" rows="3" placeholder="Напишите комментарий..." required="true"></textarea>
+						<input type="hidden" name="item_id" value="{{comment_item_id}}">
+						<button class="green" type="submit">Отправить</button>
+					</form>
+				{%endif%}
+
+				{% if comments %}
+					{% for comment in comments %}
+						<div class="item">
+							<img src="{{achievement.icon}}" class="photo">
+							<div class="content">
+								<a class="author" href="/users/{{comment.user_id}}"><div class="author">{{comment.username}}</div></a>
+								<div class="time">{{comment.date|naturaltime}}</div>
+								<div class="text">{{comment.text}}</div>
+							</div>
+						</div>
+					{% endfor %}
+				{% else %}
+					<p>Комментариев еще нет. Вы можете стать первым</p>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	<div class="col col-4 col-t-2 col-m-4">
+		<div class="card">			
+			<div class="header"><h1>Сведения о заметке</h1></div>
+			<div class="content note-text">
+				<b>Автор заметки:</b><br>
+				<a href="/users/{{user.id}}/">{{username}}</a><br><br>
+				<b>Дата публикации</b><br>
+				{{pub_date}}</a><br><br>
+				<b>Просмотры:</b> {{views}}<br>
+			</div>
+		</div>
+		
+		{% if user_is_author %}
+		<div class="card">			
+			<div class="header"><h1>Управление заметкой</h1></div>
+			<ul class="list list-nav">
+				<a href="/notes/edit/{{id}}/"><li>Редактировать</li></a>
+				<a href="/notes/delete/{{id}}/"><li>Удалить</li></a>
+			</ul>
+		</div>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

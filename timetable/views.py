@@ -10,17 +10,25 @@ from .models import Lesson, Teacher, Timetable, Homework, Control, NewPlace, Tea
 from events.models import Event, UserVisitEvent
 from notes.models import Note
 from polls.models import Question
-from .utils import DTControl, avatar, addAction, checkAchievements, setAch, dateInfo, getTimetable, UpdateStatus, getNotifications
+from inventory.models import UserInventoryItem, Item, Catapult
+from .utils import DTControl, avatar, addAction, checkAchievements, setAch, dateInfo, getTimetable, UpdateStatus, setBonusPoints, bingo#, getNotifications
 from .forms import *
 import datetime
 
 
 # Create your views here.
 def index(request):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
 	page = request.GET.get('page', 1)
+	important = request.GET.get('filter', False)
 	new_achievements = []
 	if request.user.is_authenticated():
-	#Получение списка новых достижений		
+	#Получение списка новых достижений	
+
+		#Бонусные очки
+		bonus = setBonusPoints(request.user)	
+		_bingo = bingo(request.user)
+
 		UpdateStatus(request.user)
 		checkAchievements(request.user)			
 		try:
@@ -31,15 +39,36 @@ def index(request):
 				new_achievements.append({
 					'title': ach.ach_id.title,
 					'icon': ach.ach_id.icon,
+					'points': ach.ach_id.xp,
 					'description': ach.ach_id.description,
 				})
 		except ObjectDoesNotExist:
 			new_achievements = []
 
+	#Получение новых предметов из катапульты
+	catapult = []
+	try:
+		myPresents = Catapult.objects.all().filter(to_user = request.user).filter(view = False)
+		for present in myPresents:
+			item = Item.objects.get(pk = present.item.item_id)
+			present.view = True
+			present.save()
+			catapult.append({
+				'title': item.title,
+				'icon': item.icon.url,
+				'quality': present.item.quality,	
+				'from': present.from_user.get_full_name(),			
+			})
+	except ObjectDoesNotExist:
+		pass
 
-	#Получение списка активностей	
-	act_list = Action.objects.order_by('-pub_date').all()
-	p = Paginator(act_list, 25)
+
+	#Получение списка активностей
+	if important:
+		act_list = Action.objects.order_by('-pub_date').all().filter(important = True)
+	else:
+		act_list = Action.objects.order_by('-pub_date').all()
+	p = Paginator(act_list, 100)
 	if int(page) < 1: page = 1
 	elif int(page) > p.num_pages: page = p.num_pages
 	current_page = p.page(page)
@@ -143,7 +172,7 @@ def index(request):
 			'homework': homework,
 			'changePlace': changePlace,		
 			'is_transfered': is_transfered,
-			'is_canceled': False,
+			'is_canceled': False,			
 		}
 
 		timetable.append(cur_lesson)
@@ -222,7 +251,6 @@ def index(request):
 				timetable[i] = tt
 				break
 
-	print('!!!!! %s' % (len(canceled_lessons),))
 	for tt in canceled_lessons:		
 		for t in timetable:
 			if t['num'] == tt['num']:
@@ -276,6 +304,41 @@ def index(request):
 				'answer': opinion,
 			})
 
+	#Получение последних заметок
+	last_week = datetime.datetime.today() - datetime.timedelta(days=7)
+	lates_notes = Note.objects.all().filter(pub_date__gte = last_week).order_by('-pub_date')
+	notes = []
+	for note in lates_notes:
+		notes.append({
+			'id': note.id,
+			'title': note.title,
+		})
+	#Получение последних опросов
+	lates_polls = Question.objects.all().filter(pub_date__gte = last_week).order_by('-pub_date')
+	polls = []
+	for poll in lates_polls:
+		polls.append({
+			'id': poll.id,
+			'title': poll.title,
+		})
+
+	#Проверяем, закончился ли учебный день
+	day_end = False
+	now_time = today.hour * 60 + today.minute
+	last_time = 0
+	#print(tm_list)
+	try:
+		last_lesson = Timetable.objects.all().filter(semester = settings.SEMESTER, week = today.week, day = today.weekday).latest('time')
+		last_time = last_lesson.time
+		if (last_lesson.double): last_time += 1
+		last_time = today.gettimesummend(last_time)
+		if (now_time > last_time): day_end = True
+	except ObjectDoesNotExist:
+		pass
+
+
+	
+
 	context = {
 		'title': 'Главная',
 		'actions_list': actions_list,
@@ -284,15 +347,23 @@ def index(request):
 		'new_achievements': new_achievements,
 		'events': events,
 		'today_events': today_events,
-		'notifications': getNotifications(request.user),
+		#'notifications': getNotifications(request.user),
+		'day_end': day_end,
+		'notes': notes,
+		'polls': polls,
+		'bonus': bonus,
+		'bingo': _bingo,
+		'catapult': catapult,
 		'pagination': {
-				'has_prev': current_page.has_previous(),
-				'has_next': current_page.has_next(),
-				'current': current_page.number,
-				'prev': current_page.number - 1,
-				'next': current_page.number + 1,
-			}
+			'has_prev': current_page.has_previous(),
+			'has_next': current_page.has_next(),
+			'current': current_page.number,
+			'prev': current_page.number - 1,
+			'next': current_page.number + 1,
+		}
 	}
+	#if request.user.userprofile.beta:	return render(request, 'beta/index.html', context)
+	#else:	
 	return render(request, 'index.html', context)
 
 

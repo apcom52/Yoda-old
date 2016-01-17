@@ -4,6 +4,21 @@ from django.contrib.auth.models import User
 from .utils import DTControl
 
 # Create your models here.
+class Lesson_Item(models.Model):
+	semesters = ((1, 'Первый семестр'), (2, 'Второй семестр'),
+		(3, 'Третий семестр'), (4, 'Четвертый семестр'),
+		(5, 'Пятый семестр'), (6, 'Шестой семестр'),
+		(7, 'Седьмой семестр'), (8, 'Восьмой семестр')
+	)
+	title = models.CharField('Название предмета', max_length = 64, unique = False)
+	semester = models.IntegerField('Семестр', choices = semesters, default = 1)
+
+	def __str__(self):
+		return '%s (%s)' % (self.title, self.semester)
+
+class Lesson_ItemAdmin(admin.ModelAdmin):
+	list_display = ('title', 'semester')
+
 class Lesson(models.Model):
 	semesters = ((1, 'Первый семестр'), (2, 'Второй семестр'),
 		(3, 'Третий семестр'), (4, 'Четвертый семестр'),
@@ -79,7 +94,7 @@ class Homework(models.Model):
 	)
 	today = DTControl()
 
-	user = models.OneToOneField(User)
+	user = models.ForeignKey(User)
 	date = models.DateField('Дата (YYYY-MM-DD)')
 	time = models.IntegerField('Номер пары', choices = lesson_nums, default = 1)
 	homework = models.CharField('Домашнее задание', max_length = 1024)
@@ -97,7 +112,7 @@ class Control(models.Model):
 		(4, '4 пара'), (5, '5 пара'), (6, '6 пара'), 
 		(7, '7 пара'), 
 	)
-	user = models.OneToOneField(User)
+	user = models.ForeignKey(User)
 	date = models.DateField('Дата (YYYY-MM-DD)')
 	time = models.IntegerField('Номер пары', choices = lesson_nums, default = 1)
 	info = models.CharField('Подробности', max_length = 1024)

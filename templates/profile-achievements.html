@@ -12,6 +12,9 @@
 	<div class="ten wide column">
 		{% include 'basic/profile-nav.html' %}
 		<div class="ui bottom attached padded active segment">
+			{% if bingo %}
+				{% include 'basic/bingo-bonus.html' %}
+			{% endif %}
 			<h2>Достижения</h2>		
 			{% if my_ach %}
 			<h3>Полученные достижения</h3>

@@ -1,0 +1,15 @@
+<div class="y-sidebar">
+	<div class="user">
+		<img src="{{request.user.userprofile.avatar.url|default:''}}">
+		<div class="name">{{request.user.firstname}} {{request.user.lastname}}</div>
+	</div>
+	<ul class="menu">
+		<li>Главная</li>
+		<li>Расписание</li>
+		<li>Заметки</li>
+		<li>Опросы</li>
+		<li>Мероприятия</li>
+		<li>Настройки</li>
+		<li>Выйти</li>
+	</ul>
+</div>

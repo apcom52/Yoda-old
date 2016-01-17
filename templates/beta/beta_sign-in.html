@@ -1,0 +1,46 @@
+{% extends 'basic/beta_base.html' %}
+{% load humanize %}
+{% block title %}Вход в аккаунт{% endblock %}
+
+{% block more_head %}
+<link href="/media/static/css/more_css/auth-mobile.css" rel="stylesheet" media="screen, handheld"/>
+<link href="/media/static/css/more_css/auth.css" rel="stylesheet" media="screen and (min-width: 40.5em)"/>
+<script src="/media/static/js/more_js/auth.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="grid">
+	<div class="users-list card_shadow">
+	{% for user in users %}
+		<div class="users-list__item {% if user.username == olduser.username %}users-list__item--active{%endif%}">
+			<img src="{{user.avatar}}" class="img--circle card_shadow img--border"><br>
+			<span data-username="{{user.username}}">{{user.first_name}}</span>
+		</div>
+	{% endfor %}
+	<div class="align-center" style="clear: both;"><button class="button--color-blue" id="closeUsersList">Закрыть</button></div>
+	</div>
+	<div class="col-4 col-t-2">.</div>
+	<div class="col-4 col-t-4 col-m-4 white-fg align-center padding-top-5">
+		<div id="currentUser">
+			<img src="{{olduser.avatar}}" class="card_shadow" style="width: 80px; height: 80px; border-radius: 50%; border: 0.25em solid white;" id="userProfilePhoto">
+			<br><br>
+			<b id="currentUserName">{{olduser.first_name}}</b>		
+		</div>
+		{% if error %}
+		<div class="alert alert--red-bg margin-top-1">
+			<div class="alert__content">Возникла ошибка при входе. {{error_text}}</div>
+		</div>
+		{% endif %}
+		<form class="form form--transparent form--rounded margin-top-1 form--center" method="post" action="" id="signInForm">
+			{% csrf_token %}
+			<input type="password" name="password" id="userPassword" placeholder="Ваш пароль">
+			<input type="hidden" name="username" id="userName" value="{{olduser.username}}">
+		</form>
+		<button class="button--only-borders" id="signInBtn">ВОЙТИ</button><br>
+		<a href="/auth/up"><button class="button--transparent-full button--size-small">Создать аккаунт</button></a>
+	</div>
+	<div class="col-4 col-t-2">.</div>
+</div>
+
+{% endblock %}

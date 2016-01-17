@@ -3,19 +3,27 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="HandheldFriendly" content="true">
 
     <title>{% block title %}{%endblock%}</title>
-    <link href="/media/static/css/altrone.css" rel="stylesheet">
-    <link href="/media/static/css/beta.css" rel="stylesheet">
+    <link href="/media/static/css/altrone.css" rel="stylesheet">    
+    <!--<link href="/media/static/css/beta.css" rel="stylesheet">-->
+    <link href="/media/static/css/font-awesome.css" rel="stylesheet">
+    <link href="/media/static/css/fonts/flaticon.css" rel="stylesheet">
+    <script src="/media/static/js/modernizr.js"></script>
     <script src="/media/static/js/jquery-2.1.4.min.js"></script>
+    <script src="/media/static/js/blurBg.js"></script>
     <script src="/media/static/js/altrone.js"></script>
-    {% block more_head %}
-    {%endblock%}
+    <script src="/media/static/js/walrus.js"></script>
+    <script src="/media/static/js/actions-beta.js"></script>
+    <script src="/media/static/js/jquery.touchSwipe.min.js"></script>
+    <!--<script src="/media/static/js/beta.js"></script>-->
+    <script src="/media/static/js/jquery.form.min.js"></script>
+    {% block more_head %}{% endblock %}
 </head>
 <body class="{% block bodyclass %}{%endblock%}">
-	{% block content %}{% endblock %}
+{% block content %}{% endblock %}
 </body>
 </html>

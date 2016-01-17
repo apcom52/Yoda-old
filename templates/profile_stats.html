@@ -1,0 +1,84 @@
+{% extends 'basic/base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block bodyclass %}{{bodyclass}}{% endblock %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+{% load humanize %}
+{% block morehead %}
+<style>
+	.statistic {
+		width: 40% !important;
+	}
+</style>
+{% endblock %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="four wide column">
+		{% include 'basic/profile-side.html' %}
+	</div>
+	<div class="ten wide column">
+		{% include 'basic/profile-nav.html' %}
+		<div class="ui bottom attached padded active segment">	
+			{% if bingo %}
+				{% include 'basic/bingo-bonus.html' %}
+			{% endif %}		
+			<h2>Статистика</h2>
+			<div class="ui statistics">
+			  	<div class="red statistic">
+			    	<div class="value">{{general_stats.items_count|intcomma}}</div>
+			    	<div class="label">Всего было предметов</div>
+			  	</div>
+			  	<div class="orange statistic">
+			    	<div class="value">{{general_stats.items_price.price__sum|intcomma}}</div>
+			    	<div class="label">На общую сумму</div>
+			    </div>
+			</div>
+			<div class="ui statistics">
+			  	<div class="purple statistic">
+			    	<div class="value">{{general_stats.items_exclusives|intcomma}}</div>
+			    	<div class="label">Из них эксклюзивных</div>
+			    </div>
+			  	<div class="green statistic">
+				    <div class="value">{{general_stats.catapult_count|intcomma}}</div>
+				    <div class="label">Запусков подаркопульты</div>
+				</div>			  
+			</div>
+
+			<h3>Статистика по предметам</h3>
+			<table class="ui very basic collapsing celled table">
+			  	<thead>
+			    	<tr>
+			    		<th>Предмет</th>
+			    		<th>Кол-во</th>
+			    		<th>Цена</th>
+			    		<th>Брошено катапультой</th>
+			    		<th>Низкое</th>
+			    		<th>Высокое</th>
+			    		<th>Эксклюзив</th>
+			 		</tr>
+			 	</thead>
+			  	<tbody>
+			  	{% for item in items_stats %}
+			    <tr>
+			      	<td>
+				        <h4 class="ui image header">
+				          <img src="{{item.icon}}" class="ui mini rounded image">
+				          <div class="content">{{item.title}}</div>
+				      	</h4>
+			      	</td>
+			      	<td>{{item.count}}</td>
+			      	<td>{{item.price}}</td>
+			      	<td>{{item.catapults}}</td>
+			      	<td>{{item.low}}</td>
+			      	<td>{{item.high}}</td>
+			      	<td>{{item.exclusive}}</td>
+			    </tr>
+			    {% endfor %}
+			  </tbody>
+			</table>
+					</div>
+				</div>
+				<div class="one wide column"></div>
+			</div>
+{% endblock %}

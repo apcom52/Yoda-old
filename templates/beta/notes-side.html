@@ -1,0 +1,17 @@
+{% load humanize %}
+<br>
+<form class="form fit {% if not white %}invert{% endif %}" id="searchForm" action="#">
+	<input type="text" class="round" placeholder="Поиск..." id="searchField" autocomplete="off">
+</form>
+<div class="listview olive {% if not white %}invert{% endif %}" style="max-height: 500; overflow-y: auto;">
+{% for note in notes %}
+	<a href="/notes/{{note.id}}"><div class="item {% if note.id == id %}active{%endif%}" {% if note.login == request.user %}data-my-note="true"{% endif %}>
+		<i class="icon ion-document"></i>
+		<div class="item-content">
+			<div class="title">{{note.title}}</div>
+			<div class="text">{{note.pub_date|naturaltime}}</div>
+		</div>
+		<i class="arrow ion-ios-arrow-right"></i>
+	</div></a>
+{% endfor %}									
+</div>

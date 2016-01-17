@@ -13,6 +13,12 @@
 		  	<div class="active section">{{event.title}}</div>
 		</div>
 		<div class="ui segment">
+			{% if bingo %}
+			<div class="ui olive inverted segment">
+				<h1>Случайный бонус!</h1>
+				<p>Вам очень повезло. Вы получили случайный бонус в размере {{bingo}} очков! <a href="/notes/2/">Подробнее о случайном бонусе</a></p>
+			</div>
+			{% endif %}
 			<h1 class="ui header">{{event.title}}</h1>
 			<p><b>Дата мероприятия:</b> <span class="ui red horizontal label altrone-popup" data-content="{{event.date}}">{{event.date|naturaltime}}</span></p>
 			{% if event.description %}

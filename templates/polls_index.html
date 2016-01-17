@@ -11,6 +11,12 @@
 <div class="ui grid">
 	<div class="one wide column"></div>
 	<div class="ten wide column">
+		{% if bingo %}
+		<div class="ui olive inverted segment">
+			<h1>Случайный бонус!</h1>
+			<p>Вам очень повезло. Вы получили случайный бонус в размере {{bingo}} очков! <a href="/notes/2/">Подробнее о случайном бонусе</a></p>
+		</div>
+		{% endif %}
 		<h1> Последние опросы: </h1>
 		<div class="ui relaxed divided list">
 		{% for poll in polls %}

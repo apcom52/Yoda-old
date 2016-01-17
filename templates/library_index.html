@@ -1,0 +1,60 @@
+{% extends 'basic/beta_base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block bodyclass %}library_bg{%endblock%}
+{% block content %}
+{% load humanize %}
+
+<div class="grid">
+	<div class="col col-4 col-t-2 d-gray-bg left-col">
+		<i class="fa fa-file-code-o"></i>
+		<br>
+		<div id="popular_tags"></div>
+		Мои файлы<br>
+		Настройки<br>
+		<div class="card card--colored card--color-violet">
+			<div class="card__header">
+				<div class="card__header__title">Загрузка файлов</div>
+			</div>
+			<div class="card__content">
+				<b>Примечания по загрузке файлов:</b><br>
+				<ul>
+					<li>Файл не должен превышать по размеру не более 100 Мб</li>
+					<li>Заполните правильно заголовок и описание файла</li>
+					<li>Укажите теги, которые подходят к этому файлу</li>
+				</ul>
+			</div>
+			<div class="card__footer">
+				<button class="button--fit button--transparent button--color-violet white-fg"><b>ЗАГРУЗИТЬ ФАЙЛ</b></button>
+			</div>			
+		</div>
+	</div>
+
+	<div class="col col-8 col-t-4 col-m-4">
+		<div class="card">
+			<div class="card__header">
+				<div class="card__header__title library-card-header">Файлы</div>
+				<div class="card__header__icon library-search-block"><i class="fa fa-search"></i><input class="library-search" type="search" placeholder="Поиск по файлам..." style="width: calc(100% - 3em); display: none; margin-left: 1em;"></div>
+			</div>
+			<div class="card__content card__content--no-padding">
+				<h2>Загрузка файлов</h2>
+				{% csrf_token %} 
+				<form action="/api/library/file/" method="POST" id="uploadLibraryFile">
+					{% csrf_token %}
+					<input type="text" placeholder="Заголовок" id="fileLoadTitle" name="title">
+					<input type="text" placeholder="Описание" id="fileLoadDescription" name="description">
+					<input type="file" placeholder="Заголовок" id="fileLoadFile" name="file">
+					<input type="hidden" placeholder="Заголовок" id="fileLoadFile" name="tags" value=1>
+					<input type="hidden" placeholder="Заголовок" id="fileLoadFile" name="login" value=1>
+					<input type="submit">Загрузить</button>
+				</form>	
+				<h2>Последние загрузки</h2>
+				<div id="files-list">
+					<div class="loading"></div>
+				</div>
+				<br>
+				<div class="center"><button class="button--rounded">Загрузить еще...</button></div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

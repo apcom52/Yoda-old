@@ -1,0 +1,28 @@
+<h3>{{note.title}}</h3>
+<div class="meta">{{note.author.first_name}} {{note.author.last_name}} - {{note.views}} просмотров</div>
+<p>{{note.text}}</p>
+<div class="content feed">
+	{% if request.user.is_authenticated %}
+		<form class="fit form" method="POST" action="{{comment_url}}">
+			{% csrf_token %}
+			<textarea name="comment" rows="3" placeholder="Напишите комментарий..." required="true"></textarea>
+			<input type="hidden" name="item_id" value="{{comment_item_id}}">
+			<button class="green" type="submit">Отправить</button>
+		</form>
+	{%endif%}
+
+	{% if comments %}
+		{% for comment in comments %}
+			<div class="item">
+				<img src="{{achievement.icon}}" class="photo">
+				<div class="content">
+					<a class="author" href="/users/{{comment.user_id}}"><div class="author">{{comment.username}}</div></a>
+					<div class="time">{{comment.date|naturaltime}}</div>
+					<div class="text">{{comment.text}}</div>
+				</div>
+			</div>
+		{% endfor %}
+	{% else %}
+		<p>Комментариев еще нет. Вы можете стать первым</p>
+	{% endif %}
+</div>

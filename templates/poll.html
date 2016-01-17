@@ -6,12 +6,18 @@
 
 <div class="ui grid">
 	<div class="one wide column"></div>
-	<div class="nine wide column">
+	<div class="nine wide column">		
 		<div class="ui breadcrumb">
 		  	<a class="section" href='/polls/'>Опросы</a>
 		  	<span class="divider">/</span>
 		  	<div class="active section"> {{poll.title}} </div>
 		</div>
+		{% if bingo %}
+		<div class="ui olive inverted segment">
+			<h1>Случайный бонус!</h1>
+			<p>Вам очень повезло. Вы получили случайный бонус в размере {{bingo}} очков! <a href="/notes/2/">Подробнее о случайном бонусе</a></p>
+		</div>
+		{% endif %}
 		<h2>{{poll.title}}</h2>
 		{% if not you_voted and poll.is_closed == False %}
 		<form method="POST" action='' class="ui form" name="optionform">

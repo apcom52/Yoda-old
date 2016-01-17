@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
 class Action(models.Model):
@@ -12,6 +14,7 @@ class Action(models.Model):
 	login = models.ForeignKey(User)
 	text = models.CharField('Сопроводительный текст', max_length = 1024)
 	pub_date = models.DateTimeField('Дата', auto_now = True)
+	important = models.BooleanField('Важное сообщение', default = True)
 	
 	def __str__(self):
 		return self.login.username + ' ' + self.text
@@ -42,6 +45,13 @@ class AchUnlockedAdmin(admin.ModelAdmin):
 	fields = ('ach_id', 'login')
 	list_display = ('ach_id', 'login', 'pub_date')
 
+	def save_model(self, request, obj, form, change):
+		from timetable.utils import addAction
+		achievement = obj.ach_id
+		user = obj.login
+		addAction(user, 'получил достижение<div class="comments"><div class="comment"><span class="avatar"><img src="%s"></span><div class="content"><span class="author">%s</span><div class="text">%s</div></div></div></div>' % (achievement.icon, achievement.title, achievement.description))
+		obj.save()
+
 class Rank(models.Model):
 	start_points = models.IntegerField('Начальное значение')
 	end_points = models.IntegerField('Конечное значение')
@@ -65,3 +75,12 @@ class Notification(models.Model):
 
 class NotificationAdmin(admin.ModelAdmin):
 	list_display = ('title', 'text', 'author', 'login', 'is_anon', 'is_system')
+
+
+'''@receiver(post_save, sender= AchUnlocked)
+def save_achunlocked(sender, instance, **kwargs):
+	from timetable.utils import addAction
+	achievement = instance.ach_id
+	user = instance.login
+	addAction(user, 'получил достижение<div class="comments"><div class="comment"><span class="avatar"><img src="%s"></span><div class="content"><span class="author">%s</span><div class="text">%s</div></div></div></div>' % (achievement.icon, achievement.title, achievement.description))
+	'''

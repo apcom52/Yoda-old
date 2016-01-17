@@ -1,0 +1,38 @@
+{% extends 'basic/base.html' %}
+{% block title %}Лотерея{% endblock %}
+{% block bodyclass %}body-lottery{%endblock%}
+{% block more_head %}
+<style>
+	body {
+		background-image: url(/media/img/christmas_pattern.png);
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+{% load humanize %}
+<div class="ui grid">
+	<div class="three wide column"></div>
+	<div class="ten wide column">
+		<div class="ui segment">
+		  	<center><h1>Вы получили следующие предметы</h1></center><br><br>
+		  	<div class="ui grid complect-grid">	
+			{% for item in items %}								
+				<div class="five wide column altrone-grid altrone-inventory {{item.quality_class}}" style="float: left !important; display: none;" id="complectID{{item.id}}">
+					<img src="{{item.item.item.icon.url}}"><br>
+					<b>{{item.item.item.title}}</b><br>
+					<span class="quality">{{item.quality}}</span><br>
+					{{item.item.price}} <i class="trophy icon"></i>
+				</div>						
+			{% endfor %}
+		  	</div>
+		  	<br>
+		  	<br>
+		  	<center><a href="/users/inventory/{{request.user.id}}"><button class="ui green mini button">Вернуться в инвентарь</button></a></center>
+		</div>
+	</div>
+	<div class="three wide column"></div>	
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+@import "vars.less";
+.taskbar__item--logo {
+	display: none !important;
+}
+
+.taskbar {
+	z-index: 3;
+	position: fixed;
+	top: 0px;
+}
+
+body {
+	padding-top: 3em;
+}
+
+#leftCol {
+	position: absolute;
+	left: -600px;
+	width: 90%;
+}
+
+#rightCol {
+	display: flex;
+	width: 100%;
+}
+
+#contentCard {
+	margin: 0.5em 0.2em;
+}
+
+#noteOptions {
+	display: none;
+
+	button {
+		width: 90%;
+		text-align: left;
+	}
+}
+
+#noteStats {
+	display: none;
+}
+
+.list-navigation__right-icon {
+	display: none !important;
+}
+
+.loading {
+	width: 100%;
+	height: 5em;
+	background-image: url(/media/img/loading.gif);
+	background-repeat: no-repeat;
+	background-size: 2em 2em;
+	background-position: center;
+}
+
+.search_block {
+	display: none;
+	position: fixed;
+	overflow-y: auto;
+	max-height: 500px;
+	width: 100%;
+	background-color: rgba(33, 33, 33, .9);
+	padding: 1em;
+	box-sizing: border-box;
+	color: @u-gray;
+	.pt();
+	top: 44px;
+	left: 0em;
+	border-bottom: 1em solid @blue;
+	z-index: 2;
+}
+
+.overlay {
+	display: none;
+	background-color: rgba(33, 33, 33, .8);
+	width: 100%;
+	height: ~'calc(100% - 44px)';
+	position: fixed;
+	top: 44px;
+	left: 0px;
+	cursor: pointer;
+	z-index: 1;
+}
+
+#search_field_help {
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+.dropdown {
+	z-index: 3;
+}

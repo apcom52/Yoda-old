@@ -1,0 +1,113 @@
+{% extends 'basic/base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+{% load humanize %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="ten wide column">
+		<div class="ui breadcrumb">
+		  	<a class="section" href='/users/{{request.user.id}}'>{{request.user.first_name}} {{request.user.last_name}}</a>
+		  	<span class="divider">/</span>
+		  	<div class="active section">Настройки</div>
+		</div>
+		<h1> Настройки: </h1>
+		<h3>Загрузить аватар</h3>
+		<div class="ui two grid">
+			<div class="six wide column">
+				<h4>Ваш текущий аватар:</h4>
+				<img class="ui fluid rounded image" src="{{current_avatar}}">
+			</div>
+			<div class="one wide column"></div>
+			<div class="nine wide column">
+				<div class="ui form">
+					<form method="POST" action="/users/upload_photo/" enctype="multipart/form-data">
+						{% csrf_token %}
+						{{avatar_upload}}
+						<input type="submit" class="ui button" value="Загрузить">
+					</form>
+					<div class="ui message">
+					  	<div class="header">Рекомендации по выбору фотографии</div>
+					  	<ul class="list">
+					    	<li>Не загружайте фотографии более 2 Мб</li>
+					    	<li>Выбирайте фотографии с соотношением сторон 1:1 (квадратные)</li>
+					  	</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<h3>Добавление контактных данных</h3>
+		<div class="ui two grid">
+			<div class="six wide column">
+				<div class="ui form">
+					<form method="POST" action="/users/set_contacts/" enctype="multipart/form-data">
+						{% csrf_token %}
+						{{set_contacts.as_p}}
+						<input type="submit" class="ui green button" value="Сохранить">
+					</form>	
+				</div>			
+			</div>
+			<div class="one wide column"></div>
+			<div class="nine wide column">				
+				<div class="ui message">
+				  	<div class="header">Примечание</div>
+				  	<ul class="list">
+				    	<li>Номер телефона нужно заносить в формате 9XXXXXXXXX</li>
+				    	<li>В поле для ссылки на социальную сеть нужно написать свой аккаунт. Например id12345678 для VK, или yoda для Twitter</li>
+				  	</ul>
+				</div>
+			</div>
+		</div>
+
+		<h3>Смена пароля</h3>
+		<div class="ui two grid">
+			<div class="six wide column">
+				<div class="ui form">
+					{% if error_password %} <div class="ui red message">Изменить пароль не удалось</div> {% endif %}
+					<form method="POST" action="/users/change_password/" enctype="multipart/form-data">
+						{% csrf_token %}
+						{{change_password.as_p}}
+						<input type="submit" class="ui green button" value="Изменить пароль">
+						<input type="reset" class="ui button" value="Очистить">
+					</form>	
+				</div>			
+			</div>
+			<div class="one wide column"></div>
+			<div class="nine wide column">				
+				<div class="ui message">
+				  	<div class="header">Примечание</div>
+				  	<ul class="list">
+				    	<li>Пароль должен быть не менее 6-ти символов</li>
+				    	<li>После изменения пароля вам нужно будет заново войти в аккаунт</li>
+				  	</ul>
+				</div>
+			</div>
+		</div>
+
+		<h3>Дополнительные настройки</h3>
+		<div class="ui form">
+			<form method="GET" action="/users/save_additional/" enctype="multipart/form-data">
+				{% csrf_token %}
+				<div class="inline field">
+					<div class="ui checkbox">
+						<input type="checkbox" name="beta" id="beta_check" value="1" {% if request.user.userprofile.beta %}checked{%endif%}>
+						<label for="beta_check">Использовать новый интерфейс (Бета)</label>
+					</div>
+				</div>
+				<div class="inline field">
+					<div class="ui checkbox">
+						<input type="checkbox" name="hide_email" id="hide_email" value="1" {% if request.user.userprofile.hide_email %}checked{%endif%}>
+						<label for="hide_email">Скрывать адрес электронной почты</label>
+					</div>
+				</div>
+				<input type="submit" class="ui green button" value="Сохранить">
+			</form>	
+		</div>			
+			
+	</div>
+	<div class="five wide grid"></div>
+</div>
+
+{% endblock %}

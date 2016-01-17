@@ -1,0 +1,67 @@
+{% extends 'basic/base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="ten wide column">
+		<div class="ui breadcrumb">
+		  	<a class="section" href='/notes/'>Заметки</a>
+		  	<span class="divider">/</span>
+		  	<div class="active section"> {{title}} </div>
+		</div>
+		<div class="ui piled segment">
+			{% if bingo %}
+				{% include 'basic/bingo-bonus.html' %}
+			{% endif %}
+			{% if bonus.xp or bonus.is_item %}
+				{% include 'basic/everyday_bonus.html' %}
+			{% endif %}
+			<h1 class="ui header">{{title}}</h1>
+			<p>{{content|safe|linebreaks }}</p>
+			
+			{% include 'basic/comments.html' %}
+
+		</div>
+	</div>
+	<div class="one wide column"></div>
+	<div class="four wide column">
+		<h3>Сведения о заметке</h3>
+		<div class="ui list">
+		  	<div class="item">
+		    	<div class="header">Автор заметки</div>
+		    	<div class="ui middle aligned selection list">
+				  	<div class="item altrone-author-style">
+				    	<a href="/users/{{user.id}}/"><img class="ui avatar image" src="{{user.userprofile.avatar.url}}">
+				    	<span class="content">
+				      		<div class="header">{{username}}</div>
+				    	</span>
+				    	</a>
+				  	</div>
+				</div>
+		  	</div><br>
+		  	<div class="item">
+		    	<div class="header">Дата публикации</div>
+		    	{{pub_date}}
+		  	</div><br>
+		  	<div class="item">
+		    	<div class="header">Просмотры</div>
+		    	{{views}}
+		  	</div>
+		</div>
+		
+		{% if user_is_author %}
+			<h3> Управление заметкой </h3>
+			<div class="ui list">
+				<a href="/notes/edit/{{id}}/" class="item">Редактировать заметку</a>
+				<a href="/notes/delete/{{id}}/" class="item">Удалить заметку</a>
+			</div>
+		{% endif %}
+	</div>
+</div>
+<div class="ui form">
+	
+</div>
+{% endblock %}

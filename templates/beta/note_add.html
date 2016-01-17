@@ -1,0 +1,37 @@
+{% extends 'beta/new-beta-base.html' %}
+{% block title %}Добавление заметки{% endblock %}
+{% block bodyclass %}{% if not white %}m-gray-bg{% endif %}{% endblock %} 
+{% block content %}
+{% include "beta/taskbar_start.html" %}
+		<a href="/notes/" title="Вернуться назад"><li class="icon"><i class="ion-ios-undo-outline"></i></li></a>
+		<li class="icon" title="Полужирный шрифт" onclick="makeBold()"><i style="font-style:normal;"><b>B</b></i></li>
+		<li class="icon" title="Курсив" onclick="makeItalic()"><i>I</i></li>
+		<li class="icon" title="Подчеркивание" onclick="makeUnderline()"><i style="font-style:normal;"><u>U</u></i></li>
+		<li class="icon" title="Маркированный список" onclick="makeMarkerableList()"><i class="ion-ios-list-outline"></i></li>
+		<li class="icon" title="Нумерованный список" onclick="makeNumericList()"><i class="fa fa-list-ol" style="font-size:1.2em; margin-top: 5px;"></i></li>
+		<li class="icon" title="Цитата" onclick="makeQuote()"><i class="ion-quote"></i></li>
+		<li class="icon" title="Изображение" onclick="makePicture()"><i class="ion-ios-camera-outline"></i></li>
+		<li class="icon" title="Опубликовать заметку" onclick="publish()"><i class="ion-ios-cloud-upload olive-fg"></i></li>
+{% include "beta/taskbar_end.html" %}
+
+<div class="container group">
+	<div class="col col-12 col-t-6 col-m-4">
+		<div class="card">
+			<div class="text content">
+				<div class="alert">
+					<p>Вы можете оформлять текст с помощью инструментов, представленных на верхней панели или с помощью специальных тегов (<a href="#">Теги разметки</a>)</p>
+				</div>
+				<div class="fit form">
+					<form action="#">
+						<label for="title">Название заметки</label>
+						<input type="text" placeholder="Название заметки" id="title">
+						<label for="content">Содержимое</label>
+						<textarea placeholder="Введите текст заметки" rows="15"></textarea>
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

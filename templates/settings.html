@@ -1,92 +1,251 @@
-{% extends 'basic/base.html' %}
+{% extends 'basic/beta_base.html' %}
 {% block title %}{{title}}{% endblock %}
 {% block content %}
-{% include 'basic/taskbar.html' %}
-{% include 'basic/taskbar_end.html' %}
 {% load humanize %}
-<div class="ui grid">
-	<div class="one wide column"></div>
-	<div class="ten wide column">
-		<div class="ui breadcrumb">
-		  	<a class="section" href='/users/{{request.user.id}}'>{{request.user.first_name}} {{request.user.last_name}}</a>
-		  	<span class="divider">/</span>
-		  	<div class="active section">Настройки</div>
-		</div>
-		<h1> Настройки: </h1>
-		<h3>Загрузить аватар</h3>
-		<div class="ui two grid">
-			<div class="six wide column">
-				<h4>Ваш текущий аватар:</h4>
-				<img class="ui fluid rounded image" src="{{current_avatar}}">
-			</div>
-			<div class="one wide column"></div>
-			<div class="nine wide column">
-				<div class="ui form">
-					<form method="POST" action="/users/upload_photo/" enctype="multipart/form-data">
-						{% csrf_token %}
-						{{avatar_upload}}
-						<input type="submit" class="ui button" value="Загрузить">
-					</form>
-					<div class="ui message">
-					  	<div class="header">Рекомендации по выбору фотографии</div>
-					  	<ul class="list">
-					    	<li>Не загружайте фотографии более 2 Мб</li>
-					    	<li>Выбирайте фотографии с соотношением сторон 1:1 (квадратные)</li>
-					  	</ul>
+<div class="taskbar {% if request.user.userprofile.theme == 'dark' %}taskbar--invert{% endif %}">
+	<div class="taskbar__item taskbar__item--hover-color-{{request.user.userprofile.accent}}"><i class="flaticon-menu"></i></div>
+	<div class="taskbar__item taskbar__item--logo taskbar__item--no-select">{{title|upper}}</div>
+	<div class="taskbar__item taskbar__item--pin-right taskbar__item--image"><img src="{{request.user.userprofile.avatar.url}}" class="img--circle"></div>
+	<div class="taskbar__item taskbar__item--pin-right"><i class="flaticon-profiles"></i></div>
+	<div class="taskbar__item taskbar__item--pin-right"><i class="flaticon-alarm"></i></div>
+	<div class="taskbar__item taskbar__item--pin-right"><i class="flaticon-heart"></i></div>
+	<div class="taskbar__item taskbar__item--pin-right"><i class="flaticon-search"></i></div>
+</div>
+<div class="grid">
+	<div class="col-4 col-m-4 col-t-3">
+		<div class="card card--no-smooth" style="margin: 1em 0em;">
+			<div class="card__content card__content--no-padding card__content--list">
+				<div class="list list--invert list--image list--color-{{request.user.userprofile.accent}} list--animation-invert">
+					<div class="list__item list__item--active">
+						<img src="/media/img/icons/user.png">
+						<b>Профиль</b>
+					</div>
+					<div class="list__item">
+						<img src="/media/img/icons/change_theme.png">
+						<b>Персонализация</b>
+					</div>
+					<div class="list__item">
+						<img src="/media/img/icons/filter_content.png">
+						<b>Фильтрация контента</b>
+					</div>
+					<div class="list__item">
+						<img src="/media/img/icons/email.png">
+						<b>Контакты</b>
+					</div>
+					<div class="list__item">
+						<img src="/media/img/icons/settings.png">
+						<b>Расширенные настройки</b>
 					</div>
 				</div>
 			</div>
-		</div>
-		
-		<h3>Добавление контактных данных</h3>
-		<div class="ui two grid">
-			<div class="six wide column">
-				<div class="ui form">
-					<form method="POST" action="/users/set_contacts/" enctype="multipart/form-data">
-						{% csrf_token %}
-						{{set_contacts.as_p}}
-						<input type="submit" class="ui green button" value="Сохранить">
-					</form>	
-				</div>			
-			</div>
-			<div class="one wide column"></div>
-			<div class="nine wide column">				
-				<div class="ui message">
-				  	<div class="header">Примечание</div>
-				  	<ul class="list">
-				    	<li>Номер телефона нужно заносить в формате 9XXXXXXXXX</li>
-				    	<li>В поле для ссылки на социальную сеть нужно написать свой аккаунт. Например id12345678 для VK, или yoda для Twitter</li>
-				  	</ul>
-				</div>
-			</div>
-		</div>
+		</div>		
 
-		<h3>Смена пароля</h3>
-		<div class="ui two grid">
-			<div class="six wide column">
-				<div class="ui form">
-					{% if error_password %} <div class="ui red message">Изменить пароль не удалось</div> {% endif %}
-					<form method="POST" action="/users/change_password/" enctype="multipart/form-data">
-						{% csrf_token %}
-						{{change_password.as_p}}
-						<input type="submit" class="ui green button" value="Изменить пароль">
-						<input type="reset" class="ui button" value="Очистить">
-					</form>	
-				</div>			
-			</div>
-			<div class="one wide column"></div>
-			<div class="nine wide column">				
-				<div class="ui message">
-				  	<div class="header">Примечание</div>
-				  	<ul class="list">
-				    	<li>Пароль должен быть не менее 6-ти символов</li>
-				    	<li>После изменения пароля вам нужно будет заново войти в аккаунт</li>
-				  	</ul>
+		<div class="card card--no-smooth" style="margin: 1em 0em;">
+			<div class="card__content card__content--no-padding card__content--list">
+				<div class="list list--invert list--image list--color-{{request.user.userprofile.accent}} list--animation-invert">
+					<div class="list__item">
+						<img src="/media/img/icons/note.png">
+						<b>Заметки</b>
+					</div>
+					<div class="list__item">
+						<img src="/media/img/icons/poll.png">
+						<b>Опросы</b>
+					</div>
+					<div class="list__item">
+						<img src="/media/img/icons/calendar.png">
+						<b>Мероприятия</b>
+					</div>
+					<div class="list__item">
+						<img src="/media/img/icons/files.png">
+						<b>Файлы</b>
+					</div>
 				</div>
 			</div>
-		</div>
+		</div>		
 	</div>
-	<div class="five wide grid"></div>
-</div>
+	<div class="col-8 col-m-4 col-t-5">
+		<div class="card">
+			<div class="card__header">
+				<div class="card__header__title">Профиль</div>
+			</div>
+			<div class="card__content">
+				<h3>Смена пароля</h3>
+				<input type="password" placeholder="Старый пароль"><br>
+				<input type="password" placeholder="Новый пароль"><br>
+				<h3>Фотография пользователя</h3>
+				<div class="alert">
+					Загрузка...
+				</div>
+			</div>
+			<div class="card__content">
+				<div class="checkbox checkbox--color-blue">
+					<input type="checkbox" id="hideEmail">
+					<label for="hideEmail">
+						<div class="checkbox__title">Не показывать адрес электронной почты</div>
+						<div class="checkbox__meta">Не показывать ваш адрес электронной почты в блоке "Контакты"</div>
+					</label>
+				</div>
+			</div>
+		</div>
 
+		<div class="card">
+			<div class="card__header">
+				<div class="card__header__title">Персонализация</div>
+			</div>
+			<div class="card__content">
+				<h3>Тема</h3>
+				<div class="radio radio--color-blue">
+					<input type="radio" id="themeLight" name="theme" checked>
+					<label for="themeLight">
+						<div class="checkbox__title">Светлая тема</div>
+					</label>
+				</div>
+				<div class="radio radio--color-blue">
+					<input type="radio" id="themeDark" name="theme">
+					<label for="themeDark">
+						<div class="checkbox__title">Темная тема</div>
+					</label>
+				</div>
+				<h3>Акцентный цвет</h3>
+				<div class="radio radio--color-blue">
+					<input type="radio" id="accentBlue" name="accent" checked>
+					<label for="accentBlue">
+						<div class="checkbox__title">Синий</div>
+					</label>
+				</div>
+				<div class="radio radio--color-teal">
+					<input type="radio" id="accentTeal" name="accent">
+					<label for="accentTeal">
+						<div class="checkbox__title">Бирюзовый</div>
+					</label>
+				</div>
+				<div class="radio radio--color-red">
+					<input type="radio" id="accentRed" name="accent">
+					<label for="accentRed">
+						<div class="checkbox__title">Красный</div>
+					</label>
+				</div>
+				<div class="radio radio--color-orange">
+					<input type="radio" id="accentOrange" name="accent">
+					<label for="accentOrange">
+						<div class="checkbox__title">Оранжевый</div>
+					</label>
+				</div>
+				<div class="radio radio--color-yellow">
+					<input type="radio" id="accentYellow" name="accent">
+					<label for="accentYellow">
+						<div class="checkbox__title">Желтый</div>
+					</label>
+				</div>
+				<div class="radio radio--color-olive">
+					<input type="radio" id="accentOlive" name="accent">
+					<label for="accentOlive">
+						<div class="checkbox__title">Оливковый</div>
+					</label>
+				</div>
+				<div class="radio radio--color-green">
+					<input type="radio" id="accentGreen" name="accent">
+					<label for="accentGreen">
+						<div class="checkbox__title">Зеленый</div>
+					</label>
+				</div>
+				<div class="radio radio--color-purple">
+					<input type="radio" id="accentPurple" name="accent">
+					<label for="accentPurple">
+						<div class="checkbox__title">Фиолетовый</div>
+					</label>
+				</div>
+				<div class="radio radio--color-violet">
+					<input type="radio" id="accentViolet" name="accent">
+					<label for="accentViolet">
+						<div class="checkbox__title">Индиго</div>
+					</label>
+				</div>
+				<div class="radio radio--color-brown">
+					<input type="radio" id="accentBrown" name="accent">
+					<label for="accentBrown">
+						<div class="checkbox__title">Коричневый</div>
+					</label>
+				</div>
+
+				<h3>Обложка профиля</h3>
+				<div class="alert">
+					<div class="alert__header">Как получить обложки профиля?</div>
+					<div class="alert__content">Получить новые обложки профиля можно, собирая коллекции предметов или выигрывая их, открывая сундуки</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<div class="card__header">
+				<div class="card__header__title">Фильтрация контента</div>
+			</div>
+			<div class="card__content">
+				<h3>Фильтрация ленты</h3>
+				<div class="checkbox checkbox--color-blue">
+					<input type="checkbox" id="filterAchievements">
+					<label for="filterAchievements">
+						<div class="checkbox__title">Новые достижения</div>
+					</label>
+				</div>
+				<div class="checkbox checkbox--color-blue">
+					<input type="checkbox" id="filterStoleItems">
+					<label for="filterStoleItems">
+						<div class="checkbox__title">Продажа предметов</div>
+					</label>
+				</div>
+				<div class="checkbox checkbox--color-blue">
+					<input type="checkbox" id="filterCatapult">
+					<label for="filterCatapult">
+						<div class="checkbox__title">Запуски подаркопульты</div>
+					</label>
+				</div>
+				<div class="checkbox checkbox--color-blue">
+					<input type="checkbox" id="filterBonuses">
+					<label for="filterBonuses">
+						<div class="checkbox__title">Случайные бонусы</div>
+					</label>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="card">
+			<div class="card__header">
+				<div class="card__header__title">Контакты</div>
+			</div>
+			<div class="card__content">
+				<h3>Ссылки на ваши контакты</h3>
+				+7<input type="text" placeholder="Номер телефона"><br>
+				vk.com/<input type="text" placeholder="ВКонтакте"><br>
+				twitter.com/<input type="text" placeholder="Twitter"><br>
+				facebook.com/<input type="text" placeholder="Facebook"><br>
+				github.com/<input type="text" placeholder="Github"><br>
+			</div>
+		</div>
+
+		<div class="card">
+			<div class="card__header">
+				<div class="card__header__title">Расширенные настройки</div>
+			</div>
+			<div class="card__content">
+				<div class="checkbox checkbox--color-blue">
+					<input type="checkbox" id="extraBeta">
+					<label for="extraBeta">
+						<div class="checkbox__title">Бета-тестирование</div>
+						<div class="checkbox__meta">Получайте доступ к бета-функциям</div>
+					</label>
+				</div>
+				<div class="checkbox checkbox--color-blue">
+					<input type="checkbox" id="extraContent">
+					<label for="extraContent">
+						<div class="checkbox__title">Не показывать вкладку "Контент"</div>
+						<div class="checkbox__meta">На вашей странице не будет показываться вкладка "Контент"</div>
+					</label>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
 {% endblock %}

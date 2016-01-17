@@ -12,17 +12,13 @@ from user.models import UserProfile
 
 class SignUpForm(forms.Form):
 	users = (
-		('apakin Андрей Апакин', 'Андрей Апакин'),
-		('burkov Андрей Бурков', 'Андрей Бурков'),
 		('zonov Максим Зонов', 'Максим Зонов'),
-		('kalashnikov Сергей Калашников', 'Сергей Калашников'),
-		('kroshihina Анастасия Крошихина', 'Анастасия Крошихина'),
 		('leyshin Влад Леушин', 'Влад Леушин'),
 		('apcom52 Александр Перевезенцев', 'Александр Перевезенцев'),
 		('selivanov Михаил Селиванов', 'Михаил Селиванов'),
+		('smetanin Иван Сметанин', 'Иван Сметанин'),
 		('trofimenko Влад Трофименко', 'Влад Трофименко'),
 		('tsekanov Алексей Цеканов', 'Алексей Цеканов'),
-		('sheromov Константин Шеромов', 'Константин Шеромов'),
 		('shyklin Вячеслав Шуклин', 'Вячеслав Шуклин'),
 	)
 	username = forms.ChoiceField(widget=forms.Select, choices=users, label="Ваше имя:")
@@ -38,17 +34,13 @@ class SignUpForm(forms.Form):
 
 class SignInForm(forms.Form):
 	users = (
-		('apakin', 'Андрей Апакин'),
-		('burkov', 'Андрей Бурков'),
 		('zonov', 'Максим Зонов'),
-		('kalashnikov', 'Сергей Калашников'),
-		('kroshihina', 'Анастасия Крошихина'),
 		('leyshin', 'Влад Леушин'),
 		('apcom52', 'Александр Перевезенцев'),
 		('selivanov', 'Михаил Селиванов'),
+		('smetanin', 'Иван Сметанин'),
 		('trofimenko', 'Влад Трофименко'),
 		('tsekanov', 'Алексей Цеканов'),
-		('sheromov', 'Константин Шеромов'),
 		('shyklin', 'Вячеслав Шуклин'),
 	)
 	username = forms.ChoiceField(widget=forms.Select, choices=users, label="Ваше имя:")
@@ -93,7 +85,24 @@ def signup(request):
 
 @csrf_exempt
 def signin(request):
-	print(request.user)
+	users = []
+	users_list = User.objects.all().filter(is_active = True)
+	for user in users_list:
+		users.append({
+			'first_name': user.first_name,
+			'avatar': user.userprofile.avatar.url,
+			'username': user.username,
+			'user': user,
+		})
+	if request.user.is_authenticated():
+		olduser = request.user
+	elif request.POST.get('username'):
+		for user in users:
+			if user['username'] == request.POST['username']:
+				olduser = user
+	else:
+		import random
+		olduser = random.choice(users)
 	error = [False, '']
 	form = SignInForm()
 	if request.method == 'POST':
@@ -110,8 +119,14 @@ def signin(request):
 					error[0], error[1] = True, 'Пользователь не найден или он не активен'
 			else:
 				error[0], error[1] = True, 'Введенные данные некорректны'
-	context = {"form": form, 'title': 'Вход', 'error': error[0], 'error_text': error[1]}
-	return render(request, 'sign-in.html', context)
+	context = {
+		"form": form,
+		'users': users, 
+		'olduser': olduser,
+		'error': error[0], 
+		'error_text': error[1]
+		}
+	return render(request, 'beta/beta_sign-in.html', context)
 
 def signout(request):
 	logout(request)
@@ -119,3 +134,6 @@ def signout(request):
 
 def premier(request):
 	return render(request, 'premier.html', {})
+
+def game(request):
+	return render(request, 'game.html', {})

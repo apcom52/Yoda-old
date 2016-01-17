@@ -1,0 +1,53 @@
+<h2>Случайный бонус</h2>
+<div class="bingo-rulette" data-present-id="{{bingo.index}}">
+	<div class="row">
+		<div class="item" id="bingoItem1">+1</div>
+		<div class="item" id="bingoItem2">+2</div>
+		<div class="item  item-quality-{{bingo.item1.quality}}" id="bingoItem3"><img src="{{bingo.item1.item.icon.url}}"></div>
+		<div class="item" id="bingoItem4">+3</div>
+	</div>
+	<div class="row">
+		<div class="item" id="bingoItem5">+4</div>
+		<div class="item item-quality-{{bingo.item2.quality}}" id="bingoItem6"><img src="{{bingo.item2.item.icon.url}}"></div>
+		<div class="item" id="bingoItem7">+5</div>
+		<div class="item" id="bingoItem8">+6</div>
+	</div>
+	<div class="row">
+		<div class="item" id="bingoItem9">+7</div>
+		<div class="item" id="bingoItem10">+8</div>
+		<div class="item" id="bingoItem11">+9</div>
+		<div class="item item-quality-{{bingo.item3.quality}}" id="bingoItem12"><img src="{{bingo.item3.item.icon.url}}"></div>
+	</div>	
+</div>
+
+<div class="ui icon green message rulette-message" style="display: none;">
+  	<i class="trophy icon"></i>
+  	<div class="content">
+	    <div class="header">Поздравляем!</div>
+    	{% if not bingo.is_item %}
+    		<p>Вы выиграли случайный бонус: <b>+{{bingo.xp}}</b><br>
+    	{% else %}
+    		<p>
+    		{% if bingo.index == 3 %}    		
+    			<img src="{{bingo.item1.item.icon.url}}" class="rulette-message-img"><br>
+    			<b>{{bingo.item1.item.title}}</b><br>
+    			<i>{% if bingo.item1.quality == 2 %}<span class="quality-3"><i class="star icon"></i><i class="star icon"></i><i class="star icon"></i> Уникальное качество <b>(+ {{bingo.item1.price}} <i class="trophy icon"></i>)</b></span>
+    			{% elif bingo.item1.quality == 1 %}<span class="quality-2"><i class="star icon"></i><i class="star icon"></i> Хорошее качество <b>(+ {{bingo.item1.price}} <i class="trophy icon"></i>)</b></span>
+    			{% else %}<span class="quality-1"><i class="star icon"></i> Низкое качество <b>(+ {{bingo.item1.price}} <i class="trophy icon"></i>)</b></span>{% endif %}</i><br>
+    		{% elif bingo.index == 6 %}
+    			<img src="{{bingo.item2.item.icon.url}}" class="rulette-message-img"><br>
+    			<b>{{bingo.item2.item.title}}</b><br>
+    			<i>{% if bingo.item2.quality == 2 %}<span class="quality-3"><i class="star icon"></i><i class="star icon"></i><i class="star icon"></i> Уникальное качество <b>(+ {{bingo.item2.price}} <i class="trophy icon"></i>)</b></span>
+    			{% elif bingo.item2.quality == 1 %}<span class="quality-2"><i class="star icon"></i><i class="star icon"></i> Хорошее качество <b>(+ {{bingo.item2.price}} <i class="trophy icon"></i>)</b></span>
+    			{% else %}<span class="quality-1"><i class="star icon"></i> Низкое качество <b>(+ {{bingo.item2.price}} <i class="trophy icon"></i>)</b></span>{% endif %}</i><br>
+    		{% elif bingo.index == 12 %}
+    			<img src="{{bingo.item3.item.icon.url}}" class="rulette-message-img"><br>
+    			<b>{{bingo.item3.item.title}}</b><br>
+    			<i>{% if bingo.item3.quality == 2 %}<span class="quality-3"><i class="star icon"></i><i class="star icon"></i><i class="star icon"></i> Уникальное качество <b>(+ {{bingo.item3.price}} <i class="trophy icon"></i>)</b></span>
+    			{% elif bingo.item3.quality == 1 %}<span class="quality-2"><i class="star icon"></i><i class="star icon"></i> Хорошее качество <b>(+ {{bingo.item3.price}} <i class="trophy icon"></i>)</b></span>
+    			{% else %}<span class="quality-1"><i class="star icon"></i> Низкое качество <b>(+ {{bingo.item3.price}} <i class="trophy icon"></i>)</b></span>{% endif %}</i><br>
+    		{% endif %}
+    		<br><a href="/notes/2/">Подробнее о бонусах</a></p>
+    	{% endif %}
+  	</div>
+</div>

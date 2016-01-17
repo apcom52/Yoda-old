@@ -1,0 +1,112 @@
+{% extends 'basic/base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block bodyclass %}{{bodyclass}}{% endblock %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+{% load humanize %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="four wide column">
+		{% include 'basic/profile-side.html' %}
+	</div>
+	<div class="ten wide column">
+		{% include 'basic/profile-nav.html' %}
+		<div class="ui bottom attached padded active segment">	
+			{% if bingo %}
+				{% include 'basic/bingo-bonus.html' %}
+			{% endif %}	
+			{% if xp >= 15 and user == request.user %}
+			<div class="ui grid">
+				<div class="{% if xp < 70 %}sixteen{%else%}ten{%endif%} wide column">
+					{% if xp >= 15 and user == request.user %}
+						<div class="ui secondary yellow segment">
+							<h2>Получите новые предметы!</h2>
+							<p>Нажмите на кнопку "Сыграть в лотерею", чтобы получить шанс выиграть 1 из 12 предметов различного качества!</p>
+							<a href="/users/lottery"><button class="yellow ui button">Сыграть в лотерею (15 <i class="trophy icon"></i>)</button></a>
+		 				</div>
+		 				<br>
+					{% endif %}
+				</div>
+				
+				{% if xp >= 70 and user == request.user %}
+				<div class="six wide column">
+					<div class="ui secondary purple segment">
+						<h2>Получить комплект</h2>
+						<p>Получите сразу 6 различных предметов различного качества!</p>
+						<a href="/users/complect/"><button class="purple ui button">Получить комплект (70 <i class="trophy icon"></i>)</button></a>
+	 				</div>
+	 				<br>
+	 			</div>
+				{% endif %}				
+			</div>
+			{% endif %}
+			{% if not inventory %}
+				<h4>Инвентарь пуст</h4>
+				<p>Предметы в инвентаре можно получить с помощью ежедневного или случайного бонусов</p>
+			{% else %}
+				<h2>Инвентарь</h2>
+				{% if inventory_summ %}<div class="ui label">Стоимость инвентаря<div class="detail"><span id="inventoryCost">{{inventory_summ}}</span> <i class="trophy icon"></i></div></div>{% endif %}
+				{% if inventory_count %}<div class="ui label">Предметов в инвентаре<div class="detail" id="inventoryCount">{{inventory_count}}</div></div>{% endif %}
+				<div class="ui text menu">
+				  	<div class="header item">СОРТИРОВАТЬ</div>
+				  	<a class="{% if filter == 1%}active{%endif%} item" href="?sort=date">По дате</a>
+				  	<a class="{% if filter == 2%}active{%endif%} item" href="?sort=price">По цене</a>
+				  	<a class="{% if filter == 3%}active{%endif%} item" href="?sort=items">По предметам</a>
+				  	<a class="{% if filter == 4%}active{%endif%} item" href="?sort=quality">По качеству</a>
+				  	<a class="{% if filter == 5%}active{%endif%} item" href="?sort=type">По типу</a>
+				</div>
+			{% endif %}
+			<div class="ui grid">	
+			{% for item in inventory %}				
+					{% if not inventory %}Нет предметов в инвентаре. Предметы можно получить в ежедневном или случайном бонусах{% endif %}
+					<div class="four wide column altrone-grid altrone-inventory {{item.quality_class}}" style="float: left !important;" id="inventoryItem{{item.id}}" data-item-id="{{item.id}}" data-item-price="{{item.price}}">
+							<img src="{{item.icon}}"><br>
+							<b>{{item.title}}</b><br>
+							{{item.type}}<br>
+							<span class="quality">{{item.quality}}</span><br>
+							{% if request.user == user and not item.no_sold %}
+								<button class="ui mini primary button sold-inventory-item-btn">Продать за {{item.price}} <i class="trophy icon"></i></button>
+							{% elif item.no_sold %}
+								Не для продажи
+							{% else %}
+								{{item.price}} <i class="trophy icon"></i>				
+							{% endif %}
+					</div>						
+			{% endfor %}
+			</div>
+			<br>
+			<a href="/notes/37/">Подробнее об инвентаре</a>
+			<br>
+			<br>
+			{% if has_catapult and request.user == user %}
+				<center><button class="ui green button send-item-to-friend">Запустить предмет в друга</button></center>
+			{% endif %}
+
+			<div class="ui modal send-item-modal">
+			  	<div class="header">Запустить подаркопульту</div>
+			  	<div class="content">
+				    <p>Вы можете кинуть определенный предмет в случайного пользователя. В зависимости от качества предмета вам будет зачислено определенное количество очков.</p>
+				    <div class="ui olive inverted segment catapult-success-message" style="display: none;"></div>
+				    <div class="ui red inverted segment catapult-error-message" style="display: none;">При отправке подарка произошла ошибка. Попробуйте снова</div>
+				   	<div class="form">
+						<div class="field">
+					      	<label><b>Какой предмет вы хотите бросить?</b></label>
+					      	<select class="ui fluid dropdown" id="catapult-items">
+					       		{% for item in inventory %}
+									{% if not item.is_catapult %}
+									<option value="{{item.id}}">{{item.title}} ({{item.quality}} - {{item.price}} xp)</option>
+									{% endif %}
+					       		{% endfor %}
+							</select>
+						</div>
+						<br>
+						<center><button class="ui green button send-catapult">Бросить</button></center>
+				   	</div>
+			  	</div>
+			</div>
+		</div>
+	</div>
+	<div class="one wide column"></div>
+</div>
+{% endblock %}

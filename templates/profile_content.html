@@ -13,6 +13,9 @@
 	<div class="ten wide column">
 		{% include 'basic/profile-nav.html' %}
 		<div class="ui bottom attached padded active segment">
+			{% if bingo %}
+				{% include 'basic/bingo-bonus.html' %}
+			{% endif %}
 			{% if not notes and not polls and not events %}
 				<div class="ui message">
   					<div class="header">:(</div>

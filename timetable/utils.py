@@ -1,11 +1,13 @@
+from django.db import models
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from achievements.models import Action, AchUnlocked, Rank, Achievement#, Notification
 from django.contrib.auth.models import User
 from django.utils import timezone
-from user.models import UserProfile
+from user.models import *
 from polls.models import QueAns
 from events.models import UserVisitEvent
+from inventory.models import Item, UserInventoryItem #Smile, SmileCollection
 import datetime
 
 class DTControl:
@@ -69,10 +71,11 @@ def dateInfo(info):
 		'date': date,
 	}
 
-def addAction(user, action_text):
+def addAction(user, action_text, importance = True):
 	action = Action()
 	action.login = user
 	action.text = action_text
+	action.important = importance
 	action.save()
 
 def avatar(user):
@@ -98,10 +101,16 @@ def pointsumm(user):
 	my_visits = UserVisitEvent.objects.all().filter(login = user)
 	summ += my_votes.count() + my_visits.count()
 
+	#Прибавляем бонусные очки
+	bonus = user.userprofile.bonus_points
+	summ += bonus
+
 	return summ
 
 def getrank(user):
-	if user: summ = pointsumm(user)
+	if user: 
+		actions = Action.objects.all().filter(login = user)
+		summ = len(actions)
 	rank = '???'
 	try:
 		rank_list = Rank.objects.get(start_points__lte = summ, end_points__gte = summ)
@@ -350,6 +359,7 @@ def getTimetable(semester = settings.SEMESTER, week = 1, day = 1, date = ''):
 	return timetable
 
 def UpdateStatus(_user):
+	from user.models import UserProfile
 	user = UserProfile.objects.get(user = _user)
 	user.last_visit = datetime.datetime.now()
 	user.save()
@@ -364,6 +374,186 @@ def isOnline(_user):
 		return False
 	except AttributeError:
 		return False	
+
+def getRandomItem(med = 0.7, high = 0.95):
+	import random
+	items = Item.objects.all()
+	random_item = random.choice(items)
+
+	qrnd = random.random()
+	quality = 0
+	if qrnd >= med:	quality = 1
+	if qrnd >= high: quality = 2
+
+	price = 0
+	if quality == 0:
+		old_price = random_item.price_low;
+		price = random.randint(round(old_price / 4), old_price)
+	elif quality == 1:
+		old_price = random_item.price_med;
+		price = random.randint(round(old_price / 3), old_price)
+	elif quality == 2:
+		old_price = random_item.price_high;
+		price = random.randint(round(old_price / 2), old_price)
+
+	return {
+		'item': random_item,
+		'quality': quality,
+		'price': price,
+	}
+
+def setBonusPoints(_user):
+	from user.models import UserProfile, BonusPoints
+
+	user = UserProfile.objects.get(user = _user)
+	now = datetime.datetime.now()
+
+	last_bonus = BonusPoints.objects.all().filter(user = _user).filter(bingo = False).order_by('-date')	
+
+	if last_bonus:
+		user_lv = last_bonus[0].date
+		user_last = datetime.datetime(user_lv.year, user_lv.month, user_lv.day, user_lv.hour, user_lv.minute)	
+		user_last += datetime.timedelta(hours = 3)	
+	bonus = 0
+	pos = 0
+	is_item = 0
+	item1, item2 = getRandomItem(), getRandomItem()
+
+	#Указываем индексы квадратиков для каждого бонуса:
+	bonus_positions = [[2, 3, 8, 10, 14], [1, 7, 9, 12], [13, 16], [4, 5], [11], [15, 6]]
+	if not last_bonus or now.day != user_last.day:
+		import random
+		rnd = random.random()		
+		bonus = 1
+		if rnd > 0.33:	
+			bonus = 2
+		if rnd > 0.54:	
+			bonus = 3
+		if rnd > 0.69:	
+			bonus = 4
+		if rnd > 0.8:	
+			bonus = 5
+		if rnd > 0.85:	
+			pos = random.choice([6, 15])
+			userGetItem = UserInventoryItem()
+			userGetItem.user = _user
+			userGetItem.type = 1
+			if pos == 6:
+				userGetItem.item_id = item1['item'].id
+				userGetItem.price = item1['price']
+				userGetItem.quality = item1['quality'] + 1
+			else:
+				userGetItem.item_id = item2['item'].id
+				userGetItem.price = item2['price']
+				userGetItem.quality = item2['quality'] + 1
+			userGetItem.save()
+			bonus = 0
+			is_item = True
+
+		if not is_item:
+			user.bonus_points += bonus
+
+		pos_array = bonus_positions[bonus - 1]
+		if rnd <= 0.85: pos = random.choice(pos_array)
+
+		bonusStat = BonusPoints()
+		bonusStat.user = _user
+		bonusStat.bonus = bonus
+		bonusStat.save()
+
+		user.save()
+	return {
+		'xp': bonus,
+		'index': pos,
+		'is_item': is_item,
+		'item1': item1, 
+		'item2': item2,
+	}
+
+def bingo(_user):
+	from user.models import UserProfile, BonusPoints
+	import random
+	user = UserProfile.objects.get(user = _user)
+	bonus = 0
+	rnd = random.random()
+	item1, item2, item3 = getRandomItem(), getRandomItem(), getRandomItem()
+	index = 0
+	is_item = False
+	if rnd >= 0.99:
+		rnd2 = random.random()
+		positions = [1, 2, 4, 5, 7, 8, 9, 10, 11, 3, 6, 12]
+		bonus = 0
+		if rnd2 < 0.6:	
+			bonus = random.randint(1, 9)
+			user.bonus_points += bonus
+			user.save()
+			index = positions[bonus - 1]
+		else:
+			bonus = random.randint(10, 12)
+			is_item = True
+			index = positions[bonus - 1]
+			bonus = 0
+
+			userGetItem = UserInventoryItem()
+			userGetItem.user = _user
+			userGetItem.type = 1
+			if index == 3:
+				userGetItem.item_id = item1['item'].id
+				userGetItem.price = item1['price']
+				userGetItem.quality = item1['quality'] + 1
+			elif index == 6:
+				userGetItem.item_id = item2['item'].id
+				userGetItem.price = item2['price']
+				userGetItem.quality = item2['quality'] + 1
+			elif index == 12:
+				userGetItem.item_id = item3['item'].id
+				userGetItem.price = item3['price']
+				userGetItem.quality = item3['quality'] + 1
+			userGetItem.save()
+
+
+		bonusStat = BonusPoints()
+		bonusStat.user = _user
+		bonusStat.bonus = bonus
+		bonusStat.bingo = True
+		bonusStat.save()
+
+		bonus_suffix = 'очко'
+		if bonus >= 2 and bonus <= 4: bonus_suffix = 'очка'
+		if bonus >= 5: bonus_suffix = 'очков'
+
+
+		if bonus:
+			addAction(_user, 'получил <b>Случайный бонус (%s %s)</b>' % (bonus, bonus_suffix), False)
+		else:
+			addAction(_user, 'получил случайный бонус (предмет из инвентаря)', False)
+
+		bingo = {		
+			'xp': bonus, 
+			'index': index,
+			'is_item': is_item,
+			'item1': item1,
+			'item2': item2,
+			'item3': item3,
+		}
+		return bingo
+	else:
+		return 0	
+
+def set_cookie(response, key, value, days_expire = 7):
+  if days_expire is None:
+    max_age = 365 * 24 * 60 * 60  #one year
+  else:
+    max_age = days_expire * 24 * 60 * 60 
+  expires = datetime.datetime.strftime(datetime.datetime.utcnow() + datetime.timedelta(seconds=max_age), "%a, %d-%b-%Y %H:%M:%S GMT")
+  response.set_cookie(key, value, max_age=max_age, expires=expires, domain=settings.SESSION_COOKIE_DOMAIN, secure=settings.SESSION_COOKIE_SECURE or None)
+
+
+'''def parseSmiles(text):
+	smiles = Smile.objects.all()
+	for smile in smiles:
+		text = text.replace(":|%s|:" % (smile.symbol,), "<img src='%s'>" % (smile.icon.url,))
+	return text'''
 
 '''def getNotifications(user):
 	notifications_list = Notification.objects.all().filter(login = user)
