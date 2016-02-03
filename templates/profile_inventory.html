@@ -16,25 +16,25 @@
 			{% if bingo %}
 				{% include 'basic/bingo-bonus.html' %}
 			{% endif %}	
-			{% if xp >= 15 and user == request.user %}
+			{% if xp >= 17 and user == request.user %}
 			<div class="ui grid">
-				<div class="{% if xp < 70 %}sixteen{%else%}ten{%endif%} wide column">
-					{% if xp >= 15 and user == request.user %}
+				<div class="{% if xp < 99 %}sixteen{%else%}ten{%endif%} wide column">
+					{% if xp >= 17 and user == request.user %}
 						<div class="ui secondary yellow segment">
 							<h2>Получите новые предметы!</h2>
 							<p>Нажмите на кнопку "Сыграть в лотерею", чтобы получить шанс выиграть 1 из 12 предметов различного качества!</p>
-							<a href="/users/lottery"><button class="yellow ui button">Сыграть в лотерею (15 <i class="trophy icon"></i>)</button></a>
+							<a href="/users/lottery"><button class="yellow ui button">Сыграть в лотерею (17 <i class="trophy icon"></i>)</button></a>
 		 				</div>
 		 				<br>
 					{% endif %}
 				</div>
 				
-				{% if xp >= 70 and user == request.user %}
+				{% if xp >= 99 and user == request.user %}
 				<div class="six wide column">
 					<div class="ui secondary purple segment">
 						<h2>Получить комплект</h2>
 						<p>Получите сразу 6 различных предметов различного качества!</p>
-						<a href="/users/complect/"><button class="purple ui button">Получить комплект (70 <i class="trophy icon"></i>)</button></a>
+						<a href="/users/complect/"><button class="purple ui button">Получить комплект (99 <i class="trophy icon"></i>)</button></a>
 	 				</div>
 	 				<br>
 	 			</div>

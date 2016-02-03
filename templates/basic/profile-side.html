@@ -30,7 +30,9 @@
 	    	</div>
 	    	<div style="color: #666;">Был на сайте {{last_visit|naturaltime}}</div>
 	    	{% else %}</div>{% endif %}
-	    	<br>
+	    	
+	    	<div style="color: #666;">{% if user.userprofile.group == 1 %}Первая подгруппа{% else %}Вторая подгруппа{% endif %}</div><br>
+	    	
 	    	<div class="ui two statistics">
 			  	<div class="red statistic">
 			    	<div class="value" id="xpCounter">{{xp}}</div><div class="label">{{xp_morph}}</div>
@@ -39,7 +41,7 @@
 			    	<div class="value">{{ach_counter}}</div><div class="label">{{ach_counter_morph}}</div>
 			  	</div>
 			  	<div class="blue statistic">
-			    	<div class="value" id="actionsCounter">{{actions|length}}</div><div class="label">{{actions_morph}}</div>
+			    	<div class="value" id="actionsCounter">{{more.act_count}}</div><div class="label">{{actions_morph}}</div>
 			  	</div>
 			  	<div class="green statistic">
 			    	<div class="text value" style="font-size:1.80rem; padding-top: 10px;">{{rank}}</div><div class="label" style="margin-top:0.3rem">{{level}} уровень</div>

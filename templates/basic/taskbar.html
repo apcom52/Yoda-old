@@ -9,9 +9,9 @@
   	<div class="right menu">-->
 
 <div class="taskbar">
-	<div class="menu-icon menu-open" style="padding-top: 0px;"><img src="{% get_random_icon %}" style="width: 48px; height: auto;"></div>	
+	<div class="menu-icon menu-open"><i></i></div>	
 	<div class="actions">
 	{% if request.user.is_superuser %}
-		<a href="/admin"><button class="circular ui icon teal button"><i class="privacy icon"></i></button></a>
+		<a href="/admin"><button class="circular ui icon blue button"><i class="privacy icon"></i></button></a>
 	{% endif %}
 	</div>

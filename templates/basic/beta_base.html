@@ -4,26 +4,109 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="HandheldFriendly" content="true">
 
     <title>{% block title %}{%endblock%}</title>
-    <link href="/media/static/css/altrone.css" rel="stylesheet">    
+    <link href="/media/static/css/altrone.css?rnd=4" rel="stylesheet">    
+    <link href="/media/static/css/altrone_extra.css?rnd=4" rel="stylesheet">    
     <!--<link href="/media/static/css/beta.css" rel="stylesheet">-->
     <link href="/media/static/css/font-awesome.css" rel="stylesheet">
     <link href="/media/static/css/fonts/flaticon.css" rel="stylesheet">
-    <script src="/media/static/js/modernizr.js"></script>
+    <link href="/media/static/css/awesome.css" rel="stylesheet">
     <script src="/media/static/js/jquery-2.1.4.min.js"></script>
-    <script src="/media/static/js/blurBg.js"></script>
+    <script src="/media/static/js/underscore.js"></script>
+    <script src="/media/static/js/backbone.js"></script>
     <script src="/media/static/js/altrone.js"></script>
     <script src="/media/static/js/walrus.js"></script>
+    <script src="/media/static/js/moment.js"></script>
     <script src="/media/static/js/actions-beta.js"></script>
     <script src="/media/static/js/jquery.touchSwipe.min.js"></script>
-    <!--<script src="/media/static/js/beta.js"></script>-->
     <script src="/media/static/js/jquery.form.min.js"></script>
+    <script src="/media/static/js/handlebars.js"></script>
     {% block more_head %}{% endblock %}
 </head>
-<body class="{% block bodyclass %}{%endblock%}">
+<body class="{% block bodyclass %}{%endblock%}" data-accent="{{request.user.userprofile.accent}}" data-theme="{{request.user.userprofile.theme}}" data-user-id="{{request.user.id}}">
+<div class="taskbar {% if request.user.userprofile.theme == 'dark' %}taskbar--invert{% endif %}">
+    <div class="taskbar__item taskbar__item--hover-color-{{request.user.userprofile.accent}}" id="mainMenu" data-dropdown-target="yodaDropdown"><i class="flaticon-menu bold"></i></div>
+    {% if request.user.is_superuser %}
+    <a href="/admin"><div class="taskbar__item bold hide-m"><i class="flaticon-wrench"></i></div></a>
+    {% endif %}
+    <div class="taskbar__item taskbar__item--logo taskbar__item--no-select hide-m">{{title|upper}}</div>
+    <a href="/users/{{request.user.id}}"><div class="taskbar__item taskbar__item--pin-right taskbar__item--image"><img src="{{request.user.userprofile.avatar.url}}" class="img--circle"></div></a>
+    <!--<div class="taskbar__item taskbar__item--pin-right bold"><i class="flaticon-profiles"></i></div>
+    <div class="taskbar__item taskbar__item--pin-right bold hide-m"><i class="flaticon-speach-square"></i></div>
+    <div class="taskbar__item taskbar__item--pin-right bold {{request.user.userprofile.accent}}-fg"><i class="flaticon-alarm-fill"></i></div>
+    <div class="taskbar__item taskbar__item--pin-right bold" id="favorite"><i class="flaticon-heart"></i></div>
+    <div class="taskbar__item taskbar__item--pin-right bold" id="search"><i class="flaticon-search"></i></div>-->
+</div>
 {% block content %}{% endblock %}
+<div class="dropdown{% if request.user.userprofile.theme == 'dark' %} dropdown--invert{% endif %}" id="yodaDropdown">
+    <a href="/"><div class="dropdown__item">Главная</div></a>
+    <a href="/timetable/"><div class="dropdown__item">Расписание</div></a>
+    <a href="/notes"><div class="dropdown__item">Заметки</div></a>
+    <a href="/events"><div class="dropdown__item">Мероприятия</div></a>
+    <a href="/polls"><div class="dropdown__item">Опросы</div></a>
+</div>
+<!--<div class="dropdown{% if request.user.userprofile.theme == 'dark' %} dropdown--invert{% endif %}" id="profileDropdown" style="position: fixed;">
+    <a href="/users/{{request.user.id}}/"><div class="dropdown__item dropdown__item--icon"><i class="flaticon-profile"></i>Мой профиль</div></a>
+    <a href="/users/attendance/{{request.user.id}}/"><div class="dropdown__item dropdown__item--icon"><i class="flaticon-award-card"></i>Посещаемость</div></a>
+    <a href="/users/duty/{{request.user.id}}/"><div class="dropdown__item dropdown__item--icon"><i class="flaticon-duty"></i>Долги</div></a>
+    <a href="/users/inventory/{{request.user.id}}/"><div class="dropdown__item dropdown__item--icon"><i class="flaticon-chest"></i>Инвентарь</div></a>
+    <a href="/users/achievements/{{request.user.id}}/"><div class="dropdown__item dropdown__item--icon"><i class="flaticon-cup"></i>Достижения</div></a>
+    <a href="/users/settings/{{request.user.id}}/"><div class="dropdown__item dropdown__item--icon"><i class="flaticon-settings"></i>Настройки</div></a>
+    <a href="/auth/out/"><div class="dropdown__item dropdown__item--icon"><i class="flaticon-power-off"></i>Выйти</div></a>
+</div>
+<!--
+<div class="search_block search_block--color-{{request.user.userprofile.accent}}">
+    <p>На данный момент поиск работает в ограниченном режиме</p>
+    <div class="form form--no-padding form--fit form--no-smooth">
+        <input type="text" id="search_field" placeholder="Введите ваш поисковый запрос...">
+        <p>Например: <span class="{{request.user.userprofile.accent}}-fg" id="search_field_help">Билеты для ТОИ</span></p>
+    </div>
+
+    <div class="card card--no-smooth card--color-black card--colored" style="margin: 0em;">
+        <div class="card__header">
+            <div class="card__header__title">Результаты поиска</div>
+        </div>
+        <div class="card__content card__content--no-padding">
+            <div class="list-navigation list-navigation--invert list-navigation--color-{{request.user.userprofile.accent}}">
+                <div class="list-navigation__item">
+                    <div class="list-navigation__icon"><i class="flaticon-notepad"></i></div>
+                    <div class="list-navigation__content">
+                        <div class="list-navigation__content__title">Билеты по ТОИ</div>
+                        <div class="list-navigation__content__meta">Заметки</div>
+                    </div>
+                </div>
+                <div class="list-navigation__item">
+                    <div class="list-navigation__icon"><i class="flaticon-notepad"></i></div>
+                    <div class="list-navigation__content">
+                        <div class="list-navigation__content__title">Билеты по ТОИ</div>
+                        <div class="list-navigation__content__meta">Заметки</div>
+                    </div>
+                </div>
+                <div class="list-navigation__item">
+                    <div class="list-navigation__icon"><i class="flaticon-notepad"></i></div>
+                    <div class="list-navigation__content">
+                        <div class="list-navigation__content__title">Билеты по ТОИ</div>
+                        <div class="list-navigation__content__meta">Заметки</div>
+                    </div>
+                </div>
+                <div class="list-navigation__item">
+                    <div class="list-navigation__icon"><i class="flaticon-notepad"></i></div>
+                    <div class="list-navigation__content">
+                        <div class="list-navigation__content__title">Билеты по ТОИ</div>
+                        <div class="list-navigation__content__meta">Заметки</div>
+                    </div>
+                </div>
+                <div class="list-navigation__item">
+                    <div class="list-navigation__icon"><i class="flaticon-notepad"></i></div>
+                    <div class="list-navigation__content">
+                        <div class="list-navigation__content__title">Билеты по ТОИ</div>
+                        <div class="list-navigation__content__meta">Заметки</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  
+</div>-->
 </body>
 </html>

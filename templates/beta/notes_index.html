@@ -10,160 +10,78 @@ html {
 </style>	
 <link href="/media/static/css/more_css/notes-mobile.css" rel="stylesheet" media="screen, handheld"/>
 <link href="/media/static/css/more_css/notes.css" rel="stylesheet" media="screen and (min-width: 40.5em)"/>
+<!--<script src="/media/static/ckeditor/ckeditor.js"></script>-->
 <script src="/media/static/js/more_js/notes.js"></script>
-{% endblock %}
-{% block content %}
-<div class="taskbar {% if request.user.userprofile.theme == 'dark' %}taskbar--invert{% endif %}">
-	<div class="taskbar__item taskbar__item--hover-color-{{request.user.userprofile.accent}}" data-dropdown-target="yodaDropdown"><i class="flaticon-menu"></i></div>
-	<div class="taskbar__item taskbar__item--logo taskbar__item--no-select">{{title|upper}}</div>
-	<div class="taskbar__item taskbar__item--pin-right taskbar__item--image" data-dropdown-target="profileDropdown"><img src="{{request.user.userprofile.avatar.url}}" class="img--circle"></div>
-	<div class="taskbar__item taskbar__item--pin-right"><i class="flaticon-profiles"></i></div>
-	<div class="taskbar__item taskbar__item--pin-right"><i class="flaticon-alarm"></i></div>
-	<div class="taskbar__item taskbar__item--pin-right"><i class="flaticon-heart"></i></div>
-	<div class="taskbar__item taskbar__item--pin-right" id="search"><i class="flaticon-search"></i></div>
-</div>
 
+{% endblock %}
+
+{% block content %}
 <div class="card card--no-smooth" id="contentCard">
 	<div class="card__content card__content--no-padding">
 		<div class="grid">
 			<div class="col-4 {% if request.user.userprofile.theme == 'dark' %} d-gray-bg{% else %} u-gray-bg {% endif %}" id="leftCol">
 				<div class="grid" {% if request.user.userprofile.theme == 'dark' %}style="background-color: #424242;"{% endif %}>
-					<div class="col-9">
+					<div class="col-7">
 						<button class="button--fit button--color-{{request.user.userprofile.accent}} button--icon button--transparent-full align-left"><i class="flaticon-edit"></i>Создать заметку</button>
 					</div>
-					<div class="col-3">
-						<button class="button--gfit {% if request.user.userprofile.theme == 'light' %} button--color-black {% endif %} button--icon-only button--transparent-full margin-horizontal-0"><i class="flaticon-book"></i></button>
-						<button class="button--gfit {% if request.user.userprofile.theme == 'light' %} button--color-black {% endif %} button--icon-only button--transparent-full margin-horizontal-0"><i class="flaticon-settings"></i></button>
+					<div class="col-5 align-right">
+						<button id="refreshNoteList" class="button--gfit {% if request.user.userprofile.theme == 'light' %} button--color-black {% endif %} button--icon-only button--transparent-full margin-horizontal-0"><i class="flaticon-refresh bold"></i></button>
+						<button class="button--gfit {% if request.user.userprofile.theme == 'light' %} button--color-black {% endif %} button--icon-only button--transparent-full margin-horizontal-0 button--no-smooth" id="readMode"><i class="flaticon-book bold"></i></button>
+						<a href="/users/settings#notes"><button class="button--gfit {% if request.user.userprofile.theme == 'light' %} button--color-black {% endif %} button--icon-only button--transparent-full margin-horizontal-0"><i class="flaticon-settings"></i></button></a>
 					</div>
 				</div>
-				<div class="list-navigation {% if request.user.userprofile.theme == 'dark' %}list-navigation--invert{% endif %} list-navigation--color-{{request.user.userprofile.accent}}" style="display: block;">
-					{% for note in notes %}
-					<div class="list-navigation__item" data-note-id="{{note.id}}">
-						<div class="list-navigation__icon"><i class="flaticon-notepad"></i></div>
-						<div class="list-navigation__content">
-							<div class="list-navigation__content__title">{{note.title}}</div>
-							<div class="list-navigation__content__meta">{{note.pub_date|naturaltime}}</div>
-						</div>
-						<div class="list-navigation__right-icon"><i class="flaticon-right"></i></div>
-					</div>
-					{% endfor %}
+				<div class="list-navigation {% if request.user.userprofile.theme == 'dark' %}list-navigation--invert{% endif %} list-navigation--color-{{request.user.userprofile.accent}}" id="notesListWidget" style="display: block;">					
 				</div>
 			</div>
 			<div class="col-8" id="rightCol">
-				<div class="grid" id="noteContent">
-					<div class="col-12 u-gray-bg align-center">
-						<h1>Выберите заметку</h1>
-						<div class="grid" id="noteStats">
-							<div class="col-4">
-								<img src="{{request.user.userprofile.avatar.url}}" class="img--circle" style="width: 32px;
-								height: 32px;"><br>Александр Перевезенцев</b>
-							</div>
-							<div class="col-4">
-								<i class="flaticon-eye" style="font-size: 1.5em;"></i><br>
-								Просмотры: <b>4</b>
-							</div>
-							<div class="col-4">
-								<i class="flaticon-speach-square" style="font-size: 1.5em;"></i><br>
-								Комментарии: <b>2</b>
-							</div>
-						</div>
-					</div>
-					<div class="col-12" style="background-color: #E3E3E3;">
-						<button class="button--fit button--color-black button--icon button--transparent-full" id="expandNoteOptions">Действия <i class="flaticon-down"></i></button>
-						<div id="noteOptions">
-							<button class="button--no-smooth button--color-{{request.user.userprofile.accent}} button--transparent-full button--icon"><i class="flaticon-heart"></i><span>Добавить в избранное</span></button>
-							<button class="button--no-smooth button--color-black button--transparent-full button--icon"><i class="flaticon-speach-square"></i><span>Комментировать</span></button>
-							<button class="button--no-smooth button--color-black button--transparent-full button--icon can-hide"><i class="flaticon-pencil"></i><span>Редактировать</span></button>
-							<button class="button--no-smooth button--color-black button--transparent-full button--icon can-hide"><i class="flaticon-trash"></i><span>Удалить</span></button>
-						</div>
-					</div>
-
-					<div class="col-12">
-						<div class="padding-1">							
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus tristique, ipsum id faucibus imperdiet, tellus purus gravida mi, vitae molestie erat urna eget dolor. Aliquam erat volutpat. Vivamus eleifend porta lorem. Pellentesque vehicula elit nibh, at vestibulum lacus consequat vel. Proin non odio feugiat, dignissim purus id, molestie massa. Sed in lorem quis lacus tempus congue non vel enim. Quisque sapien dolor, dictum sed ex sodales, scelerisque vestibulum urna. Nullam massa massa, viverra at consectetur id, ornare quis mi. Nulla facilisi. Donec in urna non orci fermentum luctus. Nam suscipit imperdiet tortor, vitae tempus ligula sagittis sed.</p>
-
-							<p>Aenean malesuada purus erat, non vestibulum libero dictum a. Etiam pellentesque molestie feugiat. Morbi ac lacus vitae nibh ultrices lobortis. Vestibulum fermentum porttitor sodales. Donec semper non sem eget finibus. Duis ac sollicitudin ex. Suspendisse et augue quam. Etiam at ullamcorper nisl, sit amet volutpat risus. Aenean iaculis sodales nisl, ultricies euismod nulla. In cursus et neque nec facilisis. Maecenas laoreet urna in porta rutrum. Cras rhoncus risus feugiat sem vehicula convallis. Vivamus placerat volutpat mauris quis lacinia. Nulla cursus arcu ut eros tempor, sed efficitur lectus viverra. Mauris tristique enim eget nulla varius, sit amet feugiat nibh congue.</p>
-
-							<p>Donec in nisl posuere, pellentesque lorem in, venenatis velit. Praesent quis lobortis quam. Morbi semper commodo lectus, vel pretium ligula consequat sit amet. Nulla in dolor aliquet, pulvinar metus non, vestibulum tellus. Phasellus enim leo, porttitor quis euismod non, semper nec ante. Nunc pharetra lacus vitae mattis feugiat. Mauris suscipit libero urna, eget lacinia ipsum vulputate ultricies. Curabitur sed semper tellus. Phasellus vitae vulputate metus. Donec ullamcorper commodo sollicitudin. Pellentesque tempus posuere augue, faucibus cursus mi consectetur sit amet. Cras urna nulla, pulvinar eu rhoncus ac, dictum convallis dolor. In posuere nisl turpis, non luctus turpis pharetra nec. Sed semper erat a felis facilisis egestas. In nibh lorem, tristique ac quam a, placerat rhoncus libero.</p>
-
-							<p>Nam blandit tristique venenatis. Vestibulum vel commodo ante. Phasellus consequat nisi nec sem gravida, id ullamcorper tortor blandit. Pellentesque velit est, condimentum vel blandit sed, mollis a ex. Praesent et nunc bibendum, luctus nunc a, feugiat neque. Donec non massa in ex scelerisque posuere. In sed ante massa. Vestibulum vestibulum in mi sed accumsan. Nullam tristique elit arcu, laoreet ultricies tellus consectetur sed. Vestibulum vel sem elit. Nam egestas risus velit. Nunc mollis rutrum leo non condimentum.</p>
-
-							<p>Suspendisse quis faucibus sapien. Morbi diam quam, scelerisque accumsan ultricies blandit, feugiat et sem. Sed porta dui sed ipsum rhoncus facilisis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in orci libero. Vestibulum egestas consequat sodales. Morbi sed leo malesuada, ultrices lorem vitae, pharetra risus. Maecenas a lectus diam. In eget nulla arcu. Sed ultrices lacus eleifend, pellentesque risus ac, efficitur ante. Sed laoreet placerat justo quis laoreet. Etiam non facilisis sapien.</p>		
-						</div>	
-					</div>				
+				<div class="grid" id="noteContent">							
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-<div class="dropdown{% if request.user.userprofile.theme == 'dark' %} dropdown--invert{% endif %}" id="yodaDropdown">
-	<div class="dropdown__item">Главная</div>
-	<div class="dropdown__item">Расписание</div>
-	<div class="dropdown__item">Заметки</div>
-	<div class="dropdown__item">Мероприятия</div>
-	<div class="dropdown__item">Файлы</div>
-	<div class="dropdown__item">Опросы</div>
-</div>
-<div class="dropdown{% if request.user.userprofile.theme == 'dark' %} dropdown--invert{% endif %}" id="profileDropdown">
-	<div class="dropdown__item dropdown__item--icon"><i class="flaticon-profile"></i>Мой профиль</div>
-	<div class="dropdown__item dropdown__item--icon"><i class="flaticon-award-card"></i>Посещаемость</div>
-	<div class="dropdown__item dropdown__item--icon"><i class="flaticon-duty"></i>Долги</div>
-	<div class="dropdown__item dropdown__item--icon"><i class="flaticon-chest"></i>Инвентарь</div>
-	<div class="dropdown__item dropdown__item--icon"><i class="flaticon-cup"></i>Достижения</div>
-	<div class="dropdown__item dropdown__item--icon"><i class="flaticon-settings"></i>Настройки</div>
-	<div class="dropdown__item dropdown__item--icon"><i class="flaticon-power-off"></i>Выйти</div>
-</div>
 
-<div class="search_block">
-	<p>На данный момент поиск работает в ограниченном режиме</p>
-	<div class="form form--no-padding form--fit form--no-smooth">
-		<input type="text" id="search_field" placeholder="Введите ваш поисковый запрос...">
-		<p>Например: "<span class="{{request.user.userprofile.accent}}-fg" id="search_field_help">Билеты для ТОИ</span>"</p>
+{% verbatim %}
+<script type="text/template" id="NoteListItemTemplate">
+	<div class="list-navigation__icon"><i class="flaticon-notepad"></i></div>
+	<div class="list-navigation__content">
+		<div class="list-navigation__content__title">{{title}}</div>
+		<div class="list-navigation__content__meta">{{pub_date}}</div>
 	</div>
+	<div class="list-navigation__right-icon"><i class="flaticon-right1"></i></div>
+</script>
 
-	<div class="card card--no-smooth card--color-black" style="margin: 0em;">
-		<div class="card__header">
-			<div class="card__header__title">Результаты поиска</div>
-		</div>
-		<div class="card__content card__content--no-padding">
-			<div class="list-navigation list-navigation--invert list-navigation--color-{{request.user.userprofile.accent}}">
-				<div class="list-navigation__item">
-					<div class="list-navigation__icon"><i class="flaticon-notepad"></i></div>
-					<div class="list-navigation__content">
-						<div class="list-navigation__content__title">Билеты по ТОИ</div>
-						<div class="list-navigation__content__meta">Заметки</div>
-					</div>
-				</div>
-				<div class="list-navigation__item">
-					<div class="list-navigation__icon"><i class="flaticon-notepad"></i></div>
-					<div class="list-navigation__content">
-						<div class="list-navigation__content__title">Билеты по ТОИ</div>
-						<div class="list-navigation__content__meta">Заметки</div>
-					</div>
-				</div>
-				<div class="list-navigation__item">
-					<div class="list-navigation__icon"><i class="flaticon-notepad"></i></div>
-					<div class="list-navigation__content">
-						<div class="list-navigation__content__title">Билеты по ТОИ</div>
-						<div class="list-navigation__content__meta">Заметки</div>
-					</div>
-				</div>
-				<div class="list-navigation__item">
-					<div class="list-navigation__icon"><i class="flaticon-notepad"></i></div>
-					<div class="list-navigation__content">
-						<div class="list-navigation__content__title">Билеты по ТОИ</div>
-						<div class="list-navigation__content__meta">Заметки</div>
-					</div>
-				</div>
-				<div class="list-navigation__item">
-					<div class="list-navigation__icon"><i class="flaticon-notepad"></i></div>
-					<div class="list-navigation__content">
-						<div class="list-navigation__content__title">Билеты по ТОИ</div>
-						<div class="list-navigation__content__meta">Заметки</div>
-					</div>
-				</div>
+
+<script type="text/template" id="NoteDetailTemplate">
+	<div class="col-12 u-gray-bg align-center animation push-in-up delay-0.5s">
+		<h1>{{title}}</h1>
+		<div class="grid" id="noteStats">
+			<div class="col-4">
+				<img src="{{user.avatar}}" class="img--circle" style="width: 32px;
+				height: 32px;"><br>{{user.first_name}} {{user.last_name}}</b>
+			</div>
+			<div class="col-4">
+				<i class="flaticon-eye" style="font-size: 1.5em;"></i><br>
+				Просмотры: <b>{{views}}</b>
+			</div>
+			<div class="col-4">
+				<i class="flaticon-speach-square" style="font-size: 1.5em;"></i><br>
+				Комментарии: <b>{{comments.length}}</b>
 			</div>
 		</div>
-	</div>	
-</div>
+	</div>
+	<div class="col-12" style="background-color: #E3E3E3;">
+		<button class="button--fit button--color-black button--icon button--transparent-full" id="expandNoteOptions">Действия <i class="flaticon-down"></i></button>
+		<div id="noteOptions">
+			<button class="button--no-smooth button--color-{{user_accent}} button--transparent-full button--icon"><i class="flaticon-heart bold"></i><span>Добавить в избранное</span></button>
+			<button class="button--no-smooth button--color-black button--transparent-full button--icon"><i class="flaticon-speach-square bold"></i><span>Комментировать</span></button>
+			<button class="button--no-smooth button--color-black button--transparent-full button--icon can-hide"><i class="flaticon-pencil bold"></i><span>Редактировать</span></button>
+			<button class="button--no-smooth button--color-black button--transparent-full button--icon can-hide" ><i class="flaticon-trash bold"></i><span>Удалить</span></button>
+		</div>
+	</div>
+	<div class="col-12  animation push-in-down delay-0.5s">
+		<div class="padding-1">{{{content}}}</div>	
+	</div>
+</script>
+{% endverbatim %}
 {% endblock %}

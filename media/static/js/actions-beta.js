@@ -1,4 +1,4 @@
-function sendAjax(method, url, data, success, error) {
+/*function sendAjax(method, url, data, success, error) {
 	csrf_object = {
 		'csrfmiddlewaretoken': getCookie("csrftoken"),
         'X-CSRFToken': getCookie("csrftoken"),
@@ -10,6 +10,7 @@ function sendAjax(method, url, data, success, error) {
         url: url,
         processData: false,
         contentType: "application/json",
+        dataType: "json"
         data: result_data,
         headers: {
             'csrfmiddlewaretoken': getCookie("csrftoken"),
@@ -18,7 +19,7 @@ function sendAjax(method, url, data, success, error) {
         success: success,
         error: error,
     });
-}
+}*/
 
 function getCookie(name) {
  	var matches = document.cookie.match(new RegExp(

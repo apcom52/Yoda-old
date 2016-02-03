@@ -1,4 +1,5 @@
 @import "vars.less";
+
 .taskbar__item--logo {
 	display: none !important;
 }
@@ -69,6 +70,18 @@ body {
 	left: 0em;
 	border-bottom: 1em solid @blue;
 	z-index: 2;
+
+	&.search_block--color-red { border-bottom-color: @red; }
+	&.search_block--color-orange { border-bottom-color: @orange; }
+	&.search_block--color-yellow { border-bottom-color: @yellow; }
+	&.search_block--color-olive { border-bottom-color: @olive; }
+	&.search_block--color-green { border-bottom-color: @green; }
+	&.search_block--color-teal { border-bottom-color: @teal; }
+	&.search_block--color-blue { border-bottom-color: @blue; }
+	&.search_block--color-purple { border-bottom-color: @purple; }
+	&.search_block--color-violet { border-bottom-color: @violet; }
+	&.search_block--color-pink { border-bottom-color: @pink; }
+	&.search_block--color-brown { border-bottom-color: @brown; }
 }
 
 .overlay {

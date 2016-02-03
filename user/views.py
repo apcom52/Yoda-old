@@ -57,6 +57,7 @@ def profile(request, id):
 			'level': up['level'],
 			'percent': up['percent'],
 			'bingo': _bingo,
+			'more': up,
 		}
 		return render(request, 'profile.html', context)
 	except ObjectDoesNotExist:
@@ -123,6 +124,7 @@ def achievements(request, id):
 			'level': up['level'],
 			'percent': up['percent'],
 			'bingo': _bingo,
+			'more': up,
 		}
 		return render(request, 'profile-achievements.html', context)
 	except ObjectDoesNotExist:
@@ -202,6 +204,7 @@ def user_content(request, id):
 			'level': up['level'],
 			'percent': up['percent'],
 			'bingo': _bingo,
+			'more': up,
 		}
 		return render(request, 'profile_content.html', context)
 	except ObjectDoesNotExist:
@@ -214,9 +217,10 @@ def my_attendance(request, id):
 		UpdateStatus(request.user)
 		checkAchievements(request.user)	
 		up = getProfileInfo(id)	
+		semester = settings.SEMESTER
 
 		attendance = []
-		for lesson in Lesson_Item.objects.all().filter(semester = 3):
+		for lesson in Lesson_Item.objects.all().filter(semester = semester):
 			my_visits = []
 			for day in Attendance.objects.all().filter(lesson = lesson):
 				type = 'Лекция'
@@ -258,6 +262,7 @@ def my_attendance(request, id):
 			'level': up['level'],
 			'percent': up['percent'],
 			'bingo': _bingo,
+			'more': up,
 		}
 		return render(request, 'profile_attendance.html', context)
 	except ObjectDoesNotExist:
@@ -270,9 +275,10 @@ def my_duties(request, id):
 		UpdateStatus(request.user)
 		checkAchievements(request.user)	
 		up = getProfileInfo(id)	
+		semester = settings.SEMESTER
 
 		duties = []
-		for lesson in Lesson_Item.objects.all().filter(semester = 3):
+		for lesson in Lesson_Item.objects.all().filter(semester = semester):
 			my_visits = []
 			for day in Duty.objects.all().filter(lesson = lesson):				
 				my_visits.append({
@@ -311,6 +317,7 @@ def my_duties(request, id):
 			'level': up['level'],
 			'percent': up['percent'],
 			'bingo': _bingo,
+			'more': up,
 		}
 		return render(request, 'profile_duties.html', context)
 	except ObjectDoesNotExist:
@@ -425,6 +432,7 @@ def inventory(request, id):
 		'level': up['level'],
 		'percent': up['percent'],
 		'bingo': _bingo,
+		'more': up,
 	}
 	return render(request, 'profile_inventory.html', context)
 	
@@ -496,12 +504,13 @@ def statistic(request, id):
 			'level': up['level'],
 			'percent': up['percent'],
 			'bingo': _bingo,
+			'more': up,
 		}
 		return render(request, 'profile_stats.html', context)
 	except ObjectDoesNotExist:
 		return redirect('/')
 
-def settings(request):
+def user_settings(request):
 	if not request.user.is_authenticated(): return redirect('/auth/in')
 	UpdateStatus(request.user)
 	avatar_upload = UploadAvatarForm()
@@ -509,13 +518,13 @@ def settings(request):
 	set_contacts = SetContactForm(initial = {'vk': request.user.userprofile.vk, 'facebook': request.user.userprofile.facebook, 'twitter': request.user.userprofile.twitter, 'phone': request.user.userprofile.phone})
 	error_password = request.GET.get('error_password', False)
 	context = {
-		'title': 'Настройки',
+		'title': 'Настройки (beta)',
 		'current_avatar': avatar(request.user),
 		'avatar_upload': avatar_upload,
 		'change_password': change_password,
 		'set_contacts': set_contacts,
 		'error_password': error_password,
-	}
+	}	
 	return render(request, 'settings.html', context)
 
 def upload_photo(request):
@@ -670,7 +679,7 @@ def sold_inventory_item(request):
 def lottery(request):
 	import random
 	from timetable.utils import pointsumm, getRandomItem
-	if pointsumm(request.user) >= 15:
+	if pointsumm(request.user) >= 17:
 		items = []
 		for i in range(1, 13):
 			items.append({
@@ -689,7 +698,7 @@ def lottery(request):
 
 		from user.models import UserProfile
 		user = UserProfile.objects.get(user = request.user)
-		user.bonus_points -= 15
+		user.bonus_points -= 17
 		user.save()
 
 		context = {
@@ -704,7 +713,7 @@ def lottery(request):
 def complect(request):
 	import random
 	from timetable.utils import pointsumm, getRandomItem
-	if pointsumm(request.user) >= 70:
+	if pointsumm(request.user) >= 99:
 		items = []
 		for i in range(1, 7):
 			item = getRandomItem()
@@ -735,7 +744,7 @@ def complect(request):
 
 		from user.models import UserProfile
 		user = UserProfile.objects.get(user = request.user)
-		user.bonus_points -= 70
+		user.bonus_points -= 99
 		user.save()
 
 		context = {

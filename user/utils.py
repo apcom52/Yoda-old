@@ -19,6 +19,8 @@ def getProfileInfo(id):
 	avt = avatar(user)
 	morph = pymorphy2.MorphAnalyzer()
 
+	semester = settings.SEMESTER
+
 	#Онлайн
 	is_online = isOnline(user)
 	last_visit = user.userprofile.last_visit
@@ -46,7 +48,8 @@ def getProfileInfo(id):
 	last_phone = user.userprofile.phone
 	phone = '+7 (%s)-%s-%s-%s' % (last_phone[0:3], last_phone[3:6], last_phone[6:8], last_phone[8:10])
 
-	act_list = Action.objects.all().filter(login = user).order_by('-pub_date')
+	act_list = Action.objects.all().filter(login = user).order_by('-pub_date')[:50]
+	act_count = Action.objects.filter(login = user).count()
 	actions_morph = morph.parse('действие')[0]
 	actions = []
 	for action in act_list:		
@@ -76,21 +79,23 @@ def getProfileInfo(id):
 	ach_counter_morph = morph.parse('достижение')[0]
 
 	#Получение процента посещаемости
-	all_visiting = Attendance.objects.all().filter(lesson__semester = 3).count()
-	my_visits = Attendance.objects.all().filter(lesson__semester = 3).filter(visitor = user).count()
+	all_visiting = Attendance.objects.all().filter(lesson__semester = semester).count()
+	my_visits = Attendance.objects.all().filter(lesson__semester = semester).filter(visitor = user).count()
 	if all_visiting == 0: all_visiting = 1
 	attendance_percent = round(my_visits / all_visiting * 100)
 
 	#Получение процента задолжностей
-	all_duties = Duty.objects.all().filter(lesson__semester = 3).count()
-	my_not_duties = Duty.objects.all().filter(lesson__semester = 3).filter(visitors = user).count()
-	if all_duties == 0: all_duties = 1
+	all_duties = Duty.objects.all().filter(lesson__semester = semester).count()
+	my_not_duties = Duty.objects.all().filter(lesson__semester = semester).filter(visitors = user).count()
+	if all_duties == 0: 
+		all_duties = 1
+		my_not_duties = 1
 	duties_percent = round((1 - my_not_duties / all_duties) * 100)
 	print(all_duties, my_not_duties)
 
-	level = math.floor(len(actions) / 100) + 1
+	level = math.floor(act_count / 100) + 1
 
-	percent = round(((len(actions) - 100 * (level - 1)) / 100) * 100)
+	percent = round(((act_count - 100 * (level - 1)) / 100) * 100)
 
 	context = {
 		'title': username,
@@ -98,7 +103,8 @@ def getProfileInfo(id):
 		'bodyclass': 'profile-page',
 		'avatar': avt,
 		'friends': friends,
-		'actions': actions,
+		'actions': actions[:50],
+		'act_count': act_count,
 		'active_page': 1,
 		'actions_morph': actions_morph.make_agree_with_number(len(act_list)).word,
 		'xp': points,

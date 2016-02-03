@@ -31,7 +31,7 @@
 			<div class="ui comments">  
 			{% for action in actions %}
 				<div class="comment">
-					<a class="avatar"><img src="{{action.avatar}}"></a>
+					<a class="avatar"><img src="{{action.avatar}}" style="width: 2.em; height: 2.5em;"></a>
 				    <div class="content">
 				      	<a class="author" href="/users/{{user.id}}">{{action.username}}</a>
 				      	<div class="metadata"><span class="date altrone-popup" data-content="{{action.pub_date}}">{{action.pub_date|naturaltime}}</span></div>

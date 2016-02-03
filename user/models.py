@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib import admin
 from django.contrib.auth.models import User
+from django.conf import settings
 from timetable.models import Lesson_Item
 from inventory.models import Background
 # Create your models here.
@@ -18,6 +19,7 @@ class AttendanceAdmin(admin.ModelAdmin):
 
 	def get_form(self, request, obj=None, **kwargs):
 		form = super(AttendanceAdmin, self).get_form(request, obj, **kwargs)
+		form.base_fields['lesson'].queryset = Lesson_Item.objects.filter(semester = settings.SEMESTER)
 		form.base_fields['visitor'].queryset = User.objects.filter(is_active = True)
 		return form
 
@@ -29,6 +31,12 @@ class Duty(models.Model): #Долги
 
 class DutyAdmin(admin.ModelAdmin):
 	list_display = ('lesson', 'date', 'description')
+
+	def get_form(self, request, obj=None, **kwargs):
+		form = super(DutyAdmin, self).get_form(request, obj, **kwargs)
+		form.base_fields['lesson'].queryset = Lesson_Item.objects.filter(semester = settings.SEMESTER)
+		form.base_fields['visitor'].queryset = User.objects.filter(is_active = True)
+		return form
 
 class BonusPoints(models.Model):
 	user = models.ForeignKey(User)
@@ -49,17 +57,19 @@ class UserProfile(models.Model):
 		('green', 'Зеленый'),
 		('teal', 'Бирюзовый'),
 		('blue', 'Синий'),
-		('violet', 'Пурпурный'),
+		('violet', 'Индиго'),
 		('purple', 'Фиолетовый'),
-		('pink', 'Розовый'),
+		('pink', 'Пурпурный'),
 		('brown', 'Коричневый'),
 		)
 	languages = (
 		('ru', 'Русский язык'),
 		('en', 'Английский язык'),
 		)
+	groups = ((1, 'Первая подгруппа'), (2, 'Вторая подгруппа'))
 
 	user = models.OneToOneField(User)
+	group = models.IntegerField('Подгруппа', choices = groups, default = 1)
 	last_visit = models.DateTimeField('Последний просмотр', blank = True, null = True)
 	bonus_points = models.IntegerField('Бонусные очки', blank = True, null = True, default = 0)
 	avatar = models.ImageField(upload_to='img/%Y/%m/%d/', verbose_name='Фотография пользователя', default='img/2015/08/04/ufo.jpg')

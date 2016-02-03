@@ -65,6 +65,39 @@ body {
   border-bottom: 1em solid #2185d0;
   z-index: 2;
 }
+.search_block.search_block--color-red {
+  border-bottom-color: #db2828;
+}
+.search_block.search_block--color-orange {
+  border-bottom-color: #f2711c;
+}
+.search_block.search_block--color-yellow {
+  border-bottom-color: #fbbd08;
+}
+.search_block.search_block--color-olive {
+  border-bottom-color: #b5cc18;
+}
+.search_block.search_block--color-green {
+  border-bottom-color: #21ba45;
+}
+.search_block.search_block--color-teal {
+  border-bottom-color: #00b5ad;
+}
+.search_block.search_block--color-blue {
+  border-bottom-color: #2185d0;
+}
+.search_block.search_block--color-purple {
+  border-bottom-color: #a333c8;
+}
+.search_block.search_block--color-violet {
+  border-bottom-color: #6435c9;
+}
+.search_block.search_block--color-pink {
+  border-bottom-color: #e03997;
+}
+.search_block.search_block--color-brown {
+  border-bottom-color: #a5673f;
+}
 .overlay {
   display: none;
   background-color: rgba(33, 33, 33, 0.8);

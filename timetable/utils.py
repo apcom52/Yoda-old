@@ -7,7 +7,7 @@ from django.utils import timezone
 from user.models import *
 from polls.models import QueAns
 from events.models import UserVisitEvent
-from inventory.models import Item, UserInventoryItem #Smile, SmileCollection
+from inventory.models import Item, UserInventoryItem, Catapult #Smile, SmileCollection
 import datetime
 
 class DTControl:
@@ -141,7 +141,7 @@ def handle_uploaded_file(f):
 			user.userprofile.avatar = url
 			user.save()
 
-def checkAchievements(user, params = ['404', 'actives', 'admin', 'comments', 'visiter', 'contacts', '228']):
+def checkAchievements(user, params = ['404', 'actives', 'admin', 'comments', 'visiter', 'contacts', '228', 'catapult', 'collection']):
 	if '404' in params:
 		summ = pointsumm(user)
 		if summ >= 404:
@@ -185,6 +185,26 @@ def checkAchievements(user, params = ['404', 'actives', 'admin', 'comments', 'vi
 		summ = pointsumm(user)
 		if summ >= 228:
 			setAch(user, 27)
+	if 'collection' in params:
+		all_items = Item.objects.all().filter(no_sold = False)
+		my_items = 0
+		for item in all_items:
+			if UserInventoryItem.objects.filter(item_id = item.id).filter(user = user).filter(quality = 3).count() > 0:
+				my_items += 1
+			else:
+				break
+		if my_items >= len(all_items):
+			setAch(user, 32)
+	if 'catapult' in params:
+		catapults = Catapult.objects.filter(from_user = user).count()
+		if catapults >= 10:
+			setAch(user, 33)
+		if catapults >= 40:
+			setAch(user, 34)
+		if catapults >= 100:
+			setAch(user, 35)
+
+
 
 def getTimetable(semester = settings.SEMESTER, week = 1, day = 1, date = ''):
 	from .models import Lesson, Teacher, Timetable, Homework, Control, NewPlace, TeacherTimetable, NotStudyTime, TransferredLesson, CanceledLesson

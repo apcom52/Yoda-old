@@ -2,8 +2,8 @@
   border-radius: 0px;
 }
 .profile-page {
-  background-image: url(/media/img/christmas_pattern.png);
-  /* background-image: url(/media/img/geometry.png);*/
+  /*background-image: url(/media/img/christmas_pattern.png);*/
+  background-image: url(/media/img/geometry.png);
 }
 .ui .event .label img {
   width: 32px !important;
@@ -75,20 +75,19 @@
   box-sizing: border-box;
   cursor: pointer;
   /*.anim(0.3s);*/
-  /*i {			
-			width:24px;
-			height:24px;
-			display: block;
-			margin: auto;
-			//background-image:url(/media/img/icons/list-white.png);
-			background-image:url(/media/img/icons/ghost.png);
-			background-size: cover;
-		}
-
-		&:hover {
-			background-color: @orange;
-			.anim(0.3s);
-		}*/
+}
+.taskbar .menu-icon i {
+  width: 24px;
+  height: 24px;
+  display: block;
+  margin: auto;
+  background-image: url(/media/img/icons/list-white.png);
+  /*background-image:url(/media/img/icons/ghost.png);*/
+  background-size: cover;
+}
+.taskbar .menu-icon:hover {
+  background-color: #d9534f;
+  transition: all 0.3s linear;
 }
 .taskbar .actions {
   float: left;
@@ -138,6 +137,9 @@
 .taskbar .action-panel ul li.success:hover {
   background-color: #93E580;
   transition: all 0.3s linear;
+}
+.taskbar .item {
+  float: left;
 }
 .taskbar .right-icons {
   display: inline-block;
@@ -207,10 +209,10 @@
 .sidebar .cover {
   width: 100%;
   height: 200px;
-  background-size: 100% auto;
+  background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url(/media/img/covers/christmas.gif);
+  background-image: url(/media/img/covers/gradient.jpg);
   text-align: center;
   padding-top: 48px;
   box-sizing: border-box;

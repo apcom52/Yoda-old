@@ -5,6 +5,7 @@ from achievements.models import Action, AchUnlocked
 from django.db.models.fields import related
 from django.core.exceptions import ObjectDoesNotExist 
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.utils import timezone
 from .models import Lesson, Teacher, Timetable, Homework, Control, NewPlace, TeacherTimetable, NotStudyTime, TransferredLesson, CanceledLesson
 from events.models import Event, UserVisitEvent
@@ -407,66 +408,96 @@ def teacher(request, id):
 def all_timetable(request):
 	if not request.user.is_authenticated(): return redirect('/auth/in')
 	UpdateStatus(request.user)
-	weeks = []
-	week1 = []
-	week2 = []
-	i = 1
-	day = 1
-	week = 1
-	while i <= 6:
-		lessons = Timetable.objects.all().filter(week = week, day = i, semester = settings.SEMESTER)
-		day = []
-		if i == 1 or i == 7: dayname = 'Понедельник'
-		elif i == 2 or i == 8: dayname = 'Вторник'
-		elif i == 3 or i == 9: dayname = 'Среда'
-		elif i == 4 or i == 10: dayname = 'Четверг'
-		elif i == 5 or i == 11: dayname = 'Пятница'
-		elif i == 6 or i == 12: dayname = 'Суббота'
-		day.append({
-			'title': dayname,
-			'color': '',
-		})
-		last_id = 1
-		for lesson in lessons:
-			l = lesson.lesson
-			while last_id != lesson.time:
-				day.append({
-					'title': '',
-					'color': '',
-				})
-				last_id += 1
-
-			color = 'olive'
-			if l.type == 2: color = 'blue'
-			elif l.type == 3: color = 'red'
-			current = {
-				'title': l.title, 
-				'color': color,
-			}
-			day.append(current)
-			if lesson.double:
-				day.append(current)
-				last_id += 1
-			last_id += 1
-		while len(day) <= 7:
-			last_id += 1
-			day.append({
-				'title': '',
-				'color': '',
-			})
-		if week == 1: week1.append(day)
-		elif week == 2: week2.append(day)
-
-		i += 1		
-		if i == 7 and week == 1: 			
-			week = 2
-			i = 1	
+	
 	context = {
 		'title': 'Расписание',
-		'week1': week1,
-		'week2': week2,
+		'week1': get_week_timetable(request, 1),
+		'week2': get_week_timetable(request, 2),
 	}
+	if request.user.userprofile.beta:
+		context['title'] = 'Расписание (beta)'
+		return render(request, 'timetable_beta.html', context)
 	return render(request, 'timetable.html', context)
+
+
+def get_week_timetable(request, week):
+	times = [
+		'8:20', '09:50',
+		'10:00', '11:30',
+		'11:45', '13:15',
+		'14:00', '15:30',
+		'15:45', '17:15',
+		'17:20', '18:50',
+		'18:55', '20:25'
+	]
+
+	result = []
+	semester = settings.SEMESTER
+	group = request.user.userprofile.group
+
+	for d in range(1, 7):
+		lessons_list = Timetable.objects.filter(week = week, day = d, semester = semester).filter(Q(group = 1) | Q(group = (group + 1))).order_by('time')
+		day = {}
+		lessons = []
+		if d == 1: dayname = 'Понедельник'
+		elif d == 2: dayname = 'Вторник'
+		elif d == 3: dayname = 'Среда'
+		elif d == 4: dayname = 'Четверг'
+		elif d == 5: dayname = 'Пятница'
+		elif d == 6: dayname = 'Суббота'
+
+		isFreeDay = True
+		currentLessonId = 1
+		for lesson in lessons_list:
+			isFreeDay = False
+			currentLesson = lesson.lesson
+			while currentLessonId != lesson.time:
+				lessons.append({
+					'type': 0,
+					'lesson': 0,
+					'double': False,
+				});
+				currentLessonId += 1
+
+			type = 'lection'
+			type_rus = 'Лекция'
+			if currentLesson.type == 2: 
+				type = 'practice'
+				type_rus = 'Практика'
+			elif currentLesson.type == 3: 
+				type = 'lab'
+				type_rus = 'Лабораторная работа'
+
+			isDouble = False
+			time = times[(lesson.time - 1) * 2] + ' - ' + times[(lesson.time - 1) * 2 + 1]
+			if lesson.double:
+				isDouble = True
+				currentLessonId += 1
+				time = times[(lesson.time - 1) * 2] + ' - ' + times[(lesson.time) * 2 + 1]
+			lessons.append({
+				'lesson': currentLesson,
+				'timetable_lesson': lesson,
+				'type': type,
+				'double': isDouble,
+				'type_rus': type_rus,
+				'time': time,
+				})
+			currentLessonId += 1
+
+		while currentLessonId != 7:
+			lessons.append({
+				'type': 0,
+				'lesson': 0,
+				'double': False,
+			});
+			currentLessonId += 1
+		day = {
+			'dayname': dayname,
+			'lessons': lessons,
+			'free': isFreeDay,
+		}
+		result.append(day)
+	return result
 
 
 def add_homework(request):

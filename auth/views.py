@@ -12,13 +12,19 @@ from user.models import UserProfile
 
 class SignUpForm(forms.Form):
 	users = (
+		('bochkarev Кирилл Бочкарев', 'Кирилл Бочкарев'),
+		('vetluzhkih Дмитрий Ветлужских', 'Дмитрий Ветлужских'),
 		('zonov Максим Зонов', 'Максим Зонов'),
+		('krivoshein Руслан Кривошеин', 'Руслан Кривошеин'),
 		('leyshin Влад Леушин', 'Влад Леушин'),
+		('palkina Светлана Палкина', 'Светлана Палкина'),
 		('apcom52 Александр Перевезенцев', 'Александр Перевезенцев'),
+		('rodygin Владислав Родыгин', 'Владислав Родыгин'),
 		('selivanov Михаил Селиванов', 'Михаил Селиванов'),
 		('smetanin Иван Сметанин', 'Иван Сметанин'),
-		('trofimenko Влад Трофименко', 'Влад Трофименко'),
+		('symachev Максим Сумачев', 'Максим Сумачев'),
 		('tsekanov Алексей Цеканов', 'Алексей Цеканов'),
+		('chagaev Артур Чагаев', 'Артур Чагаев'),
 		('shyklin Вячеслав Шуклин', 'Вячеслав Шуклин'),
 	)
 	username = forms.ChoiceField(widget=forms.Select, choices=users, label="Ваше имя:")
@@ -105,20 +111,18 @@ def signin(request):
 		olduser = random.choice(users)
 	error = [False, '']
 	form = SignInForm()
-	if request.method == 'POST':
-		form = SignInForm(request.POST)		
-		if form.is_valid():
-			username = request.POST['username']
-			password = request.POST['password']
-			user = authenticate(username = username, password = password)
-			if user is not None and user.is_active:
-				if user.is_active:
-					auth.login(request, user)
-					return redirect('/')
-				else:
-					error[0], error[1] = True, 'Пользователь не найден или он не активен'
+	if request.method == 'POST':	
+		username = request.POST['username']
+		password = request.POST['password']
+		user = authenticate(username = username, password = password)
+		if user is not None and user.is_active:
+			if user.is_active:
+				auth.login(request, user)
+				return redirect('/')
 			else:
-				error[0], error[1] = True, 'Введенные данные некорректны'
+				error[0], error[1] = True, 'Пользователь не найден или он не активен'
+		else:
+			error[0], error[1] = True, 'Введенные данные некорректны'
 	context = {
 		"form": form,
 		'users': users, 

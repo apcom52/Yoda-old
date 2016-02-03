@@ -50,8 +50,7 @@ def add(request):
 			if len(content)	< 10 or len(title) < 2: error_message = 'Заголовок должен быть не менее 2 символов. Содержание заметки не менее 10-ти символов'	
 			error[0] = True
 			error[1] = error_message
-	context = {'title': 'Заметки', 'form':form, 'error':error[0], 'error_text': error[1], 'white': white,}
-	if request.user.userprofile.beta:	return render(request, 'beta/note_add.html', context)
+	context = {'title': 'Заметки', 'form':form, 'error':error[0], 'error_text': error[1], 'white': white,}	
 	return render(request, 'notes_add.html', context)
 
 def note(request, id):	
@@ -108,8 +107,7 @@ def note(request, id):
 			'white': white,
 			#'smiles': getSmiles(request.user),
 		}
-		if request.user.userprofile.beta:	return render(request, 'beta/note.html', context)
-		else:	return render(request, 'note.html', context)
+		return render(request, 'note.html', context)
 	except ObjectDoesNotExist: 
 		return redirect('/notes/')	
 
