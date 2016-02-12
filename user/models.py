@@ -8,11 +8,17 @@ from inventory.models import Background
 
 class Attendance(models.Model): #Посещаемость
 	types = ((1, 'Лекция'),	(2, 'Практика'), (3, 'Лабораторная работа'))
+	groups = ((1, 'Общее занятие'), (2, 'Первая подгруппа'), (3, 'Вторая подгруппа'))
 
 	lesson = models.ForeignKey(Lesson_Item)
 	date = models.DateField('Дата предмета')
 	type = models.IntegerField('Тип занятия', choices = types, default = 1)
+	group = models.IntegerField('Подгруппа', choices = groups, default = 1)
 	visitor = models.ManyToManyField(User)
+
+	class Meta:
+		verbose_name = 'Посещаемость'
+		verbose_name_plural = 'Посещаемость'
 
 class AttendanceAdmin(admin.ModelAdmin):
 	list_display = ('lesson', 'date', 'type')
@@ -28,6 +34,10 @@ class Duty(models.Model): #Долги
 	date = models.DateField('Дата предмета')
 	description = models.CharField('Описание долга', max_length = 128, unique = False)
 	visitors = models.ManyToManyField(User)
+
+	class Meta:
+		verbose_name = 'Долг'
+		verbose_name_plural = 'Долги'
 
 class DutyAdmin(admin.ModelAdmin):
 	list_display = ('lesson', 'date', 'description')
@@ -73,20 +83,48 @@ class UserProfile(models.Model):
 	last_visit = models.DateTimeField('Последний просмотр', blank = True, null = True)
 	bonus_points = models.IntegerField('Бонусные очки', blank = True, null = True, default = 0)
 	avatar = models.ImageField(upload_to='img/%Y/%m/%d/', verbose_name='Фотография пользователя', default='img/2015/08/04/ufo.jpg')
-	#background = models.ForeignKey(Background)
 	facebook = models.CharField('Facebook', max_length = 256, blank = True, null = True)
 	twitter = models.CharField('Twitter', max_length = 256, blank = True, null = True)
 	vk = models.CharField('ВКонтакте', max_length = 256, blank = True, null = True)
 	phone = models.CharField('Номер телефона', max_length = 16, blank = True, null = True)
+	github = models.CharField('Github', max_length = 256, blank = True, null = True)
 	
 	theme = models.CharField('Тема', choices = themes, default = 'light', max_length = 8)
 	accent = models.CharField('Акцентный цвет', choices = accents, default = 'blue', max_length = 12)
 	lang = models.CharField('Язык интерфейса', choices = languages, default = 'ru', max_length=2)
 	beta = models.BooleanField('Бета-функции', default = False)
 	hide_email = models.BooleanField('Скрывать адрес e-mail', default = False)
+	hide_tips = models.BooleanField('Скрывать подсказки', default = False)
 
-	#def __str__(self):
-	#	return self.user
+	filter_achievements = models.BooleanField('Показывать записи о достижениях', default = True)
+	filter_sales = models.BooleanField('Показывать записи о продажах', default = True)
+	filter_catapult = models.BooleanField('Показывать записи о запусках катапульты', default = True)
+	filter_bonuses = models.BooleanField('Показывать записи о бонусах', default = True)
+
+	notes_font_sizes = (
+		(14, '14px'),
+		(16, '16px'),
+		(18, '18px'),
+		(20, '20px')
+	)
+	notes_font_styles = (
+		(1, 'Без засечек'),
+		(2, 'С засечками'),
+	)
+
+	notes_night_mode = models.BooleanField('Скрывать подсказки', default = False)
+	notes_font_size = models.IntegerField('Размер шрифта в заметках', choices = notes_font_sizes, default = 16)
+	notes_font_style = models.IntegerField('Стиль шрифта в заметках', choices = notes_font_styles,  default = 1)
+
+	polls_actual = models.BooleanField('Показывать актуальные темы', default = True)
+
+	events_time_notifications = (
+		(1, 'За 1 день до начала'),
+		(2, 'За 2 дня до начала'),
+		(3, 'За 3 дня до начала'),
+	)
+	events_notification = models.BooleanField('Высылать уведомления о ближайших событиях', default = True)
+	events_time_notification = models.IntegerField('Уведомлять о событии', choices = events_time_notifications, default = 1)
 
 	class Meta:
 		verbose_name = 'Профиль'

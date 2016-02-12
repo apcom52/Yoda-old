@@ -100,7 +100,7 @@ def index(request):
 	#Получение списка предметов
 	today = DTControl()	
 	timetable = []	
-	tm_list = Timetable.objects.all().filter(semester = settings.SEMESTER, week = today.week, day = today.weekday)
+	tm_list = Timetable.objects.all().filter(semester = settings.SEMESTER, week = today.week, day = today.weekday).filter(Q(group = 1) | Q(group = (request.user.userprofile.group + 1))).order_by('time')
 	for lesson in tm_list:
 		title = lesson.lesson.title
 		lesson_is_end = False
@@ -799,9 +799,9 @@ def timetableByDate(request):
 	tomorrow_info = dateInfo({'year': tomorrow.year, 'month': tomorrow.month, 'day': tomorrow.day})
 	second_info = dateInfo({'year': second.year, 'month': second.month, 'day': second.day})
 	third_info = dateInfo({'year': third.year, 'month': third.month, 'day': third.day})	
-	first = getTimetable(week = tomorrow_info['week'], day = tomorrow_info['weekday'], date = tomorrow)
-	second = getTimetable(week = second_info['week'], day = second_info['weekday'], date = second)
-	third = getTimetable(week = third_info['week'], day = third_info['weekday'], date = third)
+	first = getTimetable(week = tomorrow_info['week'], day = tomorrow_info['weekday'], date = tomorrow, request = request)
+	second = getTimetable(week = second_info['week'], day = second_info['weekday'], date = second, request = request)
+	third = getTimetable(week = third_info['week'], day = third_info['weekday'], date = third, request = request)
 	context = {
 		'first': first,
 		'second': second,

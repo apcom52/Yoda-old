@@ -79,7 +79,7 @@ class UserAPI(APIView):
 		if (data.get("id")):
 			users = User.objects.filter(id__exact = int(data.get('id')))
 		else:
-			users = User.objects.all()
+			users = User.objects.all().order_by('-userprofile__last_visit').filter(is_active = True)
 		serializer = UserSerializer(users, many = True)
 		return Response(serializer.data)
 
@@ -193,33 +193,25 @@ class FavoriteAPI(APIView):
 		return Response(serializer.data)
 
 class SettingsAPI(APIView):
+	def get(self, request, format = None):
+		serializer = SettingsSerializer(request.user.userprofile, many = False)
+		return Response(serializer.data)
 	def post(self, request, format = None):
-		user = request.user
-		user.userprofile.accent = 'blue'
-		user.save()
-		return Response()
-
-
-		'''user = request.user
-		data = request.POST
+		data = request.data
+		serializer = SettingsSerializer(request.user.userprofile, data = data, partial = True)
+		#if serializer.is_valid():
+		serializer.save()
+		return Response(serializer.data)
+		#else:
+		#	return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+	def put(self, request, format = None):
+		data = request.data
 		print(data)
-		method = data.get('m', False)
-		print(method)
-		
-		if method == 'accent':
-			print('change accent')			
-			user.userprofile.accent = data['accent']
-			user.save()
-		elif method == 'theme':
-			print('change theme')			
-			user.userprofile.theme = data['theme']
-			user.save()		
-		
-		serializer = UserSerializer(user, many = False)
-		print(user.userprofile.accent)
-		return Response(serializer.data)'''
-
-		'''serializer = UserSerializer(data = request.data)
-		if serializer.is_valid():
-			serializer.save()
-		return Response(serializer.data)'''
+		request.user.userprofile.theme = data['theme']
+		request.user.userprofile.save()
+		serializer = SettingsSerializer(request.user.userprofile, data = data, partial = True)
+		#if serializer.is_valid():
+		#serializer.save()
+		return Response(data)
+		#else:
+		#	return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

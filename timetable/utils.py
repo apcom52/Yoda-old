@@ -1,12 +1,13 @@
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from achievements.models import Action, AchUnlocked, Rank, Achievement#, Notification
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.db.models import Q
 from user.models import *
 from polls.models import QueAns
 from events.models import UserVisitEvent
+from achievements.models import Action, AchUnlocked, Rank, Achievement#, Notification
 from inventory.models import Item, UserInventoryItem, Catapult #Smile, SmileCollection
 import datetime
 
@@ -206,7 +207,7 @@ def checkAchievements(user, params = ['404', 'actives', 'admin', 'comments', 'vi
 
 
 
-def getTimetable(semester = settings.SEMESTER, week = 1, day = 1, date = ''):
+def getTimetable(semester = settings.SEMESTER, week = 1, day = 1, date = '', request = None):
 	from .models import Lesson, Teacher, Timetable, Homework, Control, NewPlace, TeacherTimetable, NotStudyTime, TransferredLesson, CanceledLesson
 	is_weekend = False
 	try:
@@ -217,7 +218,7 @@ def getTimetable(semester = settings.SEMESTER, week = 1, day = 1, date = ''):
 
 	today = DTControl()	
 	timetable = []	
-	tm_list = Timetable.objects.all().filter(semester = semester, week = week, day = day)
+	tm_list = Timetable.objects.all().filter(semester = semester, week = week, day = day).filter(Q(group = 1) | Q(group = (request.user.userprofile.group + 1))).order_by('time')
 	for lesson in tm_list:
 		title = lesson.lesson.title
 		lesson_is_end = False

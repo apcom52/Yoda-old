@@ -328,7 +328,6 @@ def inventory(request, id):
 	
 	_bingo = bingo(request.user)
 	UpdateStatus(request.user)
-	checkAchievements(request.user)	
 	up = getProfileInfo(id)	
 
 	#Узнаем ID катапульты
@@ -435,6 +434,73 @@ def inventory(request, id):
 		'more': up,
 	}
 	return render(request, 'profile_inventory.html', context)
+
+def collection(request, id):
+	if not request.user.is_authenticated(): return redirect('/auth/in')
+	
+	_bingo = bingo(request.user)
+	UpdateStatus(request.user)
+	up = getProfileInfo(id)	
+
+	#Получаем количество элементов
+	collections_list = ItemCollection.objects.all().order_by('-id')
+	collections = []
+	
+	for collection in collections_list:
+		items_in_collection = []
+		for item in collection.items.all():
+			user_has_this_item = False
+			if UserInventoryItem.objects.filter(user = request.user, type = 1, item_id = item.id, quality = 3, stolen = False).exists():
+				user_has_this_item = True
+			items_in_collection.append({
+				'image': item.icon.url,
+				'title': item.title,
+				'user_has_this_item': user_has_this_item
+				});
+		collection_complete = True
+		for item in items_in_collection:
+			if item['user_has_this_item'] == False:
+				collection_complete = False
+				break
+
+		collections.append({
+			'title': collection.title,
+			'items': items_in_collection,
+			'complete': collection_complete
+			})
+
+	print(collections)
+
+	
+	context = {
+		'title': up['title'],
+		'user': up['user'],
+		'bodyclass': 'profile-page',
+		'avatar': up['avatar'],
+		'friends': up['friends'],
+		'actions': up['actions'],
+		'active_page': 6,
+		'actions_morph': up['actions_morph'],
+		'xp': up['xp'],
+		'xp_morph': up['xp_morph'],
+		'ach_counter': up['ach_counter'],
+		'ach_counter_morph': up['ach_counter_morph'],
+		'last_achievements': up['last_achievements'],
+		'rank': up['rank'],
+		'contacts': up['contacts'],
+		'phone': up['phone'],
+		'is_online': up['is_online'],
+		'last_visit': up['last_visit'],
+		'collections': collections,
+		'attendance_percent': up['attendance_percent'],
+		'duties_percent': up['duties_percent'],
+		'level': up['level'],
+		'percent': up['percent'],
+		'bingo': _bingo,
+		'more': up,
+	}
+	return render(request, 'profile_collection.html', context)
+
 	
 def statistic(request, id):
 	if not request.user.is_authenticated(): return redirect('/auth/in')

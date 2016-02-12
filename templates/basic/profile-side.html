@@ -31,7 +31,7 @@
 	    	<div style="color: #666;">Был на сайте {{last_visit|naturaltime}}</div>
 	    	{% else %}</div>{% endif %}
 	    	
-	    	<div style="color: #666;">{% if user.userprofile.group == 1 %}Первая подгруппа{% else %}Вторая подгруппа{% endif %}</div><br>
+	    	<div style="color: #666;">{% if user.userprofile.beta %}<img src="/media/img/icons/beta.png" style="width: 2em;" class="altrone-popup" data-content="Участник предварительного тестирования">{% endif %}{% if user.userprofile.group == 1 %}Первая подгруппа{% else %}Вторая подгруппа{% endif %}</div><br>
 	    	
 	    	<div class="ui two statistics">
 			  	<div class="red statistic">

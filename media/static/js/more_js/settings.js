@@ -20,6 +20,43 @@ $(function() {
 	});
 
 	Backbone.history.start();
+
+	var Settings = Backbone.Model.extend({
+		defaults: {
+			id: null,
+			username: null,
+			avatar: null,
+			facebook: null,
+			twitter: null,
+			vk: null,
+			github: null,
+			phone: null,
+			theme: null,
+			accent: null,
+			beta: null,
+			hide_email: null,
+			hide_tips: null,
+			filter_achievements: null,
+			filter_sales: null,
+			filter_catapult: null,
+			filter_bonuses: null,
+			notes_night_mode: null,
+			notes_font_size: null,
+			notes_font_style: null,
+			polls_actual: null,
+			events_notification: null,
+			events_time_notification: null
+		}, 
+		urlRoot: "/api/settings/",
+		url: function() {
+			var url = this.urlRoot + '?';
+			return url;
+		}
+	});
+
+	var settings = new Settings();
+	settings.fetch();
+	
 	
 	$('#font14').click(function() { $('#notesPreviewText').css('font-size', '14px'); });
 	$('#font16').click(function() { $('#notesPreviewText').css('font-size', '16px'); });
@@ -46,12 +83,12 @@ $(function() {
 		$('.checkbox').removeClass('checkbox--invert');
 		$('.toggle').removeClass('toggle--invert');
 		$('.form').removeClass('form--invert');
+		$('.y-sidebar').removeClass('invert');
 		$('body').css('background-color', 'lightblue');
-
-		$.get('/api/settings/?m=theme&theme=light', function() {
-			console.log('Тема изменена на светлую');
-		});
+		$('.y-friends-list').removeClass('invert');
 	});
+
+		
 
 	$('#darkTheme').click(function() {
 		$('.taskbar').addClass('taskbar--invert');
@@ -62,15 +99,14 @@ $(function() {
 		$('.checkbox').addClass('checkbox--invert');
 		$('.toggle').addClass('toggle--invert');
 		$('.form').addClass('form--invert');
+		$('.y-sidebar').addClass('invert');
 		$('body').css('background-color', 'gray');
+		$('.y-friends-list').addClass('invert');
 
-		$.post('/api/settings/', {
-			'm': 'theme',
-			'theme': 'dark',
-		}, function(d) {
-			console.log(d);
-			console.log('Тема изменена на темную');
-		});
+		/*settings.save({theme: 'dark'}, {
+			success: function(d) { console.log('success'); console.log(d); },
+			error: function(e) { console.log('err'); console.log(e); }
+		});*/
 	});
 
 	function resetAllAccents() {
@@ -80,10 +116,13 @@ $(function() {
 		resetAccent('.checkbox', 'checkbox--color');
 		resetAccent('.toggle', 'toggle--color');
 		resetAccent('.accentButton', 'button--color');
+		resetAccent('.y-sidebar-list', 'y-sidebar-list--color');
 
 		var array = ['red', 'orange', 'yellow', 'olive', 'green', 'blue', 'teal', 'purple', 'violet', 'pink', 'brown'];
 		for (var i = 0; i < array.length; i++) {
-			$('a').removeClass(array[i]+'-fg');			
+			$('a').removeClass(array[i]+'-fg');	
+			$('.y-sidebar > .cover').removeClass(array[i]+'-bg');		
+			$('#back_menu').removeClass(array[i]+'-bg');
 		};
 	}
 
@@ -103,7 +142,10 @@ $(function() {
 		$('.checkbox').addClass('checkbox--color-' + color);
 		$('.toggle').addClass('toggle--color-' + color);
 		$('.accentButton').addClass('button--color-' + color);
+		$('.y-sidebar-list').addClass('y-sidebar-list--color-' + color);
 		$('a').addClass(color + '-fg');
+		$('.y-sidebar > .cover').addClass(color + '-bg');
+		$('#back_menu').addClass(color + '-bg');
 	}
 
 	$('#accentRed').click(function() { setAccent('red'); });
@@ -121,5 +163,14 @@ $(function() {
 	$('.color-block').click(function() {
 		$('.color-block').removeClass('active');
 		$(this).addClass('active');
-	})
+	});
+
+	$('#settingsLogo').click(function() {
+		var _this = $(this);
+		_this.addClass('animation fanfare');
+		setTimeout(function() {
+			_this.removeClass('animation fanfare');
+			console.log('timeout');
+		}, 1500);
+	});
 });

@@ -1,0 +1,39 @@
+{% extends 'basic/base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block bodyclass %}{{bodyclass}}{% endblock %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+{% load humanize %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="four wide column">
+		{% include 'basic/profile-side.html' %}
+	</div>
+	<div class="ten wide column">
+		{% include 'basic/profile-nav.html' %}
+		<div class="ui bottom attached padded active segment">	
+			{% if bingo %}
+				{% include 'basic/bingo-bonus.html' %}
+			{% endif %}	
+			<h2>Коллекции</h2>
+			{% for collection in collections %}
+				<h4>{{collection.title}}</h4>
+				<table class="collection">
+				<tr>
+				{% for i in collection.items %}
+					<td class="item {% if i.user_has_this_item%}active{% endif %}">
+						<img src="{{i.image}}" class="image"><br>
+						<b>{{i.title}}</b>
+					</td>
+				{% endfor %}
+				</tr>
+				</table>
+				{% if collection.complete %}<center><button class="teal">Собрать коллекцию</button></center>{% endif %}
+				<hr>
+			{% endfor %}
+		</div>
+	</div>
+	<div class="one wide column"></div>
+</div>
+{% endblock %}

@@ -217,7 +217,7 @@ $(function() {
 			views: 0,
 			login: null,						
 		},
-		urlRoot: '/api/notes/',
+		urlRoot: '/api/notes/'
 	});
 
 	var NotesList = Backbone.Collection.extend({

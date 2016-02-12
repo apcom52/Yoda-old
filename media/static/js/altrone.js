@@ -67,4 +67,33 @@ $(function() {
 			options.slideUp(300);
 		});
 	});
+
+	/* Всплывающие подсказки */
+	var lastTooltipPosition = {x: null, y: null};
+	var tooltipDiv = $('body').append('<div class="tooltip"></div>');
+	$('[data-tooltip]').on({
+		mouseenter: function(event) {
+			if (lastTooltipPosition.x == null && lastTooltipPosition.y == null) {
+				$('.tooltip').html($(this).data('tooltip'));
+				var tooltip_width = $('.tooltip').outerWidth();
+				var parent_width = $(this).outerWidth();
+				var parent_left = $(this).position().left;
+				lastTooltipPosition.x = parent_left + parent_width / 2 - tooltip_width / 2;
+				lastTooltipPosition.y = $(this).position().top - 32;
+				if ($(this).data('tooltipInvert') == true) {
+					$('.tooltip').addClass('tooltip--invert');
+				} else {
+					$('.tooltip').removeClass('tooltip--invert');
+				}
+				$('.tooltip').css('left', lastTooltipPosition.x);
+				$('.tooltip').css('top', lastTooltipPosition.y);				
+				$('.tooltip').show();
+			}
+		}, 
+		mouseleave: function(event) {
+			lastTooltipPosition = {x: null, y: null};
+			$('.tooltip').html('');
+			$('.tooltip').hide();
+		}
+	});
 });

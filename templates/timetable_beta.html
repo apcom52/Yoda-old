@@ -4,6 +4,7 @@
 	<link href="/media/static/css/more_css/timetable.css" rel="stylesheet"/>
 	<script type="text/javascript" src="/media/static/js/more_js/timetable.js"></script>
 {% endblock %}
+{% block bodyclass %}{{request.user.userprofile.theme}}-bg{% endblock %}
 {% block content %}
 <div class="card  {% if request.user.userprofile.theme == 'dark'%}card--color-black card--colored{%endif%} card--no-smooth padding-vertical-1" style="margin-left: 0.25em; margin-right: 0.25em; overflow: hidden;">
 	<div class="card__content card__content--no-padding">
@@ -28,7 +29,7 @@
 								<div class="title">{{lesson.lesson.title}}</div>
 								<div class="time">{{lesson.time}}</div>
 								<div class="meta">{{lesson.type_rus}} {{lesson.timetable_lesson.place}}</div>
-								<a href="/teacher/{{lesson.timetable_lesson.teacher.id}}"><img src="{{lesson.timetable_lesson.teacher.avatar.url}}" class='img--circle' style="width: 2em; height: 2em;"></a>
+								<a href="/teacher/{{lesson.timetable_lesson.teacher.id}}"><img src="{{lesson.timetable_lesson.teacher.avatar.url}}" data-tooltip="{{lesson.timetable_lesson.teacher.name}}" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert='true'{% endif %} class='img--circle' style="width: 2em; height: 2em;"></a>
 							{% endif %}
 						</div>
 					{% endfor %}

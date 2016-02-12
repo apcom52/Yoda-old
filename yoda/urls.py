@@ -26,6 +26,7 @@ urlpatterns = [
     url('^events/', include('events.urls')),
     url('^files/', include('library.urls')),
     url('^api/', include('api.urls')),
+    url('^feedback/', include('feedback.urls')),
     url('^', include('timetable.urls')),
 ]
 

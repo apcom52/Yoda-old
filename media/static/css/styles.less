@@ -124,8 +124,8 @@
 			height:24px;
 			display: block;
 			margin: auto;
-			background-image:url(/media/img/icons/list-white.png);
-			/*background-image:url(/media/img/icons/ghost.png);*/
+			/*background-image:url(/media/img/icons/list-white.png);*/
+			background-image:url(/media/img/icons/deadpool.png);
 			background-size: cover;
 		}
 
@@ -672,5 +672,23 @@ i {
 	}
 	to {		
 		transform: rotate(360deg);		
+	}
+}
+
+.collection {
+	width: 100%;
+	.item {
+		text-align: center;
+		opacity: .3;
+		min-width: 25%;
+
+		&.active {
+			opacity: 1;
+		}
+
+		.image {
+			width: 100px;
+			height: auto;
+		}
 	}
 }

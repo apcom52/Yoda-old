@@ -37,7 +37,7 @@
 						<img src="/media/img/icons/settings.png">
 						<b>Расширенные настройки</b>
 					</div></a>
-					<a href="#about"><div class="list__item" data-settings-target="extra">
+					<a href="#about"><div class="list__item" data-settings-target="about">
 						<img src="/media/img/icons/settings.png">
 						<b>О сайте</b>
 					</div></a>
@@ -66,7 +66,7 @@
 					</div></a>
 				</div>
 			</div>
-		</div>		
+		</div>	
 	</div>
 	<div class="col-8 col-m-4 col-t-5">
 		<div class="card card--no-smooth {% if request.user.userprofile.theme == 'dark' %}card--colored card--color-black{%endif%}">
@@ -84,7 +84,7 @@
 			<div class="card__content">
 				<div class="grid">
 					<div class="col-2">
-						<img src="/media/img/yoda.png" class="img--responsive">
+						<img src="/media/favicons/android-chrome-192x192.png" class="img--responsive" id="settingsLogo">
 					</div>
 					<div class="col-10 padding-horizontal-1">
 						<h3>Yoda</h3>
@@ -98,7 +98,7 @@
 				<p><a href="https://www.python.org/" class="{{request.user.userprofile.accent}}-fg"><b>Python</b></a><br>3.4.0</p>
 				<p><a href="https://www.djangoproject.com/" class="{{request.user.userprofile.accent}}-fg"><b>Django</b></a><br>1.8.5</p>
 				<p><a href="http://www.django-rest-framework.org/" class="{{request.user.userprofile.accent}}-fg"><b>Django REST Framework</b></a><br>3.3.2</p>
-				<p><a href="https://github.com/apcom52/Altrone2-CSS" class="{{request.user.userprofile.accent}}-fg"><b>Altrone CSS</b></a><br>0.7.1</p>
+				<p><a href="https://github.com/apcom52/Altrone2-CSS" class="{{request.user.userprofile.accent}}-fg"><b>Altrone-2 CSS</b></a><br>0.7.1</p>
 				<p><a href="http://semantic-ui.com/" class="{{request.user.userprofile.accent}}-fg"><b>Semantic UI</b></a><br>2.1</p>
 				<p><a href="https://jquery.com/" class="{{request.user.userprofile.accent}}-fg"><b>jQuery</b></a><br>2.1.4</p>
 				<p><a href="http://backbonejs.org/" class="{{request.user.userprofile.accent}}-fg"><b>Backbone</b></a><br>1.0.0</p>
@@ -110,18 +110,6 @@
 				<div class="card__header__title">Профиль</div>
 			</div>
 			<div class="card__content">
-				<h3>Смена пароля</h3>
-				<div class="form {% if request.user.userprofile.theme == 'dark' %}form--invert{%endif%}">
-					<input type="password" placeholder="Старый пароль">
-					<input type="password" placeholder="Новый пароль">
-					<input type="password" placeholder="Повторите пароль">
-					<button class="accentButton button--color-{{request.user.userprofile.accent}}">Изменить пароль</button>
-				</div>
-				<p>Если вы не помните пароль, то вы можете сбросить его. Тогда на ваш адрес электронной почты придет письмо с ссылкой для подтверждения сброса пароля.<br>
-				<a class="{{request.user.userprofile.accent}}-fg" href="#">Запросить сброс пароля</a><br>
-				<a class="{{request.user.userprofile.accent}}-fg" href="#contacts">Изменить адрес электронной почты</a><br>
-				</p>
-
 				<h3>Фотография пользователя</h3>
 				<div class="grid">
 					<div class="col-2">
@@ -134,6 +122,19 @@
 					</div>
 				</div>
 				<a href="#personalization" class="{{request.user.userprofile.accent}}-fg">Изменить обложку профиля</a>
+				
+				<h3>Смена пароля</h3>
+				<div class="form {% if request.user.userprofile.theme == 'dark' %}form--invert{%endif%}">
+					<input type="password" placeholder="Старый пароль">
+					<input type="password" placeholder="Новый пароль">
+					<input type="password" placeholder="Повторите пароль">
+					<button class="accentButton button--color-{{request.user.userprofile.accent}}">Изменить пароль</button>
+				</div>
+				<p>Если вы не помните пароль, то вы можете сбросить его. Тогда на ваш адрес электронной почты придет письмо с ссылкой для подтверждения сброса пароля.<br>
+				<a class="{{request.user.userprofile.accent}}-fg" href="#">Запросить сброс пароля</a><br>
+				<a class="{{request.user.userprofile.accent}}-fg" href="#contacts">Изменить адрес электронной почты</a><br>
+				</p>
+
 
 				<h3>Настройки конфиденциальности</h3>			
 				<div class="checkbox checkbox--color-{{request.user.userprofile.accent}} {% if request.user.userprofile.theme == 'dark' %}checkbox--invert{%endif%}">
@@ -163,17 +164,17 @@
 				</div>
 
 				<h3>Акцентный цвет</h3>
-				<div id="accentRed" class="color-block {% if request.user.userprofile.accent == 'red'%}active{% endif %} red"></div>
-				<div id="accentOrange" class="color-block {% if request.user.userprofile.accent == 'orange'%}active{% endif %} orange"></div>
-				<div id="accentYellow" class="color-block {% if request.user.userprofile.accent == 'yellow'%}active{% endif %} yellow"></div>
-				<div id="accentOlive" class="color-block {% if request.user.userprofile.accent == 'olive'%}active{% endif %} olive"></div>
-				<div id="accentGreen" class="color-block {% if request.user.userprofile.accent == 'green'%}active{% endif %} green"></div>
-				<div id="accentBlue" class="color-block {% if request.user.userprofile.accent == 'blue'%}active{% endif %} blue"></div>
-				<div id="accentTeal" class="color-block {% if request.user.userprofile.accent == 'teal'%}active{% endif %} teal"></div>
-				<div id="accentPurple" class="color-block {% if request.user.userprofile.accent == 'purple'%}active{% endif %} purple"></div>
-				<div id="accentViolet" class="color-block {% if request.user.userprofile.accent == 'violet'%}active{% endif %} violet"></div>
-				<div id="accentPink" class="color-block {% if request.user.userprofile.accent == 'pink'%}active{% endif %} pink"></div>
-				<div id="accentBrown" class="color-block {% if request.user.userprofile.accent == 'brown'%}active{% endif %} brown"></div>
+				<div data-tooltip="Красный" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentRed" class="color-block {% if request.user.userprofile.accent == 'red'%}active{% endif %} red"></div>
+				<div data-tooltip="Оранжевый" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentOrange" class="color-block {% if request.user.userprofile.accent == 'orange'%}active{% endif %} orange"></div>
+				<div data-tooltip="Желтый" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentYellow" class="color-block {% if request.user.userprofile.accent == 'yellow'%}active{% endif %} yellow"></div>
+				<div data-tooltip="Оливковый" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentOlive" class="color-block {% if request.user.userprofile.accent == 'olive'%}active{% endif %} olive"></div>
+				<div data-tooltip="Зеленый" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentGreen" class="color-block {% if request.user.userprofile.accent == 'green'%}active{% endif %} green"></div>
+				<div data-tooltip="Синий" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentBlue" class="color-block {% if request.user.userprofile.accent == 'blue'%}active{% endif %} blue"></div>
+				<div data-tooltip="Бирюзовый" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentTeal" class="color-block {% if request.user.userprofile.accent == 'teal'%}active{% endif %} teal"></div>
+				<div data-tooltip="Фиолетовый" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentPurple" class="color-block {% if request.user.userprofile.accent == 'purple'%}active{% endif %} purple"></div>
+				<div data-tooltip="Индиго" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentViolet" class="color-block {% if request.user.userprofile.accent == 'violet'%}active{% endif %} violet"></div>
+				<div data-tooltip="Пурпурный" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentPink" class="color-block {% if request.user.userprofile.accent == 'pink'%}active{% endif %} pink"></div>
+				<div data-tooltip="Коричневый" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentBrown" class="color-block {% if request.user.userprofile.accent == 'brown'%}active{% endif %} brown"></div>
 
 				<h3>Обложка профиля</h3>
 				<div class="alert">
@@ -226,21 +227,34 @@
 				<h3>Контактные данные</h3>
 				<div class="form {% if request.user.userprofile.theme == 'dark' %}form--invert{%endif%}">
 					<label for="contactsPhone">Мобильный телефон:</label>
-					+7<input style="display: inline-block;" id="contactsPhone" type="text" placeholder="Номер телефона"><br>
+					<div class="form-attached">
+						<div class="form__attach">+7</div><input id="contactsPhone" type="text" placeholder="Номер телефона" value="{{request.user.userprofile.phone|default:''}}">
+					</div>
 					<label for="contactsEmail">Электронная почта</label>
-					<input type="email" id="contactsEmail" placeholder="Адрес электронной почты" value="{{request.user.email}}">
+					<input id="contactsEmail" type="email" placeholder="Адрес электронной почты" value="{{request.user.email|default:''}}">
+					<p>Адрес электронный почты нужен для сброса пароля, если вы его забыли. Указывайте ваш актуальный адрес электронной почты. При желании, вы можете скрыть его от остальных пользователей<br>
+					<a class="{{request.user.userprofile.accent}}-fg" href="#profile">Скрыть адрес электронной почты</a></p>
+
 				</div>
 
 				<h3>Ссылки на профили</h3>
 				<div class="form {% if request.user.userprofile.theme == 'dark' %}form--invert{%endif%}">
 					<label for="contactsVK">ВКонтакте:</label>
-					vk.com/<input style="display: inline-block;" type="text" id="contactsVK" placeholder="ВКонтакте"><br>
+					<div class="form-attached">
+						<div class="form__attach">https://vk.com/</div><input id="contactsVK" type="text" placeholder="ВКонтакте" value="{{request.user.userprofile.vk|default:''}}">
+					</div>
 					<label for="contactsTwitter">Twitter:</label>
-					twitter.com/<input style="display: inline-block;" type="text" id="contactsTwitter" placeholder="Twitter"><br>
+					<div class="form-attached">
+						<div class="form__attach">https://twitter.com/</div><input id="contactsTwitter" type="text" placeholder="Twitter" value="{{request.user.userprofile.twitter|default:''}}">
+					</div>
 					<label for="contactsFacebook">Facebook:</label>
-					facebook.com/<input style="display: inline-block;" type="text" id="contactsFacebook" placeholder="Facebook"><br>
+					<div class="form-attached">
+						<div class="form__attach">https://facebook.com/</div><input id="contactsFacebook" type="text" placeholder="Facebook" value="{{request.user.userprofile.facebook|default:''}}">
+					</div>
 					<label for="contactsGithub">Github:</label>
-					github.com/<input style="display: inline-block;" type="text" id="contactsGithub" placeholder="Github">
+					<div class="form-attached">
+						<div class="form__attach">https://github.com/</div><input id="contactsGithub" type="text" placeholder="Github" value="{{request.user.userprofile.github|default:''}}">
+					</div>
 				</div>				
 			</div>
 		</div>

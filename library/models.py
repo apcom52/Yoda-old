@@ -39,7 +39,7 @@ class LibraryFile(models.Model):
 	title = models.CharField('Название файла', max_length = 128)
 	description = models.TextField('Описание файла', null = True, blank = True)
 	file = models.FileField(upload_to = 'uploads/%Y/%m/%d')
-	tags = models.ManyToManyField(LibraryTag, blank = True, null = True)
+	tags = models.ManyToManyField(LibraryTag, blank = True)
 	pub_date = models.DateTimeField('Дата публикации', editable = False, null = True, blank = True)
 	views = models.IntegerField('Количество просмотров', default = 0)
 	downloads = models.IntegerField('Количество загрузок', default = 0)

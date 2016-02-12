@@ -8,6 +8,7 @@ urlpatterns = [
 	url('^attendance/(?P<id>[0-9]+)', views.my_attendance, name='my_attendance'),
 	url('^duty/(?P<id>[0-9]+)', views.my_duties, name='my_duties'),
 	url('^inventory/(?P<id>[0-9]+)', views.inventory, name='inventory'),
+	url('^collection/(?P<id>[0-9]+)', views.collection, name='collection'),
 	url('^stats/(?P<id>[0-9]+)', views.statistic, name='statistic'),
 	url('^settings/', views.user_settings, name='settings'),
 	url('^lottery/', views.lottery, name='lottery'),

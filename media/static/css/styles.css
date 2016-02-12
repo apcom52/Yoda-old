@@ -81,8 +81,8 @@
   height: 24px;
   display: block;
   margin: auto;
-  background-image: url(/media/img/icons/list-white.png);
-  /*background-image:url(/media/img/icons/ghost.png);*/
+  /*background-image:url(/media/img/icons/list-white.png);*/
+  background-image: url(/media/img/icons/deadpool.png);
   background-size: cover;
 }
 .taskbar .menu-icon:hover {
@@ -674,4 +674,19 @@ i.ai.margin5 {
   to {
     transform: rotate(360deg);
   }
+}
+.collection {
+  width: 100%;
+}
+.collection .item {
+  text-align: center;
+  opacity: .3;
+  min-width: 25%;
+}
+.collection .item.active {
+  opacity: 1;
+}
+.collection .item .image {
+  width: 100px;
+  height: auto;
 }
