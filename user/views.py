@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 from timetable.utils import avatar, pointsumm, getrank, handle_uploaded_file
 from achievements.models import Action, Achievement, AchUnlocked#, Notification
 from timetable.utils import addAction, setAch, checkAchievements, isOnline, UpdateStatus, setBonusPoints, bingo
@@ -222,7 +223,7 @@ def my_attendance(request, id):
 		attendance = []
 		for lesson in Lesson_Item.objects.all().filter(semester = semester):
 			my_visits = []
-			for day in Attendance.objects.all().filter(lesson = lesson):
+			for day in Attendance.objects.all().filter(lesson = lesson).filter(Q(group = 0) | Q(group = (up['user'].userprofile.group))):
 				type = 'Лекция'
 				if day.type == 2: type = 'Практика'
 				elif day.type == 3: type = 'Лабораторная работа'
@@ -280,7 +281,7 @@ def my_duties(request, id):
 		duties = []
 		for lesson in Lesson_Item.objects.all().filter(semester = semester):
 			my_visits = []
-			for day in Duty.objects.all().filter(lesson = lesson):				
+			for day in Duty.objects.all().filter(lesson = lesson).filter(Q(group = 0) | Q(group = (up['user'].userprofile.group))):				
 				my_visits.append({
 					'id': day.id,
 					'date': day.date,

@@ -8,12 +8,12 @@ from inventory.models import Background
 
 class Attendance(models.Model): #Посещаемость
 	types = ((1, 'Лекция'),	(2, 'Практика'), (3, 'Лабораторная работа'))
-	groups = ((1, 'Общее занятие'), (2, 'Первая подгруппа'), (3, 'Вторая подгруппа'))
+	groups = ((0, 'Общее занятие'), (1, 'Первая подгруппа'), (2, 'Вторая подгруппа'))
 
 	lesson = models.ForeignKey(Lesson_Item)
 	date = models.DateField('Дата предмета')
 	type = models.IntegerField('Тип занятия', choices = types, default = 1)
-	group = models.IntegerField('Подгруппа', choices = groups, default = 1)
+	group = models.IntegerField('Подгруппа', choices = groups, default = 0)
 	visitor = models.ManyToManyField(User)
 
 	class Meta:
@@ -30,9 +30,12 @@ class AttendanceAdmin(admin.ModelAdmin):
 		return form
 
 class Duty(models.Model): #Долги
+	groups = ((0, 'Общее занятие'), (1, 'Первая подгруппа'), (2, 'Вторая подгруппа'))
+
 	lesson = models.ForeignKey(Lesson_Item)
 	date = models.DateField('Дата предмета')
 	description = models.CharField('Описание долга', max_length = 128, unique = False)
+	group = models.IntegerField('Подгруппа', choices = groups, default = 0)
 	visitors = models.ManyToManyField(User)
 
 	class Meta:

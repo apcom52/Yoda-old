@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth.forms import PasswordChangeForm
+from django.db.models import Q
 from timetable.utils import avatar, pointsumm, getrank, handle_uploaded_file
 from achievements.models import Action, Achievement, AchUnlocked
 from timetable.utils import addAction, setAch, checkAchievements, isOnline, UpdateStatus
@@ -79,14 +80,14 @@ def getProfileInfo(id):
 	ach_counter_morph = morph.parse('достижение')[0]
 
 	#Получение процента посещаемости
-	all_visiting = Attendance.objects.all().filter(lesson__semester = semester).count()
-	my_visits = Attendance.objects.all().filter(lesson__semester = semester).filter(visitor = user).count()
+	all_visiting = Attendance.objects.all().filter(lesson__semester = semester).filter(Q(group = 0) | Q(group = (user.userprofile.group))).count()
+	my_visits = Attendance.objects.all().filter(lesson__semester = semester).filter(Q(group = 0) | Q(group = (user.userprofile.group))).filter(visitor = user).count()
 	if all_visiting == 0: all_visiting = 1
 	attendance_percent = round(my_visits / all_visiting * 100)
 
 	#Получение процента задолжностей
-	all_duties = Duty.objects.all().filter(lesson__semester = semester).count()
-	my_not_duties = Duty.objects.all().filter(lesson__semester = semester).filter(visitors = user).count()
+	all_duties = Duty.objects.all().filter(lesson__semester = semester).filter(Q(group = 0) | Q(group = (user.userprofile.group))).count()
+	my_not_duties = Duty.objects.all().filter(lesson__semester = semester).filter(visitors = user).filter(Q(group = 0) | Q(group = (user.userprofile.group))).count()
 	if all_duties == 0: 
 		all_duties = 1
 		my_not_duties = 1
