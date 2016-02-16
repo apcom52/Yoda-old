@@ -363,9 +363,10 @@ def index(request):
 			'next': current_page.number + 1,
 		}
 	}
-	#if request.user.userprofile.beta:	return render(request, 'beta/index.html', context)
-	#else:	
-	return render(request, 'index.html', context)
+	if request.user.userprofile.beta:	
+		return render(request, 'index_beta.html', context)
+	else:	
+		return render(request, 'index.html', context)
 
 
 def teacher(request, id):

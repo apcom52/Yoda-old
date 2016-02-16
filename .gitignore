@@ -10,3 +10,7 @@ static/
 db.sqlite3
 *.pyc
 yoda/settings.py
+*.pyc
+yoda/settings.py
+*.pyc
+yoda/settings.py
