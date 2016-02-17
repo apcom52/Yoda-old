@@ -9,7 +9,16 @@
 <div class="grid">
 	<div class="col-4">
 		<div class="card margin-left-0 margin-vertical-0 card--no-smooth" style="height: 100%; width: 33.33%; position: absolute;">
-			Расписание
+			<h1>{{current_date|date:"l, j E Y"}}</h1>
+			<table style="width: 100%;">
+			{% for week in calendar %}
+				<tr>
+				{% for day in week %}
+					<td>{% if day %}{{day}}{% endif %}</td>
+				{% endfor %}
+				</tr>
+			{% endfor %}
+			</table>
 		</div>
 	</div>
 	<div class="col-8">

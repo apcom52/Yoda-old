@@ -20,349 +20,363 @@ import datetime
 # Create your views here.
 def index(request):
 	if not request.user.is_authenticated(): return redirect('/auth/in')
-	page = request.GET.get('page', 1)
-	important = request.GET.get('filter', False)
-	new_achievements = []
-	if request.user.is_authenticated():
-	#Получение списка новых достижений	
+	if request.user.userprofile.beta == False:
+		page = request.GET.get('page', 1)
+		important = request.GET.get('filter', False)
+		new_achievements = []
+		if request.user.is_authenticated():
+		#Получение списка новых достижений	
 
-		#Бонусные очки
-		bonus = setBonusPoints(request.user)	
-		_bingo = bingo(request.user)
+			#Бонусные очки
+			bonus = setBonusPoints(request.user)	
+			_bingo = bingo(request.user)
 
-		UpdateStatus(request.user)
-		checkAchievements(request.user)			
+			UpdateStatus(request.user)
+			checkAchievements(request.user)			
+			try:
+				my_new_ach = AchUnlocked.objects.all().filter(login = request.user).filter(is_new = True)
+				for ach in my_new_ach:
+					ach.is_new = False
+					ach.save()
+					new_achievements.append({
+						'title': ach.ach_id.title,
+						'icon': ach.ach_id.icon,
+						'points': ach.ach_id.xp,
+						'description': ach.ach_id.description,
+					})
+			except ObjectDoesNotExist:
+				new_achievements = []
+
+		#Получение новых предметов из катапульты
+		catapult = []
 		try:
-			my_new_ach = AchUnlocked.objects.all().filter(login = request.user).filter(is_new = True)
-			for ach in my_new_ach:
-				ach.is_new = False
-				ach.save()
-				new_achievements.append({
-					'title': ach.ach_id.title,
-					'icon': ach.ach_id.icon,
-					'points': ach.ach_id.xp,
-					'description': ach.ach_id.description,
+			myPresents = Catapult.objects.all().filter(to_user = request.user).filter(view = False)
+			for present in myPresents:
+				item = Item.objects.get(pk = present.item.item_id)
+				present.view = True
+				present.save()
+				catapult.append({
+					'title': item.title,
+					'icon': item.icon.url,
+					'quality': present.item.quality,	
+					'from': present.from_user.get_full_name(),			
 				})
-		except ObjectDoesNotExist:
-			new_achievements = []
-
-	#Получение новых предметов из катапульты
-	catapult = []
-	try:
-		myPresents = Catapult.objects.all().filter(to_user = request.user).filter(view = False)
-		for present in myPresents:
-			item = Item.objects.get(pk = present.item.item_id)
-			present.view = True
-			present.save()
-			catapult.append({
-				'title': item.title,
-				'icon': item.icon.url,
-				'quality': present.item.quality,	
-				'from': present.from_user.get_full_name(),			
-			})
-	except ObjectDoesNotExist:
-		pass
-
-
-	#Получение списка активностей
-	if important:
-		act_list = Action.objects.order_by('-pub_date').all().filter(important = True)
-	else:
-		act_list = Action.objects.order_by('-pub_date').all()
-	p = Paginator(act_list, 100)
-	if int(page) < 1: page = 1
-	elif int(page) > p.num_pages: page = p.num_pages
-	current_page = p.page(page)
-	actions_list = []
-	for action in current_page.object_list:		
-		user = action.login		
-		try:
-			avatar = user.userprofile.avatar.url
-		except ObjectDoesNotExist:
-			avatar = settings.NO_AVATAR
-		cur_action = {
-			'avatar': avatar,
-			'username': user.first_name + ' ' + user.last_name,
-			'userlogin': user.id,
-			'action_text': action.text,
-			'pub_date': action.pub_date,
-		}
-		actions_list.append(cur_action)
-
-	#Получение информации о выходных
-	is_weekend = False
-	try:
-		sc = NotStudyTime.objects.filter(start_date__lte = datetime.date.today()).filter(end_date__gte = datetime.date.today())		
-		if len(sc) > 0: is_weekend = True
-	except ObjectDoesNotExist:
-		pass
-	
-	#Получение списка предметов
-	today = DTControl()	
-	timetable = []	
-	tm_list = Timetable.objects.all().filter(semester = settings.SEMESTER, week = today.week, day = today.weekday).filter(Q(group = 1) | Q(group = (request.user.userprofile.group + 1))).order_by('time')
-	for lesson in tm_list:
-		title = lesson.lesson.title
-		lesson_is_end = False
-		try:
-			teacher_avatar = lesson.teacher.avatar.url
-		except ValueError:
-			teacher_avatar = '/media/img/2015/08/04/ufo.jpg'
-		result_time = lesson.time
-		if lesson.double: result_time += 1
-		if today.gettimesummend(result_time) < today.timesumm: lesson_is_end = True
-		type = 'Лекция'; type_color = 'olive'
-		if lesson.lesson.type == 2: type='Практика'; type_color = 'blue'
-		elif lesson.lesson.type == 3: type='Лабораторная работа'; type_color = 'red'
-
-		now = datetime.date.today()
-		today_date = now.strftime("%Y-%m-%d")
-		#Проверка на наличие контрольной на этой паре
-		has_control = False
-		control = ''
-		try:
-			ctrl = Control.objects.get(date = today_date, time = lesson.time)
-			control = ctrl.info
-			has_control = True
 		except ObjectDoesNotExist:
 			pass
 
-		#Проверка на наличие домашнего задания
-		homework = False
+
+		#Получение списка активностей
+		if important:
+			act_list = Action.objects.order_by('-pub_date').all().filter(important = True)
+		else:
+			act_list = Action.objects.order_by('-pub_date').all()
+		p = Paginator(act_list, 100)
+		if int(page) < 1: page = 1
+		elif int(page) > p.num_pages: page = p.num_pages
+		current_page = p.page(page)
+		actions_list = []
+		for action in current_page.object_list:		
+			user = action.login		
+			try:
+				avatar = user.userprofile.avatar.url
+			except ObjectDoesNotExist:
+				avatar = settings.NO_AVATAR
+			cur_action = {
+				'avatar': avatar,
+				'username': user.first_name + ' ' + user.last_name,
+				'userlogin': user.id,
+				'action_text': action.text,
+				'pub_date': action.pub_date,
+			}
+			actions_list.append(cur_action)
+
+		#Получение информации о выходных
+		is_weekend = False
 		try:
-			hw = Homework.objects.get(date = today_date, time = lesson.time)
-			homework = hw.homework
+			sc = NotStudyTime.objects.filter(start_date__lte = datetime.date.today()).filter(end_date__gte = datetime.date.today())		
+			if len(sc) > 0: is_weekend = True
 		except ObjectDoesNotExist:
 			pass
 		
-		#проверка на смену аудитории
-		changePlace = False
-		try:
-			new_place = NewPlace.objects.get(date = today_date, time = lesson.time)
-			place = new_place.new_place
-			changePlace = new_place.new_place
-		except ObjectDoesNotExist:
-			pass
+		#Получение списка предметов
+		today = DTControl()	
+		timetable = []	
+		tm_list = Timetable.objects.all().filter(semester = settings.SEMESTER, week = today.week, day = today.weekday).filter(Q(group = 1) | Q(group = (request.user.userprofile.group + 1))).order_by('time')
+		for lesson in tm_list:
+			title = lesson.lesson.title
+			lesson_is_end = False
+			try:
+				teacher_avatar = lesson.teacher.avatar.url
+			except ValueError:
+				teacher_avatar = '/media/img/2015/08/04/ufo.jpg'
+			result_time = lesson.time
+			if lesson.double: result_time += 1
+			if today.gettimesummend(result_time) < today.timesumm: lesson_is_end = True
+			type = 'Лекция'; type_color = 'olive'
+			if lesson.lesson.type == 2: type='Практика'; type_color = 'blue'
+			elif lesson.lesson.type == 3: type='Лабораторная работа'; type_color = 'red'
 
-		#Проверка на перенос пары
-		is_transfered = False
-		try:
-			new_lesson_tr = TransferredLesson.objects.get(last_date = today_date, last_time = lesson.time)
-			is_transfered = {
-				'place': new_lesson_tr.new_place,
-				'date': new_lesson_tr.new_date,
-				'lesson': new_lesson_tr.new_time,
+			now = datetime.date.today()
+			today_date = now.strftime("%Y-%m-%d")
+			#Проверка на наличие контрольной на этой паре
+			has_control = False
+			control = ''
+			try:
+				ctrl = Control.objects.get(date = today_date, time = lesson.time)
+				control = ctrl.info
+				has_control = True
+			except ObjectDoesNotExist:
+				pass
+
+			#Проверка на наличие домашнего задания
+			homework = False
+			try:
+				hw = Homework.objects.get(date = today_date, time = lesson.time)
+				homework = hw.homework
+			except ObjectDoesNotExist:
+				pass
+			
+			#проверка на смену аудитории
+			changePlace = False
+			try:
+				new_place = NewPlace.objects.get(date = today_date, time = lesson.time)
+				place = new_place.new_place
+				changePlace = new_place.new_place
+			except ObjectDoesNotExist:
+				pass
+
+			#Проверка на перенос пары
+			is_transfered = False
+			try:
+				new_lesson_tr = TransferredLesson.objects.get(last_date = today_date, last_time = lesson.time)
+				is_transfered = {
+					'place': new_lesson_tr.new_place,
+					'date': new_lesson_tr.new_date,
+					'lesson': new_lesson_tr.new_time,
+				}
+			except ObjectDoesNotExist:
+				pass
+
+			cur_lesson = {
+				'title': lesson.lesson.title,
+				'teacher': lesson.teacher.name,
+				'teacher_id': lesson.teacher.id,
+				'teacher_avatar': teacher_avatar,
+				'type': type,
+				'type_color': type_color,
+				'num': int(lesson.time),
+				'is_end': lesson_is_end,
+				'start_time': today.getTimeFromNum(lesson.time),
+				'place': lesson.place,
+				'double': lesson.double,
+				'has_control': has_control,
+				'control': control,
+				'homework': homework,
+				'changePlace': changePlace,		
+				'is_transfered': is_transfered,
+				'is_canceled': False,			
 			}
-		except ObjectDoesNotExist:
-			pass
 
-		cur_lesson = {
-			'title': lesson.lesson.title,
-			'teacher': lesson.teacher.name,
-			'teacher_id': lesson.teacher.id,
-			'teacher_avatar': teacher_avatar,
-			'type': type,
-			'type_color': type_color,
-			'num': int(lesson.time),
-			'is_end': lesson_is_end,
-			'start_time': today.getTimeFromNum(lesson.time),
-			'place': lesson.place,
-			'double': lesson.double,
-			'has_control': has_control,
-			'control': control,
-			'homework': homework,
-			'changePlace': changePlace,		
-			'is_transfered': is_transfered,
-			'is_canceled': False,			
-		}
+			timetable.append(cur_lesson)
 
-		timetable.append(cur_lesson)
+		#Получение перенесенных пар
+		new_lesson_tr = TransferredLesson.objects.all().filter(new_date = timezone.now())
+		new_timetable = []
+		for new_lesson in new_lesson_tr:
+			lesson = new_lesson.lesson
+			title = lesson.lesson.title
+			lesson_is_end = False
+			try:
+				teacher_avatar = lesson.teacher.avatar.url
+			except ValueError:
+				teacher_avatar = '/media/img/2015/08/04/ufo.jpg'
+			result_time = lesson.time
+			if lesson.double: result_time += 1
+			if today.gettimesummend(result_time) < today.timesumm: lesson_is_end = True
+			type = 'Лекция'; type_color = 'olive'
+			if lesson.lesson.type == 2: type='Практика'; type_color = 'blue'
+			elif lesson.lesson.type == 3: type='Лабораторная работа'; type_color = 'red'
 
-	#Получение перенесенных пар
-	new_lesson_tr = TransferredLesson.objects.all().filter(new_date = timezone.now())
-	new_timetable = []
-	for new_lesson in new_lesson_tr:
-		lesson = new_lesson.lesson
-		title = lesson.lesson.title
-		lesson_is_end = False
-		try:
-			teacher_avatar = lesson.teacher.avatar.url
-		except ValueError:
-			teacher_avatar = '/media/img/2015/08/04/ufo.jpg'
-		result_time = lesson.time
-		if lesson.double: result_time += 1
-		if today.gettimesummend(result_time) < today.timesumm: lesson_is_end = True
-		type = 'Лекция'; type_color = 'olive'
-		if lesson.lesson.type == 2: type='Практика'; type_color = 'blue'
-		elif lesson.lesson.type == 3: type='Лабораторная работа'; type_color = 'red'
+			now = datetime.date.today()
+			today_date = now.strftime("%Y-%m-%d")
+			#Проверка на наличие контрольной на этой паре
+			has_control = False
+			control = ''
+			try:
+				ctrl = Control.objects.get(date = today_date, time = lesson.time)
+				control = ctrl.info
+				has_control = True
+			except ObjectDoesNotExist:
+				pass
 
-		now = datetime.date.today()
-		today_date = now.strftime("%Y-%m-%d")
-		#Проверка на наличие контрольной на этой паре
-		has_control = False
-		control = ''
-		try:
-			ctrl = Control.objects.get(date = today_date, time = lesson.time)
-			control = ctrl.info
-			has_control = True
-		except ObjectDoesNotExist:
-			pass
+			#Проверка на наличие домашнего задания
+			homework = False
+			try:
+				hw = Homework.objects.get(date = today_date, time = lesson.time)
+				homework = hw.homework
+			except ObjectDoesNotExist:
+				pass
 
-		#Проверка на наличие домашнего задания
-		homework = False
-		try:
-			hw = Homework.objects.get(date = today_date, time = lesson.time)
-			homework = hw.homework
-		except ObjectDoesNotExist:
-			pass
+			cur_lesson = {
+				'title': lesson.lesson.title,
+				'teacher': lesson.teacher.name,
+				'teacher_id': lesson.teacher.id,
+				'teacher_avatar': teacher_avatar,
+				'type': type,
+				'type_color': type_color,
+				'num': int(new_lesson.new_time),
+				'is_end': lesson_is_end,
+				'start_time': today.getTimeFromNum(new_lesson.new_time),
+				'place': new_lesson.new_place,
+				'double': lesson.double,
+				'has_control': has_control,
+				'control': control,
+				'last_date': new_lesson.last_date,
+				'is_canceled': False,
+			}
+			new_timetable.append(cur_lesson)
 
-		cur_lesson = {
-			'title': lesson.lesson.title,
-			'teacher': lesson.teacher.name,
-			'teacher_id': lesson.teacher.id,
-			'teacher_avatar': teacher_avatar,
-			'type': type,
-			'type_color': type_color,
-			'num': int(new_lesson.new_time),
-			'is_end': lesson_is_end,
-			'start_time': today.getTimeFromNum(new_lesson.new_time),
-			'place': new_lesson.new_place,
-			'double': lesson.double,
-			'has_control': has_control,
-			'control': control,
-			'last_date': new_lesson.last_date,
-			'is_canceled': False,
-		}
-		new_timetable.append(cur_lesson)
-
-	#Получаем информацию об отмененных парах
-	canceled_lessons_list = CanceledLesson.objects.all().filter(date = timezone.now())
-	print('===== %s' % (len(canceled_lessons_list),))
-	canceled_lessons = []
-	for l in canceled_lessons_list:
-		canceled_lessons.append({
-			'num': l.time,
-		})
-
-
-	#Проходимся по списку перенесенных пар и заменяем текущие пары на них
-	for tt in new_timetable:		
-		for i, t in enumerate(timetable):
-			if t['num'] == tt['num']:
-				timetable[i] = tt
-				break
-
-	for tt in canceled_lessons:		
-		for t in timetable:
-			if t['num'] == tt['num']:
-				t['is_canceled'] = True
-				break			
-
-	#Получение списка мероприятий
-	start_event_date = timezone.now()
-	end_event_date = start_event_date + datetime.timedelta(days=10)
-	events_list = Event.objects.all().filter(date__gte = start_event_date).filter(date__lte = end_event_date).order_by('date')
-	events = []
-	for event in events_list:
-		opinion = False
-		if event.is_required == False:
-			if request.user.is_authenticated():
-				try:
-					you_opin = UserVisitEvent.objects.get(login = request.user, event = event)
-					opinion = you_opin.answer
-				except ObjectDoesNotExist: pass
-		if opinion != 3:
-			events.append({
-				'id': event.id,
-				'title': event.title,
-				'date': event.date,
-				'is_required': event.is_required,
-				'description': event.description,
-				'answer': opinion,
+		#Получаем информацию об отмененных парах
+		canceled_lessons_list = CanceledLesson.objects.all().filter(date = timezone.now())
+		print('===== %s' % (len(canceled_lessons_list),))
+		canceled_lessons = []
+		for l in canceled_lessons_list:
+			canceled_lessons.append({
+				'num': l.time,
 			})
 
-	#Получение списка сегодняшних мероприятий (обязательных и тех, на которые подписался пользователь)
-	today_events = []
-	if request.user.is_authenticated():
-		time_now = timezone.now()
-		end_time_now = time_now + datetime.timedelta(days = 1)
-		my_canceled_events_list = UserVisitEvent.objects.all().filter(login = request.user, answer = 3)
-		my_canceled_events = []
-		for c in my_canceled_events_list: my_canceled_events.append(c.event.id)
-		today_events_list = Event.objects.all().filter(date__gte = time_now).filter(date__lte = end_time_now).exclude(id__in = my_canceled_events)
-		for event in today_events_list:
+
+		#Проходимся по списку перенесенных пар и заменяем текущие пары на них
+		for tt in new_timetable:		
+			for i, t in enumerate(timetable):
+				if t['num'] == tt['num']:
+					timetable[i] = tt
+					break
+
+		for tt in canceled_lessons:		
+			for t in timetable:
+				if t['num'] == tt['num']:
+					t['is_canceled'] = True
+					break			
+
+		#Получение списка мероприятий
+		start_event_date = timezone.now()
+		end_event_date = start_event_date + datetime.timedelta(days=10)
+		events_list = Event.objects.all().filter(date__gte = start_event_date).filter(date__lte = end_event_date).order_by('date')
+		events = []
+		for event in events_list:
 			opinion = False
 			if event.is_required == False:
-				try:
-					you_opin = UserVisitEvent.objects.get(login = request.user, event = event)
-					opinion = you_opin.answer
-				except ObjectDoesNotExist: pass
-			today_events.append({
-				'id': event.id,
-				'title': event.title,
-				'date': event.date,
-				'is_required': event.is_required,
-				'answer': opinion,
+				if request.user.is_authenticated():
+					try:
+						you_opin = UserVisitEvent.objects.get(login = request.user, event = event)
+						opinion = you_opin.answer
+					except ObjectDoesNotExist: pass
+			if opinion != 3:
+				events.append({
+					'id': event.id,
+					'title': event.title,
+					'date': event.date,
+					'is_required': event.is_required,
+					'description': event.description,
+					'answer': opinion,
+				})
+
+		#Получение списка сегодняшних мероприятий (обязательных и тех, на которые подписался пользователь)
+		today_events = []
+		if request.user.is_authenticated():
+			time_now = timezone.now()
+			end_time_now = time_now + datetime.timedelta(days = 1)
+			my_canceled_events_list = UserVisitEvent.objects.all().filter(login = request.user, answer = 3)
+			my_canceled_events = []
+			for c in my_canceled_events_list: my_canceled_events.append(c.event.id)
+			today_events_list = Event.objects.all().filter(date__gte = time_now).filter(date__lte = end_time_now).exclude(id__in = my_canceled_events)
+			for event in today_events_list:
+				opinion = False
+				if event.is_required == False:
+					try:
+						you_opin = UserVisitEvent.objects.get(login = request.user, event = event)
+						opinion = you_opin.answer
+					except ObjectDoesNotExist: pass
+				today_events.append({
+					'id': event.id,
+					'title': event.title,
+					'date': event.date,
+					'is_required': event.is_required,
+					'answer': opinion,
+				})
+
+		#Получение последних заметок
+		last_week = datetime.datetime.today() - datetime.timedelta(days=7)
+		lates_notes = Note.objects.all().filter(pub_date__gte = last_week).order_by('-pub_date')
+		notes = []
+		for note in lates_notes:
+			notes.append({
+				'id': note.id,
+				'title': note.title,
+			})
+		#Получение последних опросов
+		lates_polls = Question.objects.all().filter(pub_date__gte = last_week).order_by('-pub_date')
+		polls = []
+		for poll in lates_polls:
+			polls.append({
+				'id': poll.id,
+				'title': poll.title,
 			})
 
-	#Получение последних заметок
-	last_week = datetime.datetime.today() - datetime.timedelta(days=7)
-	lates_notes = Note.objects.all().filter(pub_date__gte = last_week).order_by('-pub_date')
-	notes = []
-	for note in lates_notes:
-		notes.append({
-			'id': note.id,
-			'title': note.title,
-		})
-	#Получение последних опросов
-	lates_polls = Question.objects.all().filter(pub_date__gte = last_week).order_by('-pub_date')
-	polls = []
-	for poll in lates_polls:
-		polls.append({
-			'id': poll.id,
-			'title': poll.title,
-		})
-
-	#Проверяем, закончился ли учебный день
-	day_end = False
-	now_time = today.hour * 60 + today.minute
-	last_time = 0
-	#print(tm_list)
-	try:
-		last_lesson = Timetable.objects.all().filter(semester = settings.SEMESTER, week = today.week, day = today.weekday).latest('time')
-		last_time = last_lesson.time
-		if (last_lesson.double): last_time += 1
-		last_time = today.gettimesummend(last_time)
-		if (now_time > last_time): day_end = True
-	except ObjectDoesNotExist:
-		pass
+		#Проверяем, закончился ли учебный день
+		day_end = False
+		now_time = today.hour * 60 + today.minute
+		last_time = 0
+		#print(tm_list)
+		try:
+			last_lesson = Timetable.objects.all().filter(semester = settings.SEMESTER, week = today.week, day = today.weekday).latest('time')
+			last_time = last_lesson.time
+			if (last_lesson.double): last_time += 1
+			last_time = today.gettimesummend(last_time)
+			if (now_time > last_time): day_end = True
+		except ObjectDoesNotExist:
+			pass
 
 
-	
+		
 
-	context = {
-		'title': 'Главная',
-		'actions_list': actions_list,
-		'timetable': timetable,
-		'is_weekend': is_weekend,
-		'new_achievements': new_achievements,
-		'events': events,
-		'today_events': today_events,
-		#'notifications': getNotifications(request.user),
-		'day_end': day_end,
-		'notes': notes,
-		'polls': polls,
-		'bonus': bonus,
-		'bingo': _bingo,
-		'catapult': catapult,
-		'pagination': {
-			'has_prev': current_page.has_previous(),
-			'has_next': current_page.has_next(),
-			'current': current_page.number,
-			'prev': current_page.number - 1,
-			'next': current_page.number + 1,
+		context = {
+			'title': 'Главная',
+			'actions_list': actions_list,
+			'timetable': timetable,
+			'is_weekend': is_weekend,
+			'new_achievements': new_achievements,
+			'events': events,
+			'today_events': today_events,
+			#'notifications': getNotifications(request.user),
+			'day_end': day_end,
+			'notes': notes,
+			'polls': polls,
+			'bonus': bonus,
+			'bingo': _bingo,
+			'catapult': catapult,
+			'pagination': {
+				'has_prev': current_page.has_previous(),
+				'has_next': current_page.has_next(),
+				'current': current_page.number,
+				'prev': current_page.number - 1,
+				'next': current_page.number + 1,
+			}
 		}
-	}
+	else:
+		import calendar, datetime
+
+		calendar_base = calendar.Calendar(0)
+		today = datetime.datetime.now()
+		calendar_current_month = calendar_base.monthdayscalendar(today.year, today.month)
+
+		context = {
+			'title': 'Yoda',
+			'calendar': calendar_current_month,
+			'current_date': today,
+		}
+
 	if request.user.userprofile.beta:	
 		return render(request, 'index_beta.html', context)
 	else:	
