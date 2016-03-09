@@ -71,7 +71,7 @@
 	<div class="col-8 col-m-4 col-t-5">
 		<div class="card card--no-smooth {% if request.user.userprofile.theme == 'dark' %}card--colored card--color-black{%endif%}">
 			<div class="card__content">
-				<p>Данный раздел находится в стадии разработки. Некоторые из представленных функций могут не работать<br>
+				<p>Данный раздел находится в стадии разработки. Некоторые из представленных функций могут работать неправильно<br>
 				<a href="#extra" class="{{request.user.userprofile.accent}}-fg">Настройки предварительного тестирования</a>
 				</p>
 			</div>
@@ -164,6 +164,7 @@
 				</div>
 
 				<h3>Акцентный цвет</h3>
+				<p>Выберите свой любимый <a class="{{request.user.userprofile.accent}}-fg">акцентный</a> цвет</p>
 				<div data-tooltip="Красный" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentRed" class="color-block {% if request.user.userprofile.accent == 'red'%}active{% endif %} red"></div>
 				<div data-tooltip="Оранжевый" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentOrange" class="color-block {% if request.user.userprofile.accent == 'orange'%}active{% endif %} orange"></div>
 				<div data-tooltip="Желтый" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentYellow" class="color-block {% if request.user.userprofile.accent == 'yellow'%}active{% endif %} yellow"></div>
@@ -177,10 +178,28 @@
 				<div data-tooltip="Коричневый" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentBrown" class="color-block {% if request.user.userprofile.accent == 'brown'%}active{% endif %} brown"></div>
 
 				<h3>Обложка профиля</h3>
-				<div class="alert">
-					<div class="alert__header">Как получить обложки профиля?</div>
-					<div class="alert__content">Получить новые обложки профиля можно, собирая коллекции предметов или выигрывая их, открывая сундуки</div>
-				</div>
+				<p>Обложки будут отображаться на вашей странице профиля, а также в боковом меню</p>
+				<p>
+					<div class="form">
+						<div class="radio radio--color-{{request.user.userprofile.accent}}">
+							<input type="radio" id="fillColor" name="background" checked>
+							<label for="fillColor">
+								<div class="checkbox__title">Сплошной цвет</div>
+							</label>
+						</div>
+						<div class="radio radio--color-{{request.user.userprofile.accent}}">
+							<input type="radio" id="chooseBackground" name="background">
+							<label for="chooseBackground">
+								<div class="checkbox__title">Из коллекции</div>
+							</label>
+						</div>
+					</div>
+
+
+					<a class="{{request.user.userprofile.accent}}-fg">Как получить новые обложки?</a><br>
+					<a class="{{request.user.userprofile.accent}}-fg" href="#profile">Изменить фотографию пользователя</a><br>
+				</p>
+
 			</div>
 		</div>
 
@@ -328,6 +347,7 @@
 				</div>
 				<h3>Мои заметки</h3>
 				<p>Управляйте вашими заметками</p>
+				<a class="{{request.user.userprofile.accent}}-fg" href="/notes/add">Добавить новую заметку</a><br>
 			</div>
 		</div>
 
@@ -347,6 +367,7 @@
 				
 				<h3>Мои опросы</h3>
 				<p>Управляйте вашими опросами</p>
+				<a class="{{request.user.userprofile.accent}}-fg" href="/polls/add">Добавить новый опрос</a><br>
 			</div>
 		</div>
 
@@ -379,6 +400,7 @@
 				
 				<h3>Мои мероприятия</h3>
 				<p>Управляйте вашими мероприятиями</p>
+				<a class="{{request.user.userprofile.accent}}-fg" href="/events/add">Создать мероприятие</a><br>
 			</div>
 		</div>
 

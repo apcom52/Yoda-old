@@ -14,6 +14,7 @@ from polls.models import Question
 from inventory.models import UserInventoryItem, Item, Catapult
 from .utils import DTControl, avatar, addAction, checkAchievements, setAch, dateInfo, getTimetable, UpdateStatus, setBonusPoints, bingo#, getNotifications
 from .forms import *
+from .weather import *
 import datetime
 
 
@@ -421,13 +422,27 @@ def teacher(request, id):
 
 
 def all_timetable(request):
+	import urllib, json
+
 	if not request.user.is_authenticated(): return redirect('/auth/in')
 	UpdateStatus(request.user)
 	
+	#weather = ''
+	try:
+		weather_url = 'http://api.openweathermap.org/data/2.5/weather?id=548408&units=metric&appid=a1eb5aa92ea919f0af791b48aeadb32f'
+		weather_response = urllib.request.urlopen(weather_url)
+		weather = json.loads(weather_response.read().decode('utf8'))
+		weather['rus'] = get_weather_desc(str(weather['weather'][0]['id']))
+		weather['icon'] = get_weather_icon(str(weather['weather'][0]['id']))
+		weather['main']['temp'] = round(weather['main']['temp'])
+	except Exception:
+		weather = None
+
 	context = {
 		'title': 'Расписание',
 		'week1': get_week_timetable(request, 1),
 		'week2': get_week_timetable(request, 2),
+		'weather': weather,
 	}
 	if request.user.userprofile.beta:
 		context['title'] = 'Расписание (beta)'

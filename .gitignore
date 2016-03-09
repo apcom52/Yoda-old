@@ -19,3 +19,5 @@ yoda/settings.py
 yoda/settings.py
 *.pyc
 timetable/__pycache__/views.cpython-34.pyc
+*.pyc
+*.pyc

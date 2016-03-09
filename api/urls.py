@@ -22,5 +22,7 @@ urlpatterns = [
 	url('^favorite/$', views.FavoriteAPI.as_view()),
 
 	url('^settings/$', views.SettingsAPI.as_view()),
+	
+	url('^timetable/$', views.TimetableAPI.as_view()),
 	#url('^', include(router.urls)),
 ]

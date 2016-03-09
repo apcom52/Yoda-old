@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.db.models import Q
+from django.conf import settings
 from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
@@ -14,9 +15,11 @@ from library.serializers import *
 from user.serializers import *
 from notes.serializers import *
 from favorites.serializers import *
+from timetable.serializers import *
 
 from library.models import *
 from notes.models import Note
+from timetable.models import Timetable
 
 # Create your views here.
 class LibraryFilesAPI(APIView):	
@@ -215,3 +218,31 @@ class SettingsAPI(APIView):
 		return Response(data)
 		#else:
 		#	return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class TimetableAPI(APIView):
+	def get(self, request, format = None):
+		data = request.GET
+		
+		if data.get("day"):
+			import datetime
+			data_day = str(data.get("day"))
+			print(data_day)
+			today = datetime.datetime.today()
+			day = int(data_day[0:2])
+			month = int(data_day[2:4])
+			print(day, month)
+			year = today.year
+			date = datetime.date(year, month, day)
+			weekday = date.weekday() + 1
+			weeknumber = date.isocalendar()[1] + 1
+			week = 1
+			if weeknumber % 2 == 0:
+				week = 2
+
+			group = request.user.userprofile.group
+			semester = settings.SEMESTER
+
+			timetable = Timetable.objects.all().filter(week = week, day = weekday, semester = semester).filter(Q(group = 1) | Q(group = (group + 1))).order_by('time')
+			serializer = TimetableSerializer(timetable, many = True)		
+			return Response(serializer.data)
+		return None

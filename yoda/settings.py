@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    #'debug_toolbar',
     'rest_framework',
     'bbcode',
     'pymorphy2',
@@ -68,6 +69,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'yoda.urls'
@@ -152,6 +154,6 @@ REST_FRAMEWORK = {
 }
 
 #Настройки приложения
-SEMESTER = 2 #Текущий семестр
+SEMESTER = 4 #Текущий семестр
 WEEK_SHIFT = 0 #0 - если нет необходимости сдвигать недели, 1 если нужно сдвинуть на одну (для четных/нечетных)
 NO_AVATAR = '/media/img/noavatar.jpg' #без аватара
