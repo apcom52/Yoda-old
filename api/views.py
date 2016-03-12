@@ -245,4 +245,7 @@ class TimetableAPI(APIView):
 			timetable = Timetable.objects.all().filter(week = week, day = weekday, semester = semester).filter(Q(group = 1) | Q(group = (group + 1))).order_by('time')
 			serializer = TimetableSerializer(timetable, many = True)		
 			return Response(serializer.data)
-		return None
+
+		elif data.get("week"):
+			serializer = TimetableWeekSerializer(str(data.get("week")), request.user.userprofile.group, settings.SEMESTER)
+			return Response(serializer.get_data())

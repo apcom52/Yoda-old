@@ -21,15 +21,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'y&$p6p6q-iyonl%*2co03q3997e^d1kkhe)1u*gpt!bz%f&ymo'
+SECRET_KEY = '#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if socket.gethostname() == 'vsu-it.ru':
+'''if socket.gethostname() == 'vsu-it.ru':
     DEBUG = False
 else:
-    DEBUG = True
+    DEBUG = False'''
 
-ALLOWED_HOSTS = ['vsu-it.ru', 'www.vsu-it.ru']
+DEBUG = True
+ALLOWED_HOSTS = ['vsu-it.ru', 'www.vsu-it.ru', 'localhost', 'localhost:8000']
 
 
 # Application definition
@@ -121,17 +122,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/media/static/'
 
 _PATH = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-if DEBUG == False:
+'''if DEBUG == False:
     STATIC_ROOT = os.path.join(BASE_DIR, "static", "static_root")
-else:    STATIC_ROOT = os.path.join(_PATH, 'media', 'static')
+else:    STATIC_ROOT = os.path.join(_PATH, 'media', 'static')'''
 
-'''STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static", "our_static"),
+
+STATIC_ROOT = os.path.join(_PATH, 'media', 'static', 'static_root')
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "media", "static"),
     #'/var/www/static/',
-)'''
+)
 
 MEDIA_ROOT = os.path.join(_PATH, 'media')
 MEDIA_URL = '/media/'

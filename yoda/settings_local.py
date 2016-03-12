@@ -21,15 +21,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'y&$p6p6q-iyonl%*2co03q3997e^d1kkhe)1u*gpt!bz%f&ymo'
+SECRET_KEY = '#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if socket.gethostname() == 'vsu-it.ru':
-    DEBUG = True
-else:
+'''if socket.gethostname() == 'vsu-it.ru':
     DEBUG = False
+else:
+    DEBUG = False'''
 
-ALLOWED_HOSTS = []
+DEBUG = False
+
+ALLOWED_HOSTS = ['vsu-it.ru', 'www.vsu-it.ru', 'localhost:8000']
 
 
 # Application definition

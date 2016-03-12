@@ -20,8 +20,9 @@ def index(request):
 	UpdateStatus(request.user)
 	notes = Note.objects.order_by('-pub_date').all()
 	context = {'title': 'Заметки', 'notes':notes, 'bingo': _bingo, 'bonus': bonus, 'white': white,}
-	if request.user.userprofile.beta:	return render(request, 'beta/notes_index.html', context)
-	else:	return render(request, 'notes_index.html', context)
+	#if request.user.userprofile.beta:	return render(request, 'beta/notes_index.html', context)
+	#else:	
+	return render(request, 'notes_index.html', context)
 
 def add(request):
 	if not request.user.is_authenticated(): return redirect('/auth/in')
@@ -208,6 +209,7 @@ def wiki2html(data = ''):
 	parser = bbcode.Parser()
 	parser.add_simple_formatter('h', '<h2 name="%(value)s">%(value)s</h2>')
 	parser.add_simple_formatter('h2', '<h3>%(value)s</h3>')
+	parser.add_simple_formatter('code', '<code>%(value)s</code>')
 	#parser.add_simple_formatter('img', '<img src="%(value)s">')	
 	result = parser.format(data)
 	#result = result.replace('{{', '[')
