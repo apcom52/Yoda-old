@@ -1,0 +1,42 @@
+<div class="col-12 u-gray-bg align-center" id="note_title">
+	<h1>{{title}}</h1>
+	<div class="grid" id="noteStats">
+		<div class="col-4">
+			<img src="{{login.avatar}}" class="img--circle" style="width: 32px;
+			height: 32px;"><br>{{login.first_name}} {{login.last_name}}</b>
+		</div>
+		<div class="col-4">
+			<i class="flaticon-eye" style="font-size: 1.5em;"></i><br>
+			Просмотры: <b>{{views}}</b>
+		</div>
+		<div class="col-4">
+			<i class="flaticon-speach-square" style="font-size: 1.5em;"></i><br>
+			Комментарии: <b>2</b>
+		</div>
+	</div>
+</div>
+<div class="col-12" style="background-color: #E3E3E3;" id="note_actions">
+	<button class="button--fit button--color-black button--icon button--transparent-full" id="expandNoteOptions">Действия <i class="flaticon-down"></i></button>
+	<div id="noteOptions">	
+		<form style="display: inline-block;" action="/api/favorite/" method="POST" id="addToFavoriteForm">	
+			<input type="hidden" name="csrfmiddlewaretoken" value="{{csrf}}">
+			<input type="hidden" name="type" value="1">
+			<input type="hidden" name="note" value="{{id}}">
+			{{:if in_favorite do}}
+			<button class="button--no-smooth button--color-{{user_accent}} button--transparent-full button--icon favorite-animation" id="addToFavorite" data-note-id="{{id}}"><i class="flaticon-heart-broken"></i><span>Удалить из избранного</span></button>		
+			{{end}}
+			{{:unless in_favorite do}}
+			<button class="button--no-smooth button--color-{{user_accent}} button--transparent-full button--icon favorite-animation" id="addToFavorite" data-note-id="{{id}}"><i class="flaticon-heart"></i><span>Добавить в избранное</span></button>		
+			{{end}}
+		</form>
+		<button class="button--no-smooth button--color-black button--transparent-full button--icon"><i class="flaticon-speach-square"></i><span>Комментировать</span></button>
+		<button class="button--no-smooth button--color-black button--transparent-full button--icon can-hide"><i class="flaticon-pencil"></i><span>Редактировать</span></button>
+		<button class="button--no-smooth button--color-black button--transparent-full button--icon can-hide"><i class="flaticon-trash"></i><span>Удалить</span></button>
+	</div>
+</div>
+
+<div class="col-12" id="note_text">
+	<div class="padding-1">							
+		{{=content}}
+	</div>	
+</div>	

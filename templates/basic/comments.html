@@ -3,9 +3,14 @@
 {% if request.user.is_authenticated %}
 <form class="ui form" method="POST" action="{{comment_url}}">
 	{% csrf_token %}
-	<textarea name="comment" rows="3" placeholder="Напишите комментарий..." required="true"></textarea>
+	<textarea name="comment" id="comment" rows="3" placeholder="Напишите комментарий..." required="true"></textarea>
 	<input type="hidden" name="item_id" value="{{comment_item_id}}"><br><br>
 	<button class="ui primary mini button" type="submit">Отправить</button>
+	{% if smiles %}
+		{% for smile in smiles %}
+		<span class='altrone-smile' data-smile-code='{{smile.symbol}}' data-title='{{smile.title}}'><img src='/media/{{smile.icon}}'></span>
+		{% endfor %}
+	{% endif %}
 </form>
 {%endif%}
 <div class="ui comments">
@@ -21,7 +26,7 @@
 			        	<div class="date altrone-popup" data-content="{{comment.date}}">{{comment.date|naturaltime}}</div>
 			        </div>
 			    </div>
-			    <div class="text">{{comment.text|linebreaks}}</div>
+			    <div class="text">{% autoescape off %}{{comment.text|linebreaks}}{% endautoescape %}</div>
 		    </div>
 		  </div>
 	{% endfor %}

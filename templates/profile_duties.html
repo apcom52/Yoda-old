@@ -1,0 +1,40 @@
+{% extends 'basic/base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block bodyclass %}{{bodyclass}}{% endblock %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+{% load humanize %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="four wide column">
+		{% include 'basic/profile-side.html' %}
+	</div>
+	<div class="ten wide column">
+		{% include 'basic/profile-nav.html' %}
+		<div class="ui bottom attached padded active segment">	
+			{% if bingo %}
+				{% include 'basic/bingo-bonus.html' %}
+			{% endif %}		
+			{% for lesson in duties %}
+				<h3>{{lesson.title}}</h3>
+				<div class="ui grid">
+					{% if not lesson.days %}Нет сведений о задолженностях{% endif %}
+					{% for day in lesson.days %}
+						<div class="five wide column altrone-grid {% if user in day.visitor.all %}altrone-do-it{%else%}altrone-no-do{%endif%}">
+							<b>{{day.date}}</b><br>{{day.description}}<br>
+							{% if user in day.visitor.all %}
+								<i class="green checkmark icon"></i>
+							{% else %}
+								<i class="red remove icon"></i><br>
+								{% if request.user == user %}<a href="/users/duty_done?duty={{day.id}}">Я сдал</a>{% endif %}
+							{% endif %}
+						</div>
+					{% endfor %}					
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+	<div class="one wide column"></div>
+</div>
+{% endblock %}

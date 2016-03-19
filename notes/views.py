@@ -4,7 +4,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from achievements.models import Action
-from timetable.utils import addAction, avatar, setAch, UpdateStatus
+from timetable.utils import addAction, avatar, setAch, UpdateStatus, bingo, setBonusPoints
+#from user.utils import getSmiles
 from .forms import NoteAddForm, NoteEditForm
 from .models import *
 
@@ -13,16 +14,21 @@ import bbcode
 # Create your views here.
 def index(request):	
 	if not request.user.is_authenticated(): return redirect('/auth/in')
+	bonus = setBonusPoints(request.user)	
+	white = request.GET.get('white', False)
+	_bingo = bingo(request.user)
 	UpdateStatus(request.user)
 	notes = Note.objects.order_by('-pub_date').all()
-	context = {'title': 'Заметки', 'notes':notes}
-	return render(request, 'notes_index.html', context)
+	context = {'title': 'Заметки', 'notes':notes, 'bingo': _bingo, 'bonus': bonus, 'white': white,}
+	if request.user.userprofile.beta:	return render(request, 'beta/notes_index.html', context)
+	else:	return render(request, 'notes_index.html', context)
 
 def add(request):
 	if not request.user.is_authenticated(): return redirect('/auth/in')
 	UpdateStatus(request.user)
 	error = [False, '']
 	form = NoteAddForm()
+	white = request.GET.get('white', False)
 	if request.method == 'POST':
 		data = request.POST
 		form = NoteAddForm(data)
@@ -44,12 +50,14 @@ def add(request):
 			if len(content)	< 10 or len(title) < 2: error_message = 'Заголовок должен быть не менее 2 символов. Содержание заметки не менее 10-ти символов'	
 			error[0] = True
 			error[1] = error_message
-	context = {'title': 'Заметки', 'form':form, 'error':error[0], 'error_text': error[1]}
+	context = {'title': 'Заметки', 'form':form, 'error':error[0], 'error_text': error[1], 'white': white,}	
 	return render(request, 'notes_add.html', context)
 
 def note(request, id):	
 	if not request.user.is_authenticated(): return redirect('/auth/in')
 	try:
+		bonus = setBonusPoints(request.user)	
+		_bingo = bingo(request.user)
 		UpdateStatus(request.user)
 		context = {}	
 		note = Note.objects.get(id = id)
@@ -57,6 +65,7 @@ def note(request, id):
 		note.save()
 		us = note.login		
 		user_is_author = False
+		white = request.GET.get('white', False)
 		try:
 			if request.user.username == us.username or request.user.is_admin: user_is_author = True
 		except AttributeError:
@@ -66,14 +75,16 @@ def note(request, id):
 		comments = []
 		comments_list = NoteComment.objects.all().filter(note = note)
 		for comment in comments_list:
+			comment_text = comment.comment#parseSmiles(comment.comment)
 			comments.append({
 				'username': '%s %s' %(comment.login.first_name, comment.login.last_name),
 				'avatar': avatar(comment.login),
-				'text': comment.comment,
+				'text': comment_text,
 				'date': comment.pub_date,
 				'user_id': comment.login.id,
 			})
 
+		notes = Note.objects.order_by('-pub_date').all()
 		#Подгатавливаем контент
 		content = wiki2html(note.content)
 		context = {
@@ -90,6 +101,11 @@ def note(request, id):
 			'comments': comments,
 			'comment_url': '/notes/comment/',
 			'comment_item_id': note.id,
+			'bingo': _bingo,
+			'bonus': bonus,
+			'notes': notes,
+			'white': white,
+			#'smiles': getSmiles(request.user),
 		}
 		return render(request, 'note.html', context)
 	except ObjectDoesNotExist: 

@@ -1,0 +1,87 @@
+{% extends 'basic/beta_base.html' %}
+{% load humanize %}
+{% block title %}{{title}}{% endblock %}
+{% load humanize %}
+{% block more_head %}
+<style>
+html {
+	background: {% if request.user.userprofile.theme == 'dark' %} darkgray {% else %} lightblue {% endif %};
+}
+</style>	
+<link href="/media/static/css/more_css/notes-mobile.css" rel="stylesheet" media="screen, handheld"/>
+<link href="/media/static/css/more_css/notes.css" rel="stylesheet" media="screen and (min-width: 40.5em)"/>
+<!--<script src="/media/static/ckeditor/ckeditor.js"></script>-->
+<script src="/media/static/js/more_js/notes.js"></script>
+
+{% endblock %}
+
+{% block content %}
+<div class="card card--no-smooth" id="contentCard">
+	<div class="card__content card__content--no-padding">
+		<div class="grid">
+			<div class="col-4 {% if request.user.userprofile.theme == 'dark' %} d-gray-bg{% else %} u-gray-bg {% endif %}" id="leftCol">
+				<div class="grid" {% if request.user.userprofile.theme == 'dark' %}style="background-color: #424242;"{% endif %}>
+					<div class="col-7">
+						<button class="button--fit button--color-{{request.user.userprofile.accent}} button--icon button--transparent-full align-left"><i class="flaticon-edit"></i>Создать заметку</button>
+					</div>
+					<div class="col-5 align-right">
+						<button id="refreshNoteList" class="button--gfit {% if request.user.userprofile.theme == 'light' %} button--color-black {% endif %} button--icon-only button--transparent-full margin-horizontal-0"><i class="flaticon-refresh bold"></i></button>
+						<button class="button--gfit {% if request.user.userprofile.theme == 'light' %} button--color-black {% endif %} button--icon-only button--transparent-full margin-horizontal-0 button--no-smooth" id="readMode"><i class="flaticon-book bold"></i></button>
+						<a href="/users/settings#notes"><button class="button--gfit {% if request.user.userprofile.theme == 'light' %} button--color-black {% endif %} button--icon-only button--transparent-full margin-horizontal-0"><i class="flaticon-settings"></i></button></a>
+					</div>
+				</div>
+				<div class="list-navigation {% if request.user.userprofile.theme == 'dark' %}list-navigation--invert{% endif %} list-navigation--color-{{request.user.userprofile.accent}}" id="notesListWidget" style="display: block;">					
+				</div>
+			</div>
+			<div class="col-8" id="rightCol">
+				<div class="grid" id="noteContent">							
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% verbatim %}
+<script type="text/template" id="NoteListItemTemplate">
+	<div class="list-navigation__icon"><i class="flaticon-notepad"></i></div>
+	<div class="list-navigation__content">
+		<div class="list-navigation__content__title">{{title}}</div>
+		<div class="list-navigation__content__meta">{{pub_date}}</div>
+	</div>
+	<div class="list-navigation__right-icon"><i class="flaticon-right1"></i></div>
+</script>
+
+
+<script type="text/template" id="NoteDetailTemplate">
+	<div class="col-12 u-gray-bg align-center animation push-in-up delay-0.5s">
+		<h1>{{title}}</h1>
+		<div class="grid" id="noteStats">
+			<div class="col-4">
+				<img src="{{user.avatar}}" class="img--circle" style="width: 32px;
+				height: 32px;"><br>{{user.first_name}} {{user.last_name}}</b>
+			</div>
+			<div class="col-4">
+				<i class="flaticon-eye" style="font-size: 1.5em;"></i><br>
+				Просмотры: <b>{{views}}</b>
+			</div>
+			<div class="col-4">
+				<i class="flaticon-speach-square" style="font-size: 1.5em;"></i><br>
+				Комментарии: <b>{{comments.length}}</b>
+			</div>
+		</div>
+	</div>
+	<div class="col-12" style="background-color: #E3E3E3;">
+		<button class="button--fit button--color-black button--icon button--transparent-full" id="expandNoteOptions">Действия <i class="flaticon-down"></i></button>
+		<div id="noteOptions">
+			<button class="button--no-smooth button--color-{{user_accent}} button--transparent-full button--icon"><i class="flaticon-heart bold"></i><span>Добавить в избранное</span></button>
+			<button class="button--no-smooth button--color-black button--transparent-full button--icon"><i class="flaticon-speach-square bold"></i><span>Комментировать</span></button>
+			<button class="button--no-smooth button--color-black button--transparent-full button--icon can-hide"><i class="flaticon-pencil bold"></i><span>Редактировать</span></button>
+			<button class="button--no-smooth button--color-black button--transparent-full button--icon can-hide" ><i class="flaticon-trash bold"></i><span>Удалить</span></button>
+		</div>
+	</div>
+	<div class="col-12  animation push-in-down delay-0.5s">
+		<div class="padding-1">{{{content}}}</div>	
+	</div>
+</script>
+{% endverbatim %}
+{% endblock %}

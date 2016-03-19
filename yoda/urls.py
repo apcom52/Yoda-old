@@ -24,6 +24,9 @@ urlpatterns = [
     url('^polls/', include('polls.urls')),
     url('^users/', include('user.urls')),
     url('^events/', include('events.urls')),
+    url('^files/', include('library.urls')),
+    url('^api/', include('api.urls')),
+    url('^feedback/', include('feedback.urls')),
     url('^', include('timetable.urls')),
 ]
 

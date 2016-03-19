@@ -1,0 +1,53 @@
+<h2>Ежедневный бонус</h2>
+<div class="rulette" data-present-id="{{bonus.index}}">
+	<div class="row">
+		<div class="item" id="ruletteItem1">+2</div>
+		<div class="item" id="ruletteItem2">+1</div>
+		<div class="item" id="ruletteItem3">+1</div>
+		<div class="item" id="ruletteItem4">+4</div>
+	</div>
+	<div class="row">
+		<div class="item" id="ruletteItem5">+4</div>
+		<div class="item item-quality-{{bonus.item1.quality}}" id="ruletteItem6"><img src="{{bonus.item1.item.icon.url}}"></div>
+		<div class="item" id="ruletteItem7">+2</div>
+		<div class="item" id="ruletteItem8">+1</div>
+	</div>
+	<div class="row">
+		<div class="item" id="ruletteItem9">+2</div>
+		<div class="item" id="ruletteItem10">+1</div>
+		<div class="item" id="ruletteItem11">+5</div>
+		<div class="item" id="ruletteItem12">+2</div>
+	</div>
+	<div class="row">
+		<div class="item" id="ruletteItem13">+3</div>
+		<div class="item" id="ruletteItem14">+1</div>
+		<div class="item item-quality-{{bonus.item2.quality}}" id="ruletteItem15"><img src="{{bonus.item2.item.icon.url}}"></div>
+		<div class="item" id="ruletteItem16">+3</div>
+	</div>			
+</div>
+
+<div class="ui icon blue message rulette-message" style="display: none;">
+  	<i class="trophy icon"></i>
+  	<div class="content">
+	    <div class="header">Поздравляем!</div>
+    	{% if not bonus.is_item %}
+    		<p>Вы выиграли ежедневный бонус: <b>+{{bonus.xp}}</b><br>
+    	{% else %}
+    		<p>
+    		{% if bonus.index == 6 %}    		
+    			<img src="{{bonus.item1.item.icon.url}}" class="rulette-message-img"><br>
+    			<b>{{bonus.item1.item.title}}</b><br>
+    			<i>{% if bonus.item1.quality == 2 %}<span class="quality-3"><i class="star icon"></i><i class="star icon"></i><i class="star icon"></i> Уникальное качество <b>(+ {{bonus.item1.price}} <i class="trophy icon"></i>)</b></span>
+    			{% elif bonus.item1.quality == 1 %}<span class="quality-2"><i class="star icon"></i><i class="star icon"></i> Хорошее качество <b>(+ {{bonus.item1.price}} <i class="trophy icon"></i>)</b></span>
+    			{% else %}<span class="quality-1"><i class="star icon"></i> Низкое качество <b>(+ {{bonus.item1.price}} <i class="trophy icon"></i>)</b></span>{% endif %}</i><br>
+    		{% else %}
+    			<img src="{{bonus.item2.item.icon.url}}" class="rulette-message-img"><br>
+    			<b>{{bonus.item2.item.title}}</b><br>
+    			<i>{% if bonus.item2.quality == 2 %}<span class="quality-3"><i class="star icon"></i><i class="star icon"></i><i class="star icon"></i> Уникальное качество <b>(+ {{bonus.item2.price}} <i class="trophy icon"></i>)</b></span>
+    			{% elif bonus.item2.quality == 1 %}<span class="quality-2"><i class="star icon"></i><i class="star icon"></i> Хорошее качество <b>(+ {{bonus.item2.price}} <i class="trophy icon"></i>)</b></span>
+    			{% else %}<span class="quality-1"><i class="star icon"></i> Низкое качество <b>(+ {{bonus.item2.price}} <i class="trophy icon"></i>)</b></span>{% endif %}</i><br>
+    		{% endif %}
+    		<br><a href="/notes/2/">Подробнее о бонусах</a></p>
+    	{% endif %}
+  	</div>
+</div>

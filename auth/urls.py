@@ -6,4 +6,5 @@ urlpatterns = [
 	url(r'^in', views.signin, name='signin'),
 	url(r'^out', views.signout, name='signout'),	
 	url(r'^premier', views.premier, name='premier'),	
+	url(r'^game', views.game, name='game'),	
 ]

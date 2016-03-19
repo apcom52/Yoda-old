@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'rest_framework',
     'bbcode',
     'pymorphy2',
     'notes',
@@ -50,6 +51,11 @@ INSTALLED_APPS = (
     'timetable',
     'polls',
     'events',
+    'inventory',
+    'common',
+    'api',
+    'library',   
+    'feedback', 
 )
 
 MIDDLEWARE_CLASSES = (
@@ -126,8 +132,24 @@ else:    STATIC_ROOT = os.path.join(_PATH, 'media', 'static')
 )'''
 
 MEDIA_ROOT = os.path.join(_PATH, 'media')
-MEDIA_URL = 'http://vsu-it.ru/media/'
+MEDIA_URL = '/media/'
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+   'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
+   'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+    ),
+}
 
 #Настройки приложения
 SEMESTER = 2 #Текущий семестр

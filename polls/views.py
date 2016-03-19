@@ -3,7 +3,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError 
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-from timetable.utils import addAction, avatar, setAch, UpdateStatus
+from timetable.utils import addAction, avatar, setAch, UpdateStatus, bingo#, parseSmiles
+#from user.utils import getSmiles
 from .models import *
 from .forms import AddPollForm
 from .utils import changePollState
@@ -11,9 +12,10 @@ from .utils import changePollState
 # Create your views here.
 def index(request):
 	if not request.user.is_authenticated(): return redirect('/auth/in')
+	_bingo = bingo(request.user)
 	UpdateStatus(request.user)
 	polls = Question.objects.order_by('-pub_date').all()
-	context = {'title':'Опросы', 'polls':polls}
+	context = {'title':'Опросы', 'polls':polls, 'bingo': _bingo}
 	return render(request, 'polls_index.html', context)
 
 def add(request):
@@ -61,6 +63,7 @@ def add(request):
 def poll(request, id):
 	if not request.user.is_authenticated(): return redirect('/auth/in')
 	try:
+		_bingo = bingo(request.user)
 		UpdateStatus(request.user)
 		poll = Question.objects.get(id = id)
 		voted_count = len(QueAns.objects.all().filter(question = poll))
@@ -73,10 +76,11 @@ def poll(request, id):
 		comments = []
 		comments_list = PollComment.objects.all().filter(poll = poll)
 		for comment in comments_list:
+			comment_text = comment.comment#parseSmiles(comment.comment)
 			comments.append({
 				'username': '%s %s' %(comment.login.first_name, comment.login.last_name),
 				'avatar': avatar(comment.login),
-				'text': comment.comment,
+				'text': comment_text,
 				'date': comment.pub_date,
 				'user_id': comment.login.id,
 			})
@@ -118,6 +122,8 @@ def poll(request, id):
 			'comments': comments,
 			'comment_url': '/polls/comment/',
 			'comment_item_id': poll.id,
+			'bingo': _bingo,
+			#'smiles': getSmiles(request.user),
 		}
 		return render(request, 'poll.html', context)
 	except ObjectDoesNotExist:		

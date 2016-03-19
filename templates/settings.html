@@ -1,92 +1,397 @@
-{% extends 'basic/base.html' %}
+{% extends 'basic/beta_base.html' %}
 {% block title %}{{title}}{% endblock %}
+{% block more_head %}
+<style>
+	body {
+		background-color: {% if request.user.userprofile.theme == 'light' %}lightblue;{%else%}gray;{%endif%}
+	}
+	
+</style>
+<link rel="stylesheet" type="text/css" href="/media/static/css/more_css/settings.css">
+<script type="text/javascript" src="/media/static/js/more_js/settings.js"></script>
+{% endblock %}
 {% block content %}
-{% include 'basic/taskbar.html' %}
-{% include 'basic/taskbar_end.html' %}
 {% load humanize %}
-<div class="ui grid">
-	<div class="one wide column"></div>
-	<div class="ten wide column">
-		<div class="ui breadcrumb">
-		  	<a class="section" href='/users/{{request.user.id}}'>{{request.user.first_name}} {{request.user.last_name}}</a>
-		  	<span class="divider">/</span>
-		  	<div class="active section">Настройки</div>
-		</div>
-		<h1> Настройки: </h1>
-		<h3>Загрузить аватар</h3>
-		<div class="ui two grid">
-			<div class="six wide column">
-				<h4>Ваш текущий аватар:</h4>
-				<img class="ui fluid rounded image" src="{{current_avatar}}">
+<div class="grid">
+	<div class="col-4 col-m-4 col-t-3">
+		<div class="card card--no-smooth" style="margin: 1em 0em;">
+			<div class="card__content card__content--no-padding card__content--list">
+				<div class="list {% if request.user.userprofile.theme == 'dark' %}list--invert{%endif%} list--image list--color-{{request.user.userprofile.accent}} list--animation-invert">
+					<a href="#profile"><div class="list__item" data-settings-target="profile">
+						<img src="/media/img/icons/user.png">
+						<b>Профиль</b>
+					</div>
+					<a href="#personalization"><div class="list__item" data-settings-target="personalization">
+						<img src="/media/img/icons/change_theme.png">
+						<b>Персонализация</b>
+					</div></a>
+					<a href="#filter"><div class="list__item" data-settings-target="filter">
+						<img src="/media/img/icons/filter_content.png">
+						<b>Фильтрация контента</b>
+					</div></a>
+					<a href="#contacts"><div class="list__item" data-settings-target="contacts">
+						<img src="/media/img/icons/email.png">
+						<b>Контакты</b>
+					</div></a>
+					<a href="#extra"><div class="list__item" data-settings-target="extra">
+						<img src="/media/img/icons/settings.png">
+						<b>Расширенные настройки</b>
+					</div></a>
+					<a href="#about"><div class="list__item" data-settings-target="about">
+						<img src="/media/img/icons/settings.png">
+						<b>О сайте</b>
+					</div></a>
+				</div>
 			</div>
-			<div class="one wide column"></div>
-			<div class="nine wide column">
-				<div class="ui form">
-					<form method="POST" action="/users/upload_photo/" enctype="multipart/form-data">
-						{% csrf_token %}
-						{{avatar_upload}}
-						<input type="submit" class="ui button" value="Загрузить">
-					</form>
-					<div class="ui message">
-					  	<div class="header">Рекомендации по выбору фотографии</div>
-					  	<ul class="list">
-					    	<li>Не загружайте фотографии более 2 Мб</li>
-					    	<li>Выбирайте фотографии с соотношением сторон 1:1 (квадратные)</li>
-					  	</ul>
+		</div>		
+
+		<div class="card card--no-smooth" style="margin: 1em 0em;">
+			<div class="card__content card__content--no-padding card__content--list">
+				<div class="list {% if request.user.userprofile.theme == 'dark' %}list--invert{%endif%} list--image list--color-{{request.user.userprofile.accent}} list--animation-invert">
+					<a href="#notes"><div class="list__item" data-settings-target="notes">
+						<img src="/media/img/icons/note.png">
+						<b>Заметки</b>
+					</div></a>
+					<a href="#polls"><div class="list__item" data-settings-target="polls">
+						<img src="/media/img/icons/poll.png">
+						<b>Опросы</b>
+					</div></a>
+					<a href="#events"><div class="list__item" data-settings-target="events">
+						<img src="/media/img/icons/calendar.png">
+						<b>Мероприятия</b>
+					</div></a>
+					<a href="#files"><div class="list__item" data-settings-target="files">
+						<img src="/media/img/icons/files.png">
+						<b>Файлы</b>
+					</div></a>
+				</div>
+			</div>
+		</div>	
+	</div>
+	<div class="col-8 col-m-4 col-t-5">
+		<div class="card card--no-smooth {% if request.user.userprofile.theme == 'dark' %}card--colored card--color-black{%endif%}">
+			<div class="card__content">
+				<p>Данный раздел находится в стадии разработки. Некоторые из представленных функций могут не работать<br>
+				<a href="#extra" class="{{request.user.userprofile.accent}}-fg">Настройки предварительного тестирования</a>
+				</p>
+			</div>
+		</div>
+
+		<div class="card settings-card card--no-smooth {% if request.user.userprofile.theme == 'dark' %}card--colored card--color-black{%endif%}" id="about">
+			<div class="card__header">
+				<div class="card__header__title">О сайте</div>
+			</div>
+			<div class="card__content">
+				<div class="grid">
+					<div class="col-2">
+						<img src="/media/favicons/android-chrome-192x192.png" class="img--responsive" id="settingsLogo">
+					</div>
+					<div class="col-10 padding-horizontal-1">
+						<h3>Yoda</h3>
+						<p>
+						Версия: 2.1.1<br>
+						Разработчик: Александр Перевезенцев<br>
+						<a href="https://github.com/apcom52/yoda" class="{{request.user.userprofile.accent}}-fg">Исходный код проекта</a></p>
 					</div>
 				</div>
+				<h3>Используемые технологии</h3>
+				<p><a href="https://www.python.org/" class="{{request.user.userprofile.accent}}-fg"><b>Python</b></a><br>3.4.0</p>
+				<p><a href="https://www.djangoproject.com/" class="{{request.user.userprofile.accent}}-fg"><b>Django</b></a><br>1.8.5</p>
+				<p><a href="http://www.django-rest-framework.org/" class="{{request.user.userprofile.accent}}-fg"><b>Django REST Framework</b></a><br>3.3.2</p>
+				<p><a href="https://github.com/apcom52/Altrone2-CSS" class="{{request.user.userprofile.accent}}-fg"><b>Altrone-2 CSS</b></a><br>0.7.1</p>
+				<p><a href="http://semantic-ui.com/" class="{{request.user.userprofile.accent}}-fg"><b>Semantic UI</b></a><br>2.1</p>
+				<p><a href="https://jquery.com/" class="{{request.user.userprofile.accent}}-fg"><b>jQuery</b></a><br>2.1.4</p>
+				<p><a href="http://backbonejs.org/" class="{{request.user.userprofile.accent}}-fg"><b>Backbone</b></a><br>1.0.0</p>
 			</div>
 		</div>
-		
-		<h3>Добавление контактных данных</h3>
-		<div class="ui two grid">
-			<div class="six wide column">
-				<div class="ui form">
-					<form method="POST" action="/users/set_contacts/" enctype="multipart/form-data">
-						{% csrf_token %}
-						{{set_contacts.as_p}}
-						<input type="submit" class="ui green button" value="Сохранить">
-					</form>	
-				</div>			
+
+		<div class="card settings-card card--no-smooth {% if request.user.userprofile.theme == 'dark' %}card--colored card--color-black{%endif%}" id="profile">
+			<div class="card__header">
+				<div class="card__header__title">Профиль</div>
 			</div>
-			<div class="one wide column"></div>
-			<div class="nine wide column">				
-				<div class="ui message">
-				  	<div class="header">Примечание</div>
-				  	<ul class="list">
-				    	<li>Номер телефона нужно заносить в формате 9XXXXXXXXX</li>
-				    	<li>В поле для ссылки на социальную сеть нужно написать свой аккаунт. Например id12345678 для VK, или yoda для Twitter</li>
-				  	</ul>
+			<div class="card__content">
+				<h3>Фотография пользователя</h3>
+				<div class="grid">
+					<div class="col-2">
+						<img src="{{request.user.userprofile.avatar.url}}" class="img--responsive img--border img--circle">
+					</div>
+					<div class="col-10 padding-horizontal-1">
+						<p>Загружайте фотографии размером не более 2Мб. Также рекомендуется загружать фотографии с соотношением сторон 1:1 (квадратные)</p>
+						<button class="accentButton button--icon button--color-{{request.user.userprofile.accent}}" id="uploadPhoto"><i class="flaticon-photo"></i>Загрузить новую фотографию</button>
+						<button>Удалить</button><br>
+					</div>
+				</div>
+				<a href="#personalization" class="{{request.user.userprofile.accent}}-fg">Изменить обложку профиля</a>
+				
+				<h3>Смена пароля</h3>
+				<div class="form {% if request.user.userprofile.theme == 'dark' %}form--invert{%endif%}">
+					<input type="password" placeholder="Старый пароль">
+					<input type="password" placeholder="Новый пароль">
+					<input type="password" placeholder="Повторите пароль">
+					<button class="accentButton button--color-{{request.user.userprofile.accent}}">Изменить пароль</button>
+				</div>
+				<p>Если вы не помните пароль, то вы можете сбросить его. Тогда на ваш адрес электронной почты придет письмо с ссылкой для подтверждения сброса пароля.<br>
+				<a class="{{request.user.userprofile.accent}}-fg" href="#">Запросить сброс пароля</a><br>
+				<a class="{{request.user.userprofile.accent}}-fg" href="#contacts">Изменить адрес электронной почты</a><br>
+				</p>
+
+
+				<h3>Настройки конфиденциальности</h3>			
+				<div class="checkbox checkbox--color-{{request.user.userprofile.accent}} {% if request.user.userprofile.theme == 'dark' %}checkbox--invert{%endif%}">
+					<input type="checkbox" {% if request.user.userprofile.hide_email %}checked{%endif%} id="hideEmail">
+					<label for="hideEmail">
+						<div class="checkbox__title">Не показывать адрес электронной почты</div>
+						<div class="checkbox__meta">Не показывать ваш адрес электронной почты в блоке "Контакты"</div>
+					</label>
 				</div>
 			</div>
 		</div>
 
-		<h3>Смена пароля</h3>
-		<div class="ui two grid">
-			<div class="six wide column">
-				<div class="ui form">
-					{% if error_password %} <div class="ui red message">Изменить пароль не удалось</div> {% endif %}
-					<form method="POST" action="/users/change_password/" enctype="multipart/form-data">
-						{% csrf_token %}
-						{{change_password.as_p}}
-						<input type="submit" class="ui green button" value="Изменить пароль">
-						<input type="reset" class="ui button" value="Очистить">
-					</form>	
-				</div>			
+		<div class="card settings-card card--no-smooth {% if request.user.userprofile.theme == 'dark' %}card--colored card--color-black{%endif%}" id="personalization">
+			<div class="card__header">
+				<div class="card__header__title">Персонализация</div>
 			</div>
-			<div class="one wide column"></div>
-			<div class="nine wide column">				
-				<div class="ui message">
-				  	<div class="header">Примечание</div>
-				  	<ul class="list">
-				    	<li>Пароль должен быть не менее 6-ти символов</li>
-				    	<li>После изменения пароля вам нужно будет заново войти в аккаунт</li>
-				  	</ul>
+			<div class="card__content">
+				<h3>Тема</h3>
+				<div>Выберите тему оформления: 
+					<div class="select select--color-{{request.user.userprofile.accent}} {% if request.user.userprofile.theme == 'dark' %} select--invert {%endif%}" style="display: inline-block;">
+						<div class="select__menu" data-select-value="{{request.user.userprofile.theme}}">{% if request.user.userprofile.theme == 'light' %}Светлая{% else %}Темная{%endif%}</div>
+						<div class="select__options">
+							<div class="select__options__item" data-option-id="light" id="lightTheme">Светлая</div>
+							<div class="select__options__item" data-option-id="dark" id="darkTheme">Темная</div>
+						</div>
+					</div>
+				</div>
+
+				<h3>Акцентный цвет</h3>
+				<div data-tooltip="Красный" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentRed" class="color-block {% if request.user.userprofile.accent == 'red'%}active{% endif %} red"></div>
+				<div data-tooltip="Оранжевый" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentOrange" class="color-block {% if request.user.userprofile.accent == 'orange'%}active{% endif %} orange"></div>
+				<div data-tooltip="Желтый" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentYellow" class="color-block {% if request.user.userprofile.accent == 'yellow'%}active{% endif %} yellow"></div>
+				<div data-tooltip="Оливковый" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentOlive" class="color-block {% if request.user.userprofile.accent == 'olive'%}active{% endif %} olive"></div>
+				<div data-tooltip="Зеленый" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentGreen" class="color-block {% if request.user.userprofile.accent == 'green'%}active{% endif %} green"></div>
+				<div data-tooltip="Синий" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentBlue" class="color-block {% if request.user.userprofile.accent == 'blue'%}active{% endif %} blue"></div>
+				<div data-tooltip="Бирюзовый" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentTeal" class="color-block {% if request.user.userprofile.accent == 'teal'%}active{% endif %} teal"></div>
+				<div data-tooltip="Фиолетовый" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentPurple" class="color-block {% if request.user.userprofile.accent == 'purple'%}active{% endif %} purple"></div>
+				<div data-tooltip="Индиго" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentViolet" class="color-block {% if request.user.userprofile.accent == 'violet'%}active{% endif %} violet"></div>
+				<div data-tooltip="Пурпурный" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentPink" class="color-block {% if request.user.userprofile.accent == 'pink'%}active{% endif %} pink"></div>
+				<div data-tooltip="Коричневый" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert="true"{% endif %} id="accentBrown" class="color-block {% if request.user.userprofile.accent == 'brown'%}active{% endif %} brown"></div>
+
+				<h3>Обложка профиля</h3>
+				<div class="alert">
+					<div class="alert__header">Как получить обложки профиля?</div>
+					<div class="alert__content">Получить новые обложки профиля можно, собирая коллекции предметов или выигрывая их, открывая сундуки</div>
 				</div>
 			</div>
 		</div>
+
+		<div class="card settings-card card--no-smooth {% if request.user.userprofile.theme == 'dark' %}card--colored card--color-black{%endif%}" id="filter">
+			<div class="card__header">
+				<div class="card__header__title">Фильтрация контента</div>
+			</div>
+			<div class="card__content">
+				<h3>Фильтрация ленты</h3>
+				<p>Выберите дополнительную информацию, которая будет показываться в общей ленте</p>
+				<div class="checkbox checkbox--color-{{request.user.userprofile.accent}} {% if request.user.userprofile.theme == 'dark' %}checkbox--invert{%endif%}">
+					<input type="checkbox" checked id="filterAchievements">
+					<label for="filterAchievements">
+						<div class="checkbox__title">Новые достижения</div>
+					</label>
+				</div>
+				<div class="checkbox checkbox--color-{{request.user.userprofile.accent}} {% if request.user.userprofile.theme == 'dark' %}checkbox--invert{%endif%}">
+					<input type="checkbox" checked id="filterStoleItems">
+					<label for="filterStoleItems">
+						<div class="checkbox__title">Продажа предметов</div>
+					</label>
+				</div>
+				<div class="checkbox checkbox--color-{{request.user.userprofile.accent}} {% if request.user.userprofile.theme == 'dark' %}checkbox--invert{%endif%}">
+					<input type="checkbox" checked id="filterCatapult">
+					<label for="filterCatapult">
+						<div class="checkbox__title">Запуски подаркопульты</div>
+					</label>
+				</div>
+				<div class="checkbox checkbox--color-{{request.user.userprofile.accent}} {% if request.user.userprofile.theme == 'dark' %}checkbox--invert{%endif%}">
+					<input type="checkbox" checked id="filterBonuses">
+					<label for="filterBonuses">
+						<div class="checkbox__title">Случайные бонусы</div>
+					</label>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="card settings-card card--no-smooth {% if request.user.userprofile.theme == 'dark' %}card--colored card--color-black{%endif%}" id="contacts">
+			<div class="card__header">
+				<div class="card__header__title">Контакты</div>
+			</div>
+			<div class="card__content">
+				<h3>Контактные данные</h3>
+				<div class="form {% if request.user.userprofile.theme == 'dark' %}form--invert{%endif%}">
+					<label for="contactsPhone">Мобильный телефон:</label>
+					<div class="form-attached">
+						<div class="form__attach">+7</div><input id="contactsPhone" type="text" placeholder="Номер телефона" value="{{request.user.userprofile.phone|default:''}}">
+					</div>
+					<label for="contactsEmail">Электронная почта</label>
+					<input id="contactsEmail" type="email" placeholder="Адрес электронной почты" value="{{request.user.email|default:''}}">
+					<p>Адрес электронный почты нужен для сброса пароля, если вы его забыли. Указывайте ваш актуальный адрес электронной почты. При желании, вы можете скрыть его от остальных пользователей<br>
+					<a class="{{request.user.userprofile.accent}}-fg" href="#profile">Скрыть адрес электронной почты</a></p>
+
+				</div>
+
+				<h3>Ссылки на профили</h3>
+				<div class="form {% if request.user.userprofile.theme == 'dark' %}form--invert{%endif%}">
+					<label for="contactsVK">ВКонтакте:</label>
+					<div class="form-attached">
+						<div class="form__attach">https://vk.com/</div><input id="contactsVK" type="text" placeholder="ВКонтакте" value="{{request.user.userprofile.vk|default:''}}">
+					</div>
+					<label for="contactsTwitter">Twitter:</label>
+					<div class="form-attached">
+						<div class="form__attach">https://twitter.com/</div><input id="contactsTwitter" type="text" placeholder="Twitter" value="{{request.user.userprofile.twitter|default:''}}">
+					</div>
+					<label for="contactsFacebook">Facebook:</label>
+					<div class="form-attached">
+						<div class="form__attach">https://facebook.com/</div><input id="contactsFacebook" type="text" placeholder="Facebook" value="{{request.user.userprofile.facebook|default:''}}">
+					</div>
+					<label for="contactsGithub">Github:</label>
+					<div class="form-attached">
+						<div class="form__attach">https://github.com/</div><input id="contactsGithub" type="text" placeholder="Github" value="{{request.user.userprofile.github|default:''}}">
+					</div>
+				</div>				
+			</div>
+		</div>
+
+		<div class="card settings-card card--no-smooth {% if request.user.userprofile.theme == 'dark' %}card--colored card--color-black{%endif%}" id="extra">
+			<div class="card__header">
+				<div class="card__header__title">Расширенные настройки</div>
+			</div>
+			<div class="card__content">
+				<div class="toggle toggle--color-{{request.user.userprofile.accent}} {% if request.user.userprofile.theme == 'dark' %}toggle--invert{%endif%}">
+					<input type="checkbox" {% if request.user.userprofile.beta %}checked{%endif%} id="extraBeta">
+					<label for="extraBeta">
+						<div class="toggle__title">Предварительное тестирование</div>
+						<div class="toggle__meta">Вы будете получать новые функции быстрее, чем остальные пользователи. Некоторые функции сайта могут работать с ошибками</div>
+					</label>
+				</div>
+				<div class="checkbox checkbox--color-{{request.user.userprofile.accent}} {% if request.user.userprofile.theme == 'dark' %}checkbox--invert{%endif%}">
+					<input type="checkbox" id="extraTips">
+					<label for="extraTips">
+						<div class="checkbox__title">Убрать подсказки</div>
+						<div class="checkbox__meta">Подсказки по работе с сайтом больше не будут появляться</div>
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="card settings-card card--no-smooth {% if request.user.userprofile.theme == 'dark' %}card--colored card--color-black{%endif%}" id="notes">
+			<div class="card__header">
+				<div class="card__header__title">Заметки</div>
+			</div>
+			<div class="card__content">
+				<h3>Предварительный просмотр:</h3>
+				<div class="alert" id="notesPreviewText">
+					<div class="alert__header">Заголовок заметки</div>
+					<div class="alert__content">
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fringilla nulla arcu, sollicitudin consequat mi fringilla in. Aenean pulvinar nisi vel libero sagittis, nec tempus nulla venenatis. Donec finibus finibus nisl et tempor. Praesent dui sem, malesuada vitae metus ac, bibendum gravida nisl. Proin ultricies orci lectus, eu dignissim orci iaculis sit amet. Curabitur finibus varius ligula at fermentum. Quisque in semper augue. <br>Morbi vitae pharetra augue. Curabitur vel massa eget quam tempus fermentum vitae sit amet tortor. Vivamus imperdiet venenatis arcu id laoreet. Morbi egestas, dui at venenatis scelerisque, arcu odio porta nulla, sit amet lacinia tellus magna id nibh. Aenean ut consequat lectus, in ultrices magna. Proin ut eleifend erat. Nulla vehicula scelerisque magna, nec ultricies ligula molestie sit amet. Vivamus sodales fringilla metus auctor faucibus.
+					</div>
+				</div>
+
+				<h3>Ночной режим чтения</h3>
+				<div class="toggle toggle--color-{{request.user.userprofile.accent}} {% if request.user.userprofile.theme == 'dark' %}toggle--invert{%endif%}">
+					<input type="checkbox" id="notesDarkTheme">
+					<label for="notesDarkTheme">
+						<div class="toggle__title">Включить ночной режим чтения</div>
+						<div class="toggle__meta">В период с 22:00 до 6:00 для заметок будет включаться ночной режим. Будет работать только, если у вас выбрана темная тема в настройках "Персонализация"</div>
+					</label>
+				</div>
+				<a class="{{request.user.userprofile.accent}}-fg" href="#personalization">Изменить тему</a></p>
+
+				<h3>Настройка шрифта</h3>
+				<p>Для более удобного чтения, вы можете выбрать размер и гарнитуру шрифта</p>				
+				<div>Размер текста: 
+					<div class="select select--color-{{request.user.userprofile.accent}} {% if request.user.userprofile.theme == 'dark' %} select--invert {%endif%}" style="display: inline-block;">
+						<div class="select__menu" data-select-value="16">16</div>
+						<div class="select__options">
+							<div class="select__options__item" data-option-id="14" id="font14">14</div>
+							<div class="select__options__item" data-option-id="16" id="font16">16</div>
+							<div class="select__options__item" data-option-id="18" id="font18">18</div>
+							<div class="select__options__item" data-option-id="20" id="font20">20</div>
+						</div>
+					</div>
+				</div>
+				<div>Шрифт: 
+					<div class="select select--color-{{request.user.userprofile.accent}} {% if request.user.userprofile.theme == 'dark' %} select--invert {%endif%}" style="display: inline-block;">
+						<div class="select__menu" data-select-value="2">Без засечек</div>
+						<div class="select__options">
+							<div class="select__options__item" data-option-id="1" id="fontBook">С засечками</div>
+							<div class="select__options__item" data-option-id="2" id="fontScreen">Без засечек</div>
+						</div>
+					</div>
+				</div>
+				<h3>Мои заметки</h3>
+				<p>Управляйте вашими заметками</p>
+			</div>
+		</div>
+
+		<div class="card settings-card card--no-smooth {% if request.user.userprofile.theme == 'dark' %}card--colored card--color-black{%endif%}" id="polls">
+			<div class="card__header">
+				<div class="card__header__title">Опросы</div>
+			</div>
+			<div class="card__content">
+				<div class="toggle toggle--color-{{request.user.userprofile.accent}} {% if request.user.userprofile.theme == 'dark' %}toggle--invert{%endif%}">
+					<input type="checkbox" {% if request.user.userprofile.beta %}checked{%endif%} id="notesActual">
+					<label for="notesActual">
+						<div class="toggle__title">Показывать актуальные темы</div>
+						<div class="toggle__meta">Показывать на главной странице опросы, на которые вы еще не дали ответа</div>
+					</label>
+				</div>
+
+				
+				<h3>Мои опросы</h3>
+				<p>Управляйте вашими опросами</p>
+			</div>
+		</div>
+
+
+		<div class="card settings-card card--no-smooth {% if request.user.userprofile.theme == 'dark' %}card--colored card--color-black{%endif%}" id="events">
+			<div class="card__header">
+				<div class="card__header__title">Мероприятия</div>
+			</div>
+			<div class="card__content">
+				<div class="toggle toggle--color-{{request.user.userprofile.accent}} {% if request.user.userprofile.theme == 'dark' %}toggle--invert{%endif%}">
+					<input type="checkbox" {% if request.user.userprofile.beta %}checked{%endif%} id="eventsNotifications">
+					<label for="eventsNotifications">
+						<div class="toggle__title">Отправлять уведомления о ближайших событиях</div>
+						<div class="toggle__meta">Если вы установите этот параметр, то в центр уведомлений будут приходить уведомления о ближайших событиях</div>
+					</label>
+				</div>
+				
+				<h3>Ближайшие события</h3>
+				<p>Выберите временной промежуток до наступления мероприятий, которые будут показываться на главной странице в разделе "Ближайшие события"</p>
+				<div>События на главной: 
+					<div class="select select--color-{{request.user.userprofile.accent}} {% if request.user.userprofile.theme == 'dark' %} select--invert {%endif%}" style="display: inline-block;">
+						<div class="select__menu" data-select-value="1">За день до начала</div>
+						<div class="select__options">
+							<div class="select__options__item" data-option-id="1">За день до начала</div>
+							<div class="select__options__item" data-option-id="2">За 2 дня до начала</div>
+							<div class="select__options__item" data-option-id="3">За 3 дня до начала</div>
+						</div>
+					</div>
+				</div>
+				
+				<h3>Мои мероприятия</h3>
+				<p>Управляйте вашими мероприятиями</p>
+			</div>
+		</div>
+
+		<div class="card settings-card card--no-smooth {% if request.user.userprofile.theme == 'dark' %}card--colored card--color-black{%endif%}" id="files">
+			<div class="card__header">
+				<div class="card__header__title">Файлы</div>
+			</div>
+			<div class="card__content">				
+				<h3>Мои файлы</h3>
+				<p>Управляйте вашими загруженными файлами</p>
+			</div>
+		</div>
+
 	</div>
-	<div class="five wide grid"></div>
 </div>
-
 {% endblock %}

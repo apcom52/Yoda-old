@@ -1,5 +1,23 @@
-<div class="ui top attached tabular menu">
-	<a href="/users/{{user.id}}"><div class="{% if active_page == 1 %}active{%endif%} item">Активность</div></a>
-	<a href="/users/content/{{user.id}}"><div class="{% if active_page == 3 %}active{%endif%} item">Контент</div></a>
-	<a href="/users/achievements/{{user.id}}"><div class="{% if active_page == 2 %}active{%endif%} item">Достижения</div></a>
+<div class="ui inverted menu top attached">
+  <a href="/users/{{user.id}}" class="{% if active_page == 1 %}active{%endif%} blue item">Активность</a>
+  <a href="/users/content/{{user.id}}" class="{% if active_page == 3 %}active{%endif%} purple item">Контент</a>
+  <a href="/users/attendance/{{user.id}}" class="{% if active_page == 4 %}active{%endif%} olive item">Посещаемость</a>
+  <a href="/users/duty/{{user.id}}" class="{% if active_page == 5 %}active{%endif%} orange item">Долги</a>
+  <a href="/users/achievements/{{user.id}}" class="{% if active_page == 2 %}active{%endif%} brown item">Достижения</a>
+  <a href="/users/inventory/{{user.id}}" class="{% if active_page == 6 %}active{%endif%} red item">Инвентарь</a>
+  <a href="/users/stats/{{user.id}}" class="{% if active_page == 7 %}active{%endif%} teal item">Статистика</a>
+  {% if request.user == user %}
+	  <div class="right menu">
+	  	<a href="/users/settings/" class="item" style="float: right;"><i class="settings-button setting icon"></i></a>
+	  </div>
+  {% endif %}
 </div>
+
+<!--<div class="ui top attached tabular menu">
+	<a"><div class="{% if active_page == 1 %}active{%endif%} item">Активность</div></a>
+	<a href="/users/content/{{user.id}}"><div class="{% if active_page == 3 %}active{%endif%} item">Контент</div></a>
+	<a href="/users/attendance/{{user.id}}"><div class="{% if active_page == 4 %}active{%endif%} item">Посещаемость</div></a>
+	<a href="/users/duty/{{user.id}}"><div class="{% if active_page == 5 %}active{%endif%} item">Долги</div></a>
+	<a href="/users/achievements/{{user.id}}"><div class="{% if active_page == 2 %}active{%endif%} item">Достижения</div></a>
+	<a href="/users/inventory/{{user.id}}"><div class="{% if active_page == 6 %}active{%endif%} item">Инвентарь</div></a>
+</div>-->

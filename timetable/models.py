@@ -1,9 +1,25 @@
 from django.db import models
 from django.contrib import admin
 from django.contrib.auth.models import User
+from django.conf import settings
 from .utils import DTControl
 
 # Create your models here.
+class Lesson_Item(models.Model):
+	semesters = ((1, 'Первый семестр'), (2, 'Второй семестр'),
+		(3, 'Третий семестр'), (4, 'Четвертый семестр'),
+		(5, 'Пятый семестр'), (6, 'Шестой семестр'),
+		(7, 'Седьмой семестр'), (8, 'Восьмой семестр')
+	)
+	title = models.CharField('Название предмета', max_length = 64, unique = False)
+	semester = models.IntegerField('Семестр', choices = semesters, default = 1)
+
+	def __str__(self):
+		return '%s (%s)' % (self.title, self.semester)
+
+class Lesson_ItemAdmin(admin.ModelAdmin):
+	list_display = ('title', 'semester')
+
 class Lesson(models.Model):
 	semesters = ((1, 'Первый семестр'), (2, 'Второй семестр'),
 		(3, 'Третий семестр'), (4, 'Четвертый семестр'),
@@ -55,9 +71,13 @@ class Timetable(models.Model):
 		(5, 'Пятый семестр'), (6, 'Шестой семестр'),
 		(7, 'Седьмой семестр'), (8, 'Восьмой семестр')
 	)
+	groups = ((1, 'Общая пара'), (2, 'Первая подгруппа'), (3, 'Вторая подгруппа'))
+	_semester = settings.SEMESTER
+
 	teacher = models.ForeignKey('Teacher', to_field = 'id')
 	lesson = models.ForeignKey('Lesson', to_field = 'id')
-	semester = models.IntegerField('Семестр', choices = semesters, default = 1)
+	group = models.IntegerField('Подгруппа', choices = groups, default = 0)
+	semester = models.IntegerField('Семестр', choices = semesters, default = _semester)
 	week = models.IntegerField('Неделя', choices = weeks, default = 1)
 	day = models.IntegerField('День', choices = days, default = 1)
 	time = models.IntegerField('Номер пары', choices = lesson_nums, default = 1)
@@ -65,11 +85,17 @@ class Timetable(models.Model):
 	double = models.BooleanField('Сдвоенная пара', default = False)
 
 	def __str__(self):
-		return '%s (%s = %s %s %s)' % (self.lesson, self.teacher, self.week, self.day, self.time)
+		return '%s (%s / %s = %s %s %s)' % (self.lesson, self.teacher, self.group, self.week, self.day, self.time)
 
 class TimetableAdmin(admin.ModelAdmin):	
-	list_display = ('lesson', 'teacher', 'semester', 'week', 'day', 'time', 'place', 'double')
+	list_display = ('lesson', 'teacher', 'semester', 'week', 'day', 'time', 'group', 'place', 'double')
 
+	def get_form(self, request, obj=None, **kwargs):
+		semester = settings.SEMESTER
+		form = super(TimetableAdmin, self).get_form(request, obj, **kwargs)
+		form.base_fields['teacher'].queryset = Teacher.objects.filter(semester = semester)
+		form.base_fields['lesson'].queryset = Lesson.objects.filter(semester = semester)
+		return form
 
 class Homework(models.Model):
 	lesson_nums = (
@@ -79,7 +105,7 @@ class Homework(models.Model):
 	)
 	today = DTControl()
 
-	user = models.OneToOneField(User)
+	user = models.ForeignKey(User)
 	date = models.DateField('Дата (YYYY-MM-DD)')
 	time = models.IntegerField('Номер пары', choices = lesson_nums, default = 1)
 	homework = models.CharField('Домашнее задание', max_length = 1024)
@@ -97,7 +123,7 @@ class Control(models.Model):
 		(4, '4 пара'), (5, '5 пара'), (6, '6 пара'), 
 		(7, '7 пара'), 
 	)
-	user = models.OneToOneField(User)
+	user = models.ForeignKey(User)
 	date = models.DateField('Дата (YYYY-MM-DD)')
 	time = models.IntegerField('Номер пары', choices = lesson_nums, default = 1)
 	info = models.CharField('Подробности', max_length = 1024)

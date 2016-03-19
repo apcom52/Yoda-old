@@ -1,0 +1,196 @@
+{% extends 'basic/beta_base.html' %}
+{% load humanize %}
+{% block title %}{{title}}{%endblock%}
+
+{% block content %}
+<div class="container group">
+	<div class="col col-8 col-t-4 col-m-4">
+		<div class="card only-m">
+			<div class="header"><h1>Быстрая навигация</h1></div>
+			<div class="content">
+				<ul class="list list-nav">
+					<a href="#chronicle"><li>Активность</li></a>
+					<a href="#timetable"><li>Расписание</li></a>
+					<a href="#events"><li>Мероприятия</li></a>
+				</ul>
+			</div>
+		</div>
+
+		{% if new_achievements %}
+		<div class="card">
+			<div class="header"><h1>Новые достижения</h1></div>
+			<div class="content feed">
+				{% for achievement in new_achievements %}
+					<div class="item">
+						<img src="{{achievement.icon}}" class="photo">
+						<div class="content">
+							<div class="author">{{achievement.title}}</div>
+							<div class="time">+{{achievement.points}} XP</div>
+							<div class="text">{{achievement.description}}</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+		{% endif %}
+
+		<a name="chronicle"></a>
+		<div class="card">
+			<div class="header"><h1>Активность</h1></div>
+			<div class="content feed actions_feed">
+				{% for action in actions_list %}
+					<div class="item">
+						<img src="{{action.avatar}}" class="photo">
+						<div class="content">
+							<a href="/users/{{action.userlogin}}/"><div class="author">{{action.username}}</div></a>
+							<div class="time" data-tooltip="{{action.pub_date}}">{{action.pub_date|naturaltime}}</div>
+							<div class="text">{{action.action_text|safe}}</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+			<div class="footer">
+				<center>
+					<div class="button-group">
+					  	{% if pagination.has_prev %}
+					  		<a href="?page={{pagination.current|add:'-1'}}"><button class="icon"><i class="fa fa-angle-left"></i>Назад</button></a>
+					  	{% else %}
+					  		<button class="icon" disabled><i class="fa fa-angle-left"></i>Назад</button>
+					  	{% endif %}
+
+						{% if pagination.has_next %}
+					  		<a href="?page={{pagination.current|add:'1'}}"><button class="icon">Вперед<i class="fa fa-angle-right"></i></button></a>
+					  	{% else %}
+					  		<button class="icon" disabled>Вперед<i class="fa fa-angle-right"></i></button>
+					  	{% endif %}
+					</div>
+					</center>
+			</div>
+		</div>
+	</div>
+	<div class="col col-4 col-t-2 col-m-4">
+		<a name="timetable"></a>
+		{% if day_end %}
+		<div class="card">
+			<div class="header"><h1><i class="fa fa-clock-o"></i> Учебный день уже закончился</h1></div>
+			<div class="content card-text">
+				<p>Вы можете посмотреть <a href="/timetable/next_days">расписание на завтра</a></p>
+			</div>
+		</div>
+		{% endif %}
+		<div class="card">
+			<div class="header"><h1>Расписание</h1>
+				<button class="card-button pin-right only-d" data-tooltip="Изменить день" data-dropdown-target="dropdown_timetable_date">Сегодня <i class="fa fa-caret-down"></i></button>
+				<div class="meta">5 сентября 2015</div>
+			</div>
+			<div class="content card-padding-fix">
+				<ul class="tabs mobile-tabs three hide-d" data-tabs>
+					<li class="active">Сегодня</li>
+					<li>Завтра</li>
+					<li>Послезавтра</li>
+				</ul>			
+			{% for lesson in timetable %}
+				<div class="card lesson {% if lesson.type == 'Лекция' %}lection
+						{% elif lesson.type == 'Практика' %}practice{% elif lesson.type == 'Лабораторная работа' %}lab{% endif %}">
+					<div class="header"><h3>{{lesson.title}}</h3>
+						<div class="container group">
+							<div class="col col-6 col-t-3 col-m-2 m-gray-fg" style="text-align: left;">{{lesson.place}}</div>
+							<div class="col col-6 col-t-3 col-m-2 m-gray-fg" style="text-align: right;">{{lesson.start_time}}</div>
+						</div>
+					</div>
+					<div class="content">
+						{% if lesson.type == 'Лекция' %}<div class="lenta lection">ЛЕКЦИЯ</div>
+						{% elif lesson.type == 'Практика' %}<div class="lenta practice">ПРАКТИКА</div>
+						{% elif lesson.type == 'Лабораторная работа' %}<div class="lenta lab">ЛАБОРАТОРНАЯ РАБОТА</div>
+						{% endif %}
+						{% if lesson.homework %}
+						<div class="lenta homework">
+							<h4>Домашнее задание</h4>
+							<p>{{lesson.homework}}</p>
+						</div>
+						{% endif %}
+						{% if lesson.has_control %}
+						<div class="lenta control">
+							<h4>Контрольная работа</h4>
+							{% if lesson.has_control %}
+							<p>{{lesson.control}}</p>
+							{% endif %}
+						</div>
+						{% endif %}
+
+						{% if lesson.double %}
+							<div class="tag">Сдвоенная пара</div>
+						{% endif %}
+					</div>
+				</div>
+			{% endfor %}			
+			
+				<ul class="dropdown invert" id="dropdown_timetable_date">
+					<li>Сегодня</li>
+					<li>Завтра</li>
+					<li>Послезавтра</li>
+					<li>Послепослезавтра</li>
+				</ul>
+			</div>
+		</div>
+		<div class="card">
+			<ul class="list list-nav gray-accent">
+				<a class="item" href="/timetable/next_days"><li>Расписание на ближайшие дни</li></a>
+			  	<a class="item" href="/timetable"><li>Открыть расписание</li></a>
+			</ul>
+		</div>
+		<div class="card">
+			<div class="header"><h1>Изменение в расписании</h1></div>
+			<ul class="list list-nav gray-accent">
+			  	<a class="item" href="/homework/add"><li>Добавить домашнее задание</li></a>
+			  	<a class="item" href="/control/add"><li>Добавить контрольную</li></a>
+			  	<a class="item" href="/change/place"><li>Изменить аудиторию</li></a>
+			  	<a class="item" href="/change/lesson"><li>Перенести пару</li></a>
+			  	<a class="item" href="/change/cancel"><li>Отменить пару</li></a>
+			</ul>
+		</div>
+		<a name="events"></a>
+		<div class="card">
+			<div class="header"><h1>Мероприятия</h1></div>
+			<div class="content">
+				<ul class="list list-nav gray-accent">
+					{% for event in events %}
+						<a href="/events/{{event.id}}"><li>{{event.title|capfirst}}</li></a>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+		{% if polls %}
+		<div class="card">
+			<div class="header"><h1>Последние опросы</h1><a href="/polls/add"><span class="card-button pin-right" title="Добавить" data-tooltip-position="top-left"><i class="fa fa-plus"></i></span></a></div>
+			<div class="content">
+				<ul class="list list-nav gray-accent">
+					{% for poll in polls %}
+						<a href="/polls/{{poll.id}}"><li>{{poll.title|capfirst}}</li></a>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+		{% endif %}
+		{% if notes %}
+		<div class="card">
+			<div class="header"><h1>Последние заметки</h1><a href="/notes/add"><span class="card-button pin-right" title="Добавить" data-tooltip-position="top-left"><i class="fa fa-plus"></i></span></a></div>
+			<div class="content">
+				<ul class="list list-nav gray-accent">
+					{% for note in notes %}
+						<a href="/notes/{{note.id}}"><li>{{note.title|capfirst}}</li></a>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+		{% endif %}
+
+		<div class="card only-m">
+			<a href="#top"><button class="ghost icon fit"><i class="fa fa-angle-up"></i> НАВЕРХ</button></a>
+		</div>
+	</div>
+</div>
+<div class="tooltip"></div>
+
+
+{% endblock %}

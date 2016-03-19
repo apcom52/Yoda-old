@@ -5,7 +5,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from achievements.models import Action
-from timetable.utils import addAction, setAch, avatar, UpdateStatus
+from timetable.utils import addAction, setAch, avatar, UpdateStatus, bingo#, parseSmiles
+#from user.utils import getSmiles
 from .forms import *
 from .models import *
 import pymorphy2
@@ -16,6 +17,7 @@ def index(request):
 	UpdateStatus(request.user)
 	events_list = Event.objects.all().filter(date__gte = timezone.now()).order_by('date')
 	events = []
+	_bingo = bingo(request.user)
 	for event in events_list:
 		answer = ""
 		answer_color = ""
@@ -39,7 +41,7 @@ def index(request):
 			'answer': answer,
 			'answer_color': answer_color,
 		})
-	context = {'title':'Мероприятия', 'events':events}
+	context = {'title':'Мероприятия', 'events':events, 'bingo': _bingo}
 	return render(request, 'events_index.html', context)
 
 def add(request):
@@ -77,6 +79,7 @@ def event(request, id):
 	if not request.user.is_authenticated(): return redirect('/auth/in')
 	try:
 		UpdateStatus(request.user)
+		_bingo = bingo(request.user)
 		event = Event.objects.get(id = id)	
 		visit = []
 		not_sure = []
@@ -104,10 +107,11 @@ def event(request, id):
 		comments = []
 		comments_list = EventComment.objects.all().filter(event = event)
 		for comment in comments_list:
+			comment_text = comment.comment#parseSmiles(comment.comment)
 			comments.append({
 				'username': '%s %s' %(comment.login.first_name, comment.login.last_name),
 				'avatar': avatar(comment.login),
-				'text': comment.comment,
+				'text': comment_text,
 				'date': comment.pub_date,
 				'user_id': comment.login.id,
 			})
@@ -124,6 +128,8 @@ def event(request, id):
 			'comments': comments,
 			'comment_url': '/events/comment/',
 			'comment_item_id': event.id,
+			'bingo': _bingo,
+			#'smiles': getSmiles(request.user),
 		}
 		return render(request, 'event.html', context)
 	except ObjectDoesNotExist:		

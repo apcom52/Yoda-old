@@ -1,0 +1,52 @@
+{% extends 'basic/base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+<div class="ui grid">
+	<div class="one wide column"></div>
+	<div class="ten wide column">
+		<div class="ui breadcrumb">
+		  	<a class="section" href='/notes/'>Заметки</a>
+		  	<span class="divider">/</span>
+		  	<div class="active section"> Создание заметки </div>
+		</div>
+		{% if error %}
+			<div class="ui negative message">
+			  	<i class="close icon"></i>
+			  	<div class="header">
+			    	Опубликовать заметку не удалось
+			  	</div>
+			  <p>{{ error_text }}
+			</p></div>
+		{% endif %}
+
+		<div class="ui form">
+			<form action='' method='post'>
+				<h1> Создание заметки </h1>
+				{% csrf_token %}
+				{{form.as_p}}
+				<button class="ui labeled icon green button" type="submit"> <i class="checkmark icon"></i>Опубликовать</button>
+			</form>	
+		</div>
+	</div>
+	<div class="one wide column"></div>
+	<div class="four wide column">
+		<h3>Правила разметки</h3>
+		<p>Заметки можно форматировать с помощью bb-кодов. Вот некоторые из них:
+		<ul>
+			<li>[b]...[/b] - Жирный текст</li>
+			<li>[i]...[/i] - Курсивный текст</li>
+			<li>[u]...[/u] - Подчеркнутый текст</li>
+			<li>[h]...[/h] - Заголовок</li>
+			<li>[h2]...[/h2] - Подзаголовок</li>
+			<li>[list]<br>
+			[*]...<br>
+			[*]...<br>
+			...<br>
+			[/list] - Маркированный список
+		</ul>
+		</p>
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'basic/beta_base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block more_head %}
+<style>
+	body {
+		background-color: {% if request.user.userprofile.theme == 'light' %}lightblue;{%else%}gray;{%endif%}
+	}	
+</style>
+<script type="text/javascript" src="/media/static/js/phaser.js"></script>
+<script type="text/javascript" src="/media/static/js/more_js/game.js"></script>
+{% endblock %}
+{% block content %}
+{% endblock %}

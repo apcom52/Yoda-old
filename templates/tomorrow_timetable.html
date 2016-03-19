@@ -18,7 +18,7 @@
 					      	<span class="category">{% if lesson.changePlace %}{{lesson.changePlace}}{%else%}{{lesson.place}}{%endif%}</span>					      	
 					    </div>					    
 					    <div class="description">					      	
-					      	<a class="ui {{lesson.type_color}} ribbon label">{{lesson.type}}</a>
+					      	<a class="ui {{lesson.type_color}} basic ribbon label">{{lesson.type}}</a>
 					      	<p>
 					      		<br>				      		
 						      		{% if lesson.double %} <span class="ui teal tag label">Сдвоенная пара</span>{% endif %}
@@ -86,7 +86,7 @@
 					    </div>					    
 					    <div class="description">
 					      	{% if not lesson.is_transfered and not lesson.is_canceled %}
-					      	<a class="ui {{lesson.type_color}} ribbon label">{{lesson.type}}</a>
+					      	<a class="ui {{lesson.type_color}} basic ribbon label">{{lesson.type}}</a>
 					      	<p>
 					      		<br>				      		
 						      		{% if lesson.double %} <span class="ui teal tag label">Сдвоенная пара</span>{% endif %}
@@ -155,7 +155,7 @@
 					    </div>					    
 					    <div class="description">
 					      	{% if not lesson.is_transfered and not lesson.is_canceled %}
-					      	<a class="ui {{lesson.type_color}} ribbon label">{{lesson.type}}</a>
+					      	<a class="ui {{lesson.type_color}} basic ribbon label">{{lesson.type}}</a>
 					      	<p>
 					      		<br>				      		
 						      		{% if lesson.double %} <span class="ui teal tag label">Сдвоенная пара</span>{% endif %}

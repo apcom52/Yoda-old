@@ -1,0 +1,56 @@
+{% extends 'beta/new-beta-base.html' %}
+{% load humanize %}
+{% block title %}{{title}}{% endblock %}
+{% block more_head %}
+{% if white %}
+<style>
+body {
+	background: #E3FEBE;
+}
+</style>
+{% endif %}
+	
+{% endblock %}
+{% block bodyclass %}{% if not white %}m-gray-bg{% endif %}{% endblock %} 
+{% block content %}
+
+{% include "beta/taskbar_start.html" %}
+		<a href="/notes/" title="Вернуться назад"><li class="icon"><i class="ion-ios-undo-outline"></i></li></a>		
+		{% if user_is_author %}
+		<a href="/notes/edit/{{id}}/" title="Редактировать заметку"><li class="icon"><i class="ion-ios-compose-outline"></i></li></a>
+		<a href="/notes/delete/{{id}}/" title="Удалить заметку"><li class="icon"><i class="ion-ios-trash-outline"></i></li></a>
+		{% endif %}
+{% include "beta/taskbar_end.html" %}
+
+<div class="container group">	
+	<div class="col col-12 col-t-6 col-m-4">
+		<div class="card {% if not white %}invert{% endif %}" style="top: 64px;">
+			<div class="header {% if white %}olive-bg white-fg{% endif %}">
+				<div class="hamburger close" data-dropdown-target="notes-options"><span>options</span></div>		
+				<h1 class="{% if white %}white-fg{% endif %}">Заметки</h1>		
+				<a href="/notes/add"><span class="card-button pin-right {% if white %}white-fg{% endif %}"><i class="olive-fg ion-android-add-circle" style="font-size: 1.5em;"></i></span></a>
+			</div>
+			<div class="content">
+				<div class="flex-grid">
+					<div class="row">
+						<div class="column hide-m" style="min-width: 30%; {% if white %}background: #F1F1F1;{% endif %}">
+							{% include 'beta/notes-side.html' %}
+						</div>
+						<div class="column white-bg" style="width: 100%;">
+							<div class="d-gray-fg">
+								<h1>{{note.title}}</h1>
+								<div style="padding: 1em;">{{content|safe}}</div>
+							</div>
+						</div>
+					</div>
+				</div>				
+			</div>
+		</div>
+	</div>
+</div>
+<ul class="dropdown {% if not white %}invert{% endif %} shadow-5" id="notes-options">
+	<a href="/notes/add"><li>Добавить заметку</li></a>
+	<li id="showAllNotes">Все заметки</li>
+	<li id="showMyNotes">Мои заметки</li>
+</ul>
+{% endblock %}

@@ -1,21 +1,178 @@
 {% load staticfiles %}
+{% load common_tags %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="HandheldFriendly" content="true">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="apple-touch-icon" sizes="57x57" href="/media/favicons/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/media/favicons/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/media/favicons/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/media/favicons/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/media/favicons/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/media/favicons/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/media/favicons/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/media/favicons/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/media/favicons/apple-touch-icon-180x180.png">
+    <link rel="icon" type="image/png" href="/media/favicons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/media/favicons/android-chrome-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="/media/favicons/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="/media/favicons/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/media/favicons/manifest.json">
+    <link rel="mask-icon" href="/media/favicons/safari-pinned-tab.svg" color="#0082e0">
+    <link rel="shortcut icon" href="/media/favicons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#20bfbd">
+    <meta name="msapplication-TileImage" content="/media/favicons/mstile-144x144.png">
+    <meta name="msapplication-config" content="/media/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
 
     <title>{% block title %}{%endblock%}</title>
-    <link href="/media/static/css/altrone.css" rel="stylesheet">
-    <link href="/media/static/css/beta.css" rel="stylesheet">
+    <link href="/media/static/css/altrone.css?rnd=4" rel="stylesheet">    
+    <link href="/media/static/css/more_css/common.css" rel="stylesheet">    
+    <link href="/media/static/css/fonts/flaticon.css" rel="stylesheet">
+    <link href="/media/static/css/awesome.css" rel="stylesheet">
     <script src="/media/static/js/jquery-2.1.4.min.js"></script>
+    <script src="/media/static/js/underscore.js"></script>
+    <script src="/media/static/js/backbone.js"></script>
     <script src="/media/static/js/altrone.js"></script>
-    {% block more_head %}
-    {%endblock%}
+    <script src="/media/static/js/moment.js"></script>
+    <script src="/media/static/js/actions-beta.js"></script>
+    <script src="/media/static/js/jquery.touchSwipe.min.js"></script>
+    <script src="/media/static/js/jquery.form.min.js"></script>
+    <script src="/media/static/js/handlebars.js"></script>
+    <script src="/media/static/js/more_js/common.js"></script>
+    <script src="/media/static/js/jQueryRotate.js"></script>
+    {% block more_head %}{% endblock %}
 </head>
-<body class="{% block bodyclass %}{%endblock%}">
-	{% block content %}{% endblock %}
+<body class="{% block bodyclass %}{%endblock%}" data-accent="{{request.user.userprofile.accent}}" data-theme="{{request.user.userprofile.theme}}" data-user-id="{{request.user.id}}">
+<div class="taskbar {% if request.user.userprofile.theme == 'dark' %}taskbar--invert{% endif %}">
+    <div class="taskbar__item taskbar__item--hover-color-{{request.user.userprofile.accent}}" id="mainMenu"><i class="flaticon-menu bold"></i></div>
+    <div class="taskbar__item bold {{request.user.userprofile.accent}}-bg white-fg" id="back_menu"><i class="flaticon-left1"></i></div>
+    {% if request.user.is_staff %}
+    <a href="/admin"><div class="taskbar__item bold hide-m"><i class="flaticon-wrench"></i></div></a>
+    {% endif %}
+    <div class="taskbar__item taskbar__item--logo taskbar__item--no-select hide-m">{{title|upper}}</div>
+    {% if request.user.is_authenticated %}
+        <a href="/users/{{request.user.id}}"><div class="taskbar__item taskbar__item--pin-right taskbar__item--image"><img src="{{request.user.userprofile.avatar.url}}" class="img--circle"></div></a>
+        <div class="taskbar__item taskbar__item--pin-right bold" id="showFriends"><i class="flaticon-profiles"></i></div>
+        <div class="taskbar__item taskbar__item--no-select taskbar__item--pin-right">{% get_vallet %} <i class="flaticon-cup"></i></div>
+    {% else %}
+        <a href="/auth/up"><div class="taskbar__item taskbar__item--pin-right">РЕГИСТРАЦИЯ</div></a>
+        <a href="/auth/in"><div class="taskbar__item taskbar__item--pin-right">ВХОД</div></a>
+    {% endif %}
+    <!--<div class="taskbar__item taskbar__item--pin-right bold"><i class="flaticon-profiles"></i></div>
+    <div class="taskbar__item taskbar__item--pin-right bold hide-m"><i class="flaticon-speach-square"></i></div>
+    <div class="taskbar__item taskbar__item--pin-right bold {{request.user.userprofile.accent}}-fg"><i class="flaticon-alarm-fill"></i></div>
+    <div class="taskbar__item taskbar__item--pin-right bold" id="favorite"><i class="flaticon-heart"></i></div>
+    <div class="taskbar__item taskbar__item--pin-right bold" id="search"><i class="flaticon-search"></i></div>-->
+</div>
+{% block content %}{% endblock %}
+<div class="dropdown{% if request.user.userprofile.theme == 'dark' %} dropdown--invert{% endif %}" id="yodaDropdown">
+    <a href="/"><div class="dropdown__item">Главная</div></a>
+    <a href="/timetable/"><div class="dropdown__item">Расписание</div></a>
+    <a href="/notes"><div class="dropdown__item">Заметки</div></a>
+    <a href="/events"><div class="dropdown__item">Мероприятия</div></a>
+    <a href="/polls"><div class="dropdown__item">Опросы</div></a>
+</div>
+
+<div class="y-sidebar {% if request.user.userprofile.theme == 'dark' %}invert{% endif %}">
+    <div class="cover {{request.user.userprofile.accent}}-bg align-center">
+        <img src="{{request.user.userprofile.avatar.url}}" style="width: 100px; height: 100px;" class="img--circle img--border user-avatar"><br>
+        <div class="username">
+            <div class="first_name">{{request.user.first_name}}</div>
+            <div class="last_name">{{request.user.last_name}}</div>
+        </div>
+        <a href="/auth/out"><button class="button--transparent button--size-small">Выйти</button></a>
+    </div>
+
+    <div class="y-sidebar-list y-sidebar-list--color-{{request.user.userprofile.accent}}">
+        <a href="/"><div class="y-sidebar-list__item"><i class="flaticon-house"></i>Главная</div></a>
+        <a href="/timetable/"><div class="y-sidebar-list__item"><i class="flaticon-images-list"></i>Расписание</div></a>
+        <a href="/notes/"><div class="y-sidebar-list__item"><i class="flaticon-book"></i>Заметки</div></a>
+        <a href="/events/"><div class="y-sidebar-list__item"><i class="flaticon-calendar-ok"></i>Мероприятия</div></a>
+        <a href="/polls/"><div class="y-sidebar-list__item"><i class="flaticon-commerce"></i>Опросы</div></a>
+        <a href="/users/settings"><div class="y-sidebar-list__item"><i class="flaticon-settings"></i>Настройки</div></a>
+    </div>
+</div>
+
+<div class="y-friends-list {% if request.user.userprofile.theme == 'dark' %}invert{% endif %}">
+    <h3 class="margin-left-1">ДРУЗЬЯ</h3>
+    <div id="friendsContent">
+    </div>
+</div>
+<!--<div class="dropdown{% if request.user.userprofile.theme == 'dark' %} dropdown--invert{% endif %}" id="profileDropdown" style="position: fixed;">
+    <a href="/users/{{request.user.id}}/"><div class="dropdown__item dropdown__item--icon"><i class="flaticon-profile"></i>Мой профиль</div></a>
+    <a href="/users/attendance/{{request.user.id}}/"><div class="dropdown__item dropdown__item--icon"><i class="flaticon-award-card"></i>Посещаемость</div></a>
+    <a href="/users/duty/{{request.user.id}}/"><div class="dropdown__item dropdown__item--icon"><i class="flaticon-duty"></i>Долги</div></a>
+    <a href="/users/inventory/{{request.user.id}}/"><div class="dropdown__item dropdown__item--icon"><i class="flaticon-chest"></i>Инвентарь</div></a>
+    <a href="/users/achievements/{{request.user.id}}/"><div class="dropdown__item dropdown__item--icon"><i class="flaticon-cup"></i>Достижения</div></a>
+    <a href="/users/settings/{{request.user.id}}/"><div class="dropdown__item dropdown__item--icon"><i class="flaticon-settings"></i>Настройки</div></a>
+    <a href="/auth/out/"><div class="dropdown__item dropdown__item--icon"><i class="flaticon-power-off"></i>Выйти</div></a>
+</div>
+<!--
+<div class="search_block search_block--color-{{request.user.userprofile.accent}}">
+    <p>На данный момент поиск работает в ограниченном режиме</p>
+    <div class="form form--no-padding form--fit form--no-smooth">
+        <input type="text" id="search_field" placeholder="Введите ваш поисковый запрос...">
+        <p>Например: <span class="{{request.user.userprofile.accent}}-fg" id="search_field_help">Билеты для ТОИ</span></p>
+    </div>
+
+    <div class="card card--no-smooth card--color-black card--colored" style="margin: 0em;">
+        <div class="card__header">
+            <div class="card__header__title">Результаты поиска</div>
+        </div>
+        <div class="card__content card__content--no-padding">
+            <div class="list-navigation list-navigation--invert list-navigation--color-{{request.user.userprofile.accent}}">
+                <div class="list-navigation__item">
+                    <div class="list-navigation__icon"><i class="flaticon-notepad"></i></div>
+                    <div class="list-navigation__content">
+                        <div class="list-navigation__content__title">Билеты по ТОИ</div>
+                        <div class="list-navigation__content__meta">Заметки</div>
+                    </div>
+                </div>
+                <div class="list-navigation__item">
+                    <div class="list-navigation__icon"><i class="flaticon-notepad"></i></div>
+                    <div class="list-navigation__content">
+                        <div class="list-navigation__content__title">Билеты по ТОИ</div>
+                        <div class="list-navigation__content__meta">Заметки</div>
+                    </div>
+                </div>
+                <div class="list-navigation__item">
+                    <div class="list-navigation__icon"><i class="flaticon-notepad"></i></div>
+                    <div class="list-navigation__content">
+                        <div class="list-navigation__content__title">Билеты по ТОИ</div>
+                        <div class="list-navigation__content__meta">Заметки</div>
+                    </div>
+                </div>
+                <div class="list-navigation__item">
+                    <div class="list-navigation__icon"><i class="flaticon-notepad"></i></div>
+                    <div class="list-navigation__content">
+                        <div class="list-navigation__content__title">Билеты по ТОИ</div>
+                        <div class="list-navigation__content__meta">Заметки</div>
+                    </div>
+                </div>
+                <div class="list-navigation__item">
+                    <div class="list-navigation__icon"><i class="flaticon-notepad"></i></div>
+                    <div class="list-navigation__content">
+                        <div class="list-navigation__content__title">Билеты по ТОИ</div>
+                        <div class="list-navigation__content__meta">Заметки</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  
+</div>-->
 </body>
 </html>
+
+{% verbatim %}
+<script type="text/html" id="friendListItemTemplate">
+    <img src="{{avatar}}" class="avatar img--circle">
+    <div class="username">{{username}}</div>
+    <div class="online">
+        {{#if online}}
+            <div class="{{accent}}-circle"></div>
+        {{/if}}
+    </div>
+</script>
+{% endverbatim %}

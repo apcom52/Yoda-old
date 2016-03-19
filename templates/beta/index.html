@@ -1,43 +1,21 @@
 {% extends 'basic/beta_base.html' %}
 {% load humanize %}
-{% block title %}{{title}} - Yoda{%endblock%}
+{% block title %}{{title}}{%endblock%}
 
-{% block more_head %}
-<!--[if gte IE 9]>
-  <style type="text/css">
-    .gradient {
-       filter: none;
-    }
-  </style>
-<![endif]-->
-<style>
-body {
-	background: rgb(255,255,255); /* Old browsers */;
-	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjIyJSIgc3RvcC1jb2xvcj0iI2EyYWNjYSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjM4JSIgc3RvcC1jb2xvcj0iI2IzOTFhMSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjU4JSIgc3RvcC1jb2xvcj0iI2QxNjU2ZCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjgxJSIgc3RvcC1jb2xvcj0iIzczYTFhNiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNkN2IwNjciIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-	background: -moz-linear-gradient(top,  rgb(210, 177, 136)  0%, rgb(162,172,202) 22%, rgb(179,145,161) 38%, rgb(209,101,109) 58%, rgb(115,161,166) 81%, rgb(215,176,103) 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgb(210, 177, 136)), color-stop(22%,rgb(162,172,202)), color-stop(38%,rgb(179,145,161)), color-stop(58%,rgb(209,101,109)), color-stop(81%,rgb(115,161,166)), color-stop(100%,rgb(215,176,103))); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top,  rgb(210, 177, 136) 0%, rgb(162,172,202) 22%,rgb(179,145,161) 38%,rgb(209,101,109) 58%,rgb(115,161,166) 81%, rgb(215,176,103) 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top,  rgb(210, 177, 136) 0%, rgb(162,172,202) 22%, rgb(179,145,161) 38%, rgb(209,101,109) 58%, rgb(115,161,166) 81%, rgb(215,176,103) 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top,  rgb(210, 177, 136) 0%, rgb(162,172,202) 22%, rgb(1	79,145,161) 38%, rgb(209,101,109) 58%, rgb(115,161,166) 81%, rgb(215,176,103) 100%); /* IE10+ */
-	background: linear-gradient(to bottom,  rgb(210, 177, 136) 0%, rgb(162,172,202) 22%, rgb(179,145,161) 38%, rgb(209,101,109) 58%, rgb(115,161,166) 81%, rgb(215,176,103) 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#73A1A6', endColorstr='#d7b067',GradientType=0 ); /* IE6-8 */
-}
-</style>
-{% endblock %}
 {% block content %}
-<a name="top"></a>
-<div class="container group">
-	<div class="col col-12 col-t-6 col-m-4">
-		<div class="taskbar invert">
-			<div class="items">
-				<div class="item"><i class="fa fa-th"></i></div>
-				<div class="item"><i class="fa fa-puzzle-piece"></i></div>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="container group">
+<div class="container group">	
 	<div class="col col-8 col-t-4 col-m-4">
+		{% if bonus %}
+			<div class="card">
+				<div class="header"><h1>Ежедневный бонус</h1></div>
+				<div class="content"><p>Вы заработали {{ bonus }} 
+				{% if bonus == 1 %}бонусное очко. 
+				{% elif bonus >= 2 and bonus <= 4  %}бонусных очка. 
+				{% elif bonus == 5 %}бонусных очков. {%endif%}
+				Заходите на сайт каждый день, чтобы получать новые бонусные очки</p></div>
+			</div>
+		{% endif %}
+
 		<div class="card only-m">
 			<div class="header"><h1>Быстрая навигация</h1></div>
 			<div class="content">
@@ -48,21 +26,36 @@ body {
 				</ul>
 			</div>
 		</div>
+
+		{% if new_achievements %}
 		<div class="card">
 			<div class="header"><h1>Новые достижения</h1></div>
-			<div class="content"><p>Активность</p></div>
+			<div class="content feed">
+				{% for achievement in new_achievements %}
+					<div class="item">
+						<img src="{{achievement.icon}}" class="photo">
+						<div class="content">
+							<div class="author">{{achievement.title}}</div>
+							<div class="time">+{{achievement.points}} XP</div>
+							<div class="text">{{achievement.description}}</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
 		</div>
+		{% endif %}
+
 		<a name="chronicle"></a>
 		<div class="card">
 			<div class="header"><h1>Активность</h1></div>
 			<div class="content feed actions_feed">
-				{% for action in actions %}
+				{% for action in actions_list %}
 					<div class="item">
 						<img src="{{action.avatar}}" class="photo">
 						<div class="content">
-							<div class="author">{{action.username}}</div>
+							<a href="/users/{{action.userlogin}}/"><div class="author">{{action.username}}</div></a>
 							<div class="time" data-tooltip="{{action.pub_date}}">{{action.pub_date|naturaltime}}</div>
-							<div class="text">{{action.text|safe}}</div>
+							<div class="text">{{action.action_text|safe}}</div>
 						</div>
 					</div>
 				{% endfor %}
@@ -88,41 +81,95 @@ body {
 	</div>
 	<div class="col col-4 col-t-2 col-m-4">
 		<a name="timetable"></a>
+		{% if day_end %}
+		<div class="card">
+			<div class="header"><h1><i class="fa fa-clock-o"></i> Учебный день уже закончился</h1></div>
+			<div class="content card-text">
+				<p>Вы можете посмотреть <a href="/timetable/next_days">расписание на завтра</a></p>
+			</div>
+		</div>
+		{% endif %}
 		<div class="card">
 			<div class="header"><h1>Расписание</h1>
-				<span class="card-button pin-left only-d" data-tooltip="Изменить день" data-dropdown-target="dropdown_timetable_date"><i class="fa fa-calendar-o"></i><i class="fa fa-caret-down"></i></span>
+				<button class="card-button pin-right only-d" data-tooltip="Изменить день" data-dropdown-target="dropdown_timetable_date">Сегодня <i class="fa fa-caret-down"></i></button>
 				<div class="meta">5 сентября 2015</div>
 			</div>
-			<ul class="tabs mobile-tabs three hide-d" data-tabs>
-				<li class="active">Сегодня</li>
-				<li>Завтра</li>
-				<li>Послезавтра</li>
-			</ul>			
+			<div class="content card-padding-fix">
+				<ul class="tabs mobile-tabs three hide-d" data-tabs>
+					<li class="active">Сегодня</li>
+					<li>Завтра</li>
+					<li>Послезавтра</li>
+				</ul>			
 			{% for lesson in timetable %}
-				<div class="card">
+				<div class="card lesson {% if lesson.type == 'Лекция' %}lection
+						{% elif lesson.type == 'Практика' %}practice{% elif lesson.type == 'Лабораторная работа' %}lab{% endif %}">
 					<div class="header"><h3>{{lesson.title}}</h3>
-					<div class="container group">
-						<div class="col col-6 col-t-3 col-m-2 m-gray-fg" style="text-align: left;">{{lesson.place}}</div>
-						<div class="col col-6 col-t-3 col-m-2 m-gray-fg" style="text-align: right;">{{lesson.time}}</div>
+						<div class="container group">
+							<div class="col col-6 col-t-3 col-m-2 m-gray-fg" style="text-align: left;">{{lesson.place}}</div>
+							<div class="col col-6 col-t-3 col-m-2 m-gray-fg" style="text-align: right;">{{lesson.start_time}}</div>
+						</div>
 					</div>
-					<span class="{{lesson.type.color}} badge">{{lesson.type.name}}</span></div>
 					<div class="content">
-						<p></p>
+						{% if lesson.type == 'Лекция' %}<div class="lenta lection">ЛЕКЦИЯ</div>
+						{% elif lesson.type == 'Практика' %}<div class="lenta practice">ПРАКТИКА</div>
+						{% elif lesson.type == 'Лабораторная работа' %}<div class="lenta lab">ЛАБОРАТОРНАЯ РАБОТА</div>
+						{% endif %}
+						{% if lesson.homework %}
+						<div class="lenta homework">
+							<h4>Домашнее задание</h4>
+							<p>{{lesson.homework}}</p>
+						</div>
+						{% endif %}
+						{% if lesson.has_control %}
+						<div class="lenta control">
+							<h4>Контрольная работа</h4>
+							{% if lesson.has_control %}
+							<p>{{lesson.control}}</p>
+							{% endif %}
+						</div>
+						{% endif %}
+
+						{% if lesson.double %}
+							<div class="tag">Сдвоенная пара</div>
+						{% endif %}
 					</div>
 				</div>
 			{% endfor %}			
 			
-			<ul class="dropdown invert" id="dropdown_timetable_date">
-				<li>Сегодня</li>
-				<li>Завтра</li>
-				<li>Послезавтра</li>
-				<li>Послепослезавтра</li>
+				<ul class="dropdown invert" id="dropdown_timetable_date">
+					<li>Сегодня</li>
+					<li>Завтра</li>
+					<li>Послезавтра</li>
+					<li>Послепослезавтра</li>
+				</ul>
+			</div>
+		</div>
+		<div class="card">
+			<ul class="list list-nav gray-accent">
+				<a class="item" href="/timetable/next_days"><li>Расписание на ближайшие дни</li></a>
+			  	<a class="item" href="/timetable"><li>Открыть расписание</li></a>
+			</ul>
+		</div>
+		<div class="card">
+			<div class="header"><h1>Изменение в расписании</h1></div>
+			<ul class="list list-nav gray-accent">
+			  	<a class="item" href="/homework/add"><li>Добавить домашнее задание</li></a>
+			  	<a class="item" href="/control/add"><li>Добавить контрольную</li></a>
+			  	<a class="item" href="/change/place"><li>Изменить аудиторию</li></a>
+			  	<a class="item" href="/change/lesson"><li>Перенести пару</li></a>
+			  	<a class="item" href="/change/cancel"><li>Отменить пару</li></a>
 			</ul>
 		</div>
 		<a name="events"></a>
 		<div class="card">
-			<div class="header"><h1>Мероприятия</h1><span class="card-button pin-right" title="Добавить" data-tooltip-position='top-left'><i class="fa fa-plus"></i></span></div>
-			<div class="content"><p>Активность</p></div>
+			<div class="header"><h1>Мероприятия</h1></div>
+			<div class="content">
+				<ul class="list list-nav gray-accent">
+					{% for event in events %}
+						<a href="/events/{{event.id}}"><li>{{event.title|capfirst}}</li></a>
+					{% endfor %}
+				</ul>
+			</div>
 		</div>
 		{% if polls %}
 		<div class="card">
@@ -155,11 +202,6 @@ body {
 	</div>
 </div>
 <div class="tooltip"></div>
+
+
 {% endblock %}
-
-
-- Предмет философии. Предмет ее исследования
-- Определение философии
-- Структура философского знания
-- Специфика философии
-- Философия и мировозрение

@@ -1,0 +1,55 @@
+{% extends 'basic/base.html' %}
+{% block title %}Лотерея{% endblock %}
+{% block bodyclass %}body-lottery{%endblock%}
+{% block more_head %}
+<style>
+	body {
+		background-image: url(/media/img/christmas_pattern.png);
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+{% include 'basic/taskbar.html' %}
+{% include 'basic/taskbar_end.html' %}
+{% load humanize %}
+<div class="ui grid">
+	<div class="three wide column"></div>
+	<div class="ten wide column">
+		<div class="ui segment">
+		  	<center><h1>Лотерея</h1>
+		  	<div class="lottery-items" data-present-id="{{index}}">
+		  		<div class="row">
+					{% for item in items %}
+						<div class="item item-quality-{{item.item.quality}}" id="lotteryItem{{item.id}}"><img src="{{item.item.item.icon.url}}"></div>
+					{% endfor %}
+				</div> 
+			</div> 	
+			<div class="ui icon green message lottery-message" style="display: none;">
+			  	<i class="trophy icon"></i>
+			  	<div class="content">
+				    <div class="header">Поздравляем!</div>	
+	    			<img src="{{prize.item.item.icon.url}}" class="rulette-message-img"><br>
+	    			<b>{{prize.item.item.title}}</b><br>
+	    			<i>{% if prize.item.quality == 2 %}<span class="quality-3"><i class="star icon"></i><i class="star icon"></i><i class="star icon"></i> Уникальное качество <b>(+ {{prize.item.price}} <i class="trophy icon"></i>)</b></span>
+	    			{% elif prize.item.quality == 1 %}<span class="quality-2"><i class="star icon"></i><i class="star icon"></i> Хорошее качество <b>(+ {{prize.item.price}} <i class="trophy icon"></i>)</b></span>
+	    			{% else %}<span class="quality-1"><i class="star icon"></i> Низкое качество <b>(+ {{prize.item.price}} <i class="trophy icon"></i>)</b></span>{% endif %}</i><br>
+	    			<a href="/users/inventory/{{request.user.id}}"><button class="ui green mini button">Вернуться в инвентарь</button></a>
+	    		</div>
+	    	</div>
+		  	</center>
+		  	<audio id="lottery-sound">
+				{% if prize.item.price < 15 and prize.item_id != 14 %}
+					<source src="/media/audio/fail.mp3"></source>
+				{% else %}
+					<source src="/media/audio/win.mp3"></source>
+				{% endif %}
+			</audio>
+		</div>
+	</div>
+	<div class="three wide column"></div>	
+</div>
+<div class="ui form">
+	
+</div>
+{% endblock %}

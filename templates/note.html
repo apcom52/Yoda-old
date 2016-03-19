@@ -13,6 +13,12 @@
 		  	<div class="active section"> {{title}} </div>
 		</div>
 		<div class="ui piled segment">
+			{% if bingo %}
+				{% include 'basic/bingo-bonus.html' %}
+			{% endif %}
+			{% if bonus.xp or bonus.is_item %}
+				{% include 'basic/everyday_bonus.html' %}
+			{% endif %}
 			<h1 class="ui header">{{title}}</h1>
 			<p>{{content|safe|linebreaks }}</p>
 			

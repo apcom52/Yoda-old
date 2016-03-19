@@ -1,10 +1,13 @@
-@media (max-width: 480px) {
-  .mobile-left-pin {
-    float: left;
-  }
-  .comments .comment {
-    font-size: 0.8em;
-  }
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800&subset=cyrillic,latin);
+body {
+  height: 100%;
+}
+a {
+  color: #00b5ad;
+  text-decoration: none;
+}
+a:hover {
+  color: #009c95;
 }
 .actions_feed .item .content .text img.ui {
   width: 128px;
@@ -39,4 +42,308 @@
   display: block;
   margin-left: 0px !important;
   word-break: break-all;
+}
+.lesson {
+  padding: 10px 0px;
+  border-radius: 6px;
+}
+.lesson.lection {
+  border: 1px solid #b5cc18;
+  border-bottom: 3px solid #b5cc18 !important;
+}
+.lesson.practice {
+  border: 1px solid #00b5ad;
+  border-bottom: 3px solid #00b5ad !important;
+}
+.lesson.lab {
+  border: 1px solid #db2828;
+  border-bottom: 3px solid #db2828 !important;
+}
+.lesson .lenta {
+  color: #ffffff;
+  width: 100%;
+  padding: 5px 15px;
+  box-sizing: border-box;
+  font-size: .8em;
+  font-weight: bold;
+}
+.lesson .lenta.lection {
+  background-color: #b5cc18;
+}
+.lesson .lenta.practice {
+  background-color: #00b5ad;
+}
+.lesson .lenta.lab {
+  background-color: #db2828;
+}
+.lesson .lenta.homework {
+  background-color: #e8e8e8;
+  color: #333333;
+}
+.lesson .lenta.homework p {
+  font-weight: normal;
+}
+.lesson .lenta.control {
+  background-color: #a333c8;
+}
+.lesson .lenta.control p {
+  font-weight: normal;
+}
+.card-text {
+  padding: 10px;
+}
+.card-padding-fix {
+  padding: 10px 0px;
+}
+.beta-sidebar {
+  display: none;
+  position: fixed;
+  height: calc(100% - 36px);
+  top: 36px;
+  width: 200px;
+  left: 0px;
+  z-index: 5;
+}
+@media (max-width: 480px) {
+  .mobile-left-pin {
+    float: left;
+  }
+  .comments .comment {
+    font-size: 0.8em;
+  }
+  .beta-sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    top: -13px;
+    position: relative;
+  }
+}
+.items-list .item {
+  cursor: pointer;
+  width: 100%;
+  padding: 10px 10px;
+}
+.items-list .item .header {
+  font-size: 20px;
+  color: #4f6173;
+  font-weight: bold;
+}
+.items-list .item .meta {
+  font-size: 14px;
+  color: #999999;
+}
+.pin-left {
+  float: left;
+}
+.pin-right {
+  float: right;
+}
+.note-text {
+  padding: 10px !important;
+}
+.note-text p {
+  width: calc(100% - 20px) !important;
+}
+.y-taskbar {
+  width: 100%;
+  background-color: #333333;
+  font-family: "Open Sans", "Segoe UI", "Helvetica", sans-serif;
+  color: #ffffff;
+}
+.y-taskbar ul {
+  padding: 0px;
+  margin: 0px;
+  list-style-type: none;
+}
+.y-taskbar ul li {
+  padding: 1em 2em;
+  display: inline-block;
+  cursor: pointer;
+  color: #ffffff;
+  transition: 0.1s all linear;
+}
+.y-taskbar ul li:hover {
+  color: #999999;
+  transition: 0.2s all linear;
+}
+.notes_beta {
+  align-items: stretch;
+}
+.notes_beta .col {
+  height: 100%;
+}
+.notes_beta .left-side {
+  background-color: #f5f5f5;
+}
+.notes_beta .left-side .item {
+  padding: 0px;
+  padding-right: 50px;
+  cursor: pointer;
+}
+.notes_beta .left-side .item:hover {
+  background-color: #e8e8e8;
+}
+.notes_beta .left-side .item:active {
+  background-color: #2185d0;
+  color: white;
+}
+.library_bg {
+  background: url(/media/img/confectionary.png);
+}
+/*.flexbox {
+	.grid {
+		display: flex;
+
+		&.direction-row {
+			flex-direction: row;
+		}
+		&.direction-column {
+			flex-direction: column;
+		}
+
+		&.main-align {
+			&-left {	justify-content: flex-start;	}
+			&-right {	justify-content: flex-end;	}
+			&-center {	justify-content: center;	}
+			&-between {	justify-content: space-between;	}
+			&-around {	justify-content: space-around;	}
+		}
+
+		&.sub-align {
+			&-top {	align-items: flex-start;	}
+			&-bottom {	align-items: flex-end;	}
+			&-center {	align-items: center;	}
+			&-fit {	align-items: stretch;	}
+			&-baseline {	align-items: baseline;	}
+		}
+
+		&.no-wrap { flex-wrap: nowrap; }
+		&.wrap { flex-wrap: wrap; }
+		&.reverse { flex-wrap: wrap-reverse; }
+
+		.col {
+			&.col-1 { flex-grow: 1; }	
+			&.col-2 { flex-grow: 2; }
+			&.col-3 { flex-grow: 3; }
+			&.col-4 { flex-grow: 4; }
+			&.col-5 { flex-grow: 5; }
+			&.col-6 { flex-grow: 6; }
+			&.col-7 { flex-grow: 7; }
+			&.col-8 { flex-grow: 8; }
+			&.col-9 { flex-grow: 9; }
+			&.col-10 { flex-grow: 10; }
+			&.col-11 { flex-grow: 11; }
+			&.col-12 { flex-grow: 12; }
+		}
+	}
+}
+
+.no-flexbox {
+	.grid {
+		display: table;
+		width: 100%;
+		vertical-align: top;
+		
+		&.direction-row {
+			.col {
+				display: table-row;
+			}
+		}
+
+		&.direction-column {
+			.col {
+				display: table-cell;
+			}
+		}
+
+		&.main-align {
+			&-left {	text-align: left;	}
+			&-right {	text-align: right;	}
+			&-center {	text-align: center;	}
+			&-between {	text-align: justify;	}
+		}
+
+		&.sub-align {
+			&-top {	vertical-align: top;	}
+			&-bottom {	vertical-align: bottom;	}
+			&-center {	vertical-align: middle;	}
+			&-fit {	.col {	height: 100%; 	}	}
+			&-baseline {	vertical-align: baseline;	}
+		}
+
+		.col {
+			display: table-cell;
+
+
+			&.col {
+				&-1 { width: 8.333%;	}
+				&-2 { width: 16.66%;	}
+				&-3 { width: 25%;	}
+				&-4 { width: 33.333%;	}
+				&-5 { width: 40.73%;	}
+				&-6 { width: 50%;	}
+				&-7 { width: 57.66%;	}
+				&-8 { width: 66.666%;	}
+				&-9 { width: 75%;	}
+				&-10 { width: 83.06%;	}
+				&-11{ width: 91.53%;	}
+				&-12 { width: 100%;	}
+			}		
+		}	
+	}
+}*/
+/*.col {
+	float: none !important;
+}*/
+.library-item {
+  display: table;
+  cursor: pointer;
+  width: 100%;
+  background-color: #f5f5f5;
+  transition: 0.3s all linear;
+}
+.library-item .icon {
+  display: table-cell;
+  width: 4em;
+  padding: 0.5em 1em;
+  box-sizing: border-box;
+}
+.library-item .icon img {
+  width: 100%;
+  height: auto;
+}
+.library-item .title {
+  display: table-cell;
+  font-weight: bold;
+  vertical-align: middle;
+}
+.library-item .right-arrow {
+  display: none;
+  text-align: center;
+  vertical-align: middle;
+}
+.accent_color {
+  background-color: #9DD0EC;
+  transition: 0.3s all linear;
+}
+.accent_color .right-arrow {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+.loading {
+  width: 100%;
+  height: 5em;
+  background-image: url(/media/img/loading.gif);
+  background-repeat: no-repeat;
+  background-size: 2em 2em;
+  background-position: center;
+}
+.list-file-item {
+  color: #666666;
+  font-family: "Open Sans", "Segoe UI", "Helvetica", sans-serif;
+}
+.list-file-item .col-2 {
+  text-align: center;
 }
