@@ -1,0 +1,27 @@
+{% extends 'basic/beta_base.html' %}
+{% block title %}Возникла ошибка{% endblock %}
+{% block more_head %}
+<style>
+	body {
+		background-color: {% if request.user.userprofile.theme == 'light' %}lightblue;{%else%}gray;{%endif%}
+	}	
+</style>
+{% endblock %}
+{% block content %}
+{% load humanize %}
+<div class="grid">
+
+	<div class="col-4"> </div>
+	<div class="col-4">
+		<div class="card {% if request.user.userprofile.theme == 'dark'%}card--colored card--color-black{% endif %}">
+			<div class="card__content align-center">
+				<img src="/media/img/ship.png" style="width: 128px; height: auto;">
+				<h1>Возникла ошибка</h1>
+				<p class="m-gray-fg">Не паникуйте. Возможно ее уже исправляют. Отчет об ошибке автоматически отправлен администратору</p>
+				<button class="button--color-blue button--color-{{request.user.userprofile.accent}} button--transparent-full">НА ГЛАВНУЮ</button>
+			</div>
+		</div>
+	</div>
+	<div class="col-4"> </div>
+</div>
+{% endblock %}

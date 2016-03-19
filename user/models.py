@@ -48,7 +48,7 @@ class DutyAdmin(admin.ModelAdmin):
 	def get_form(self, request, obj=None, **kwargs):
 		form = super(DutyAdmin, self).get_form(request, obj, **kwargs)
 		form.base_fields['lesson'].queryset = Lesson_Item.objects.filter(semester = settings.SEMESTER)
-		form.base_fields['visitor'].queryset = User.objects.filter(is_active = True)
+		form.base_fields['visitors'].queryset = User.objects.filter(is_active = True)
 		return form
 
 class BonusPoints(models.Model):

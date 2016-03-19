@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import include, url, patterns
 from django.contrib import admin
 from django.conf import settings
+import debug_toolbar
 
 urlpatterns = [
     url('^admin/', include(admin.site.urls)),
@@ -28,6 +29,7 @@ urlpatterns = [
     url('^api/', include('api.urls')),
     url('^feedback/', include('feedback.urls')),
     url('^', include('timetable.urls')),
+    url(r'^__debug__/', include(debug_toolbar.urls)),
 ]
 
 urlpatterns += patterns('',

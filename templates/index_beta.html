@@ -1,0 +1,30 @@
+{% extends 'basic/beta_base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block more_head %}
+	<link href="/media/static/css/more_css/timetable.css" rel="stylesheet"/>
+	<script type="text/javascript" src="/media/static/js/more_js/timetable.js"></script>
+{% endblock %}
+{% block bodyclass %}{{request.user.userprofile.theme}}-bg{% endblock %}
+{% block content %}
+<div class="grid">
+	<div class="col-4">
+		<div class="card margin-left-0 margin-vertical-0 card--no-smooth" style="height: 100%; width: 33.33%; position: absolute;">
+			<h1>{{current_date|date:"l, j E Y"}}</h1>
+			<table style="width: 100%;">
+			{% for week in calendar %}
+				<tr>
+				{% for day in week %}
+					<td>{% if day %}{{day}}{% endif %}</td>
+				{% endfor %}
+				</tr>
+			{% endfor %}
+			</table>
+		</div>
+	</div>
+	<div class="col-8">
+		<div class="card card--no-smooth" style="height: 100%;">
+			Расписание
+		</div>
+	</div>
+</div>
+{% endblock %}

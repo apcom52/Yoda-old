@@ -1,0 +1,27 @@
+{% extends 'basic/beta_base.html' %}
+{% block title %}Страница не найдена{% endblock %}
+{% block more_head %}
+<style>
+	body {
+		background-color: {% if request.user.userprofile.theme == 'light' %}lightblue;{%else%}gray;{%endif%}
+	}	
+</style>
+{% endblock %}
+{% block content %}
+{% load humanize %}
+<div class="grid">
+
+	<div class="col-4"> </div>
+	<div class="col-4">
+		<div class="card {% if request.user.userprofile.theme == 'dark'%}card--colored card--color-black{% endif %}">
+			<div class="card__content align-center">
+				<img src="/media/img/dipper.png" style="width: 128px; height: auto;">
+				<h1>Страница не найдена</h1>
+				<p class="m-gray-fg">Мы не можем найти эту страницу. Проверьте правильность адреса или перейдите на главную страницу</p>
+				<button class="button--color-{{request.user.userprofile.accent}} button--transparent-full">НА ГЛАВНУЮ</button>
+			</div>
+		</div>
+	</div>
+	<div class="col-4"> </div>
+</div>
+{% endblock %}

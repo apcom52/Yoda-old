@@ -9,3 +9,60 @@
 <script src="/media/static/js/more_js/note-ang.js"></script>
 
 {% endblock %}
+
+
+{% verbatim %}
+		<h2 class="align-center {{request.user.userprofile.accent}}-fg">НЕЧЕТНАЯ НЕДЕЛЯ</h2>
+		{% for day in week1 %}
+			{% if not day.free %}
+			<div class="grid timetable-day {% if request.user.userprofile.theme == 'dark'%}invert{%endif%}">
+				<div class="col-2 timetable-day__title">
+					{{day.dayname}}
+				</div>
+				<div class="col-10">
+					<div class="timetable-day__list">
+					{% for lesson in day.lessons %}
+						<div class="bounce-in timetable-day__list__item {% if lesson.type == 0 %}empty{%else%}{{lesson.type}}{%endif%} {% if lesson.double %}double{%endif%}" {% if lesson.type %}data-lesson-title="{{lesson.lesson.title}}"{%endif%}>
+							{% if lesson.type == 0 %}
+								СВОБОДНО
+							{% else %}
+								<div class="title">{{lesson.lesson.title}}</div>
+								<div class="time">{{lesson.time}}</div>
+								<div class="meta">{{lesson.type_rus}} {{lesson.timetable_lesson.place}}</div>
+								<a href="/teacher/{{lesson.timetable_lesson.teacher.id}}"><img src="{{lesson.timetable_lesson.teacher.avatar.url}}" data-tooltip="{{lesson.timetable_lesson.teacher.name}}" {% if request.user.userprofile.theme == 'dark' %}data-tooltip-invert='true'{% endif %} class='img--circle' style="width: 2em; height: 2em;"></a>
+							{% endif %}
+						</div>
+					{% endfor %}
+					</div>
+				</div>
+			</div>
+			{% endif %}
+		{% endfor %}
+
+		<h2 class="align-center {{request.user.userprofile.accent}}-fg">ЧЕТНАЯ НЕДЕЛЯ</h2>
+		{% for day in week2 %}
+		{% if not day.free %}
+			<div class="grid timetable-day {% if request.user.userprofile.theme == 'dark'%}invert{%endif%}">
+				<div class="col-2 col-m-4 timetable-day__title">
+					{{day.dayname}}
+				</div>
+				<div class="col-10 col-m-4">
+					<div class="timetable-day__list">
+					{% for lesson in day.lessons %}
+						<div class="timetable-day__list__item {% if lesson.type == 0 %}empty{%else%}{{lesson.type}}{%endif%} {% if lesson.double %}double{%endif%}" {% if lesson.type %}data-lesson-title="{{lesson.lesson.title}}"{%endif%}>
+							{% if lesson.type == 0 %}
+								СВОБОДНО
+							{% else %}
+								<div class="title">{{lesson.lesson.title}}</div>
+								<div class="time">{{lesson.time}}</div>
+								<div class="meta">{{lesson.type_rus}} {{lesson.timetable_lesson.place}}</div>
+								<a href="/teacher/{{lesson.timetable_lesson.teacher.id}}"><img src="{{lesson.timetable_lesson.teacher.avatar.url}}" class='img--circle' style="width: 2em; height: 2em;"></a>
+							{% endif %}
+						</div>
+					{% endfor %}
+					</div>
+				</div>
+			</div>
+			{% endif %}
+		{% endfor %}
+		{% endverbatim %}

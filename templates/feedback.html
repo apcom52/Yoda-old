@@ -5,7 +5,7 @@
 {% block content %}
 <div class="grid">
 	<div class="col-12">
-		<div class="tabs tabs--color-{{request.user.userprofile.accent}} {% if request.user.userprofile.theme == 'dark' %}tabs--invert{% endif%}">
+		<div class="tabs tabs--transparent tabs--color-{{request.user.userprofile.accent}} {% if request.user.userprofile.theme == 'dark' %}tabs--invert{% endif%}">
 			<div class="tabs__item tabs__item--active">Блог разработки</div>
 			<div class="tabs__item">Баг-репорты и предложения</div>
 		</div>
