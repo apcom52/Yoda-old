@@ -903,3 +903,6 @@ def getTimeTable(semester, week, day, date = datetime.datetime.now()):
 			'place': lesson.place,			
 		})
 	return timetable
+
+def game(request):
+	return render(request, 'game.html', {'title': "Зельеварение (beta)"})

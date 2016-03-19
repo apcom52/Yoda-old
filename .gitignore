@@ -2,6 +2,7 @@ events/migrations/0002_eventcomment.py
 events/__pycache__/admin.cpython-34.pyc
 events/migrations/__pycache__/0002_eventcomment.cpython-34.pyc
 events/__pycache__/admin.cpython-34.pyc
+media/static/
 **/__pycache__/
 **/migrations/
 *.pyc

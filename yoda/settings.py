@@ -54,7 +54,8 @@ INSTALLED_APPS = (
     'inventory',
     'common',
     'api',
-    'library',    
+    'library',   
+    'feedback', 
 )
 
 MIDDLEWARE_CLASSES = (
