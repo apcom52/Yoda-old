@@ -11,127 +11,63 @@
 		
 		<div class="horizontal-layout horizontal-layout--centered">
 			<div class="column">
-				<button class="button--icon-only button--color-black button--transparent-full"><i class="flaticon-settings"></i></button>
-				<button class="button--icon button--color-black button--transparent-full"><i class="flaticon-save"></i> Сохранить как изображение</button>
+				<button class="button--icon-only {% if request.user.userprofile.theme == 'dark' %}button--color-white{% else %}button--color-black{% endif %} button--transparent-full"><i class="flaticon-settings"></i></button>
+				<button class="button--icon {% if request.user.userprofile.theme == 'dark' %}button--color-white{% else %}button--color-black{% endif %} button--transparent-full"><i class="flaticon-save"></i> Сохранить как изображение</button>
 			</div>
 			<div class="column column--centered">
 				<div class="button-group">
-					<button class="button--icon-only button--color-black button--transparent-full showPrevDay"><i class="flaticon-left"></i></button>
-					<button class="button--color-black bold button--transparent-full" id="currentDayLabel">{% now "j E" %}</button>
-					<button class="button--icon-only button--color-black button--transparent-full showNextDay"><i class="flaticon-right1"></i></button>
+					<button class="button--icon-only {% if request.user.userprofile.theme == 'dark' %}button--color-white{% else %}button--color-black{% endif %} button--transparent-full showPrevDay"><i class="flaticon-left"></i></button>
+					<button class="{% if request.user.userprofile.theme == 'dark' %}button--color-white{% else %}button--color-black{% endif %} bold button--transparent-full" id="currentDayLabel">{% now "j E" %}</button>
+					<button class="button--icon-only {% if request.user.userprofile.theme == 'dark' %}button--color-white{% else %}button--color-black{% endif %} button--transparent-full showNextDay"><i class="flaticon-right1"></i></button>
 				</div>
 			</div>
 			<div class="column">
-				<div class="tabs tabs--pin-right tabs--transparent">
-					<div class="tabs__item tabs__item--active">День</div>
-					<div class="tabs__item">Неделя</div>
-					<div class="tabs__item">Месяц</div>
+				<div class="tabs tabs--pin-right tabs--transparent {% if request.user.userprofile.theme == 'dark' %}tabs--invert{% endif %}" id="switch-view-tabs">
+					<a href="#"><div class="tabs__item tabs__item--active" id="day">День</div></a>
+					<a href="#week/20"><div class="tabs__item" id="week">Неделя</div></a>
+					<a href="#month"><div class="tabs__item" id="month">Месяц</div></a>
 				</div>
 			</div>
 		</div>
 
-		<div class="horizontal-layout">
-			<div class="column" style="flex: 2;">				
-				<div class="day-timetable" id="dayTimetableView">					
+		<div id="day-view">
+			<div class="horizontal-layout">
+				<div class="column" style="flex: 2;">				
+					<div class="day-timetable" id="dayTimetableView">					
+					</div>
 				</div>
-			</div>
-			<div class="column shadow-2">
-				<div class="{{request.user.userprofile.accent}}-bg padding-3 white-fg" style="width: 100%; height: auto;">
-					<div class="horizontal-layout" id="dayTimetableLayout">
-						<div class="column"><div class="helvetica-ultra" style="font-size: 5em;" id="currentDayNumber"></div></div>
-						<div class="column" style="flex: 3">
-							<div class="helvetica-ultra" style="font-size: 3em; text-transform: lowercase;" id="currentDayMonth"></div>
-							<div class="helvetica-medium" style="font-size: 0.8em; text-transform: uppercase;" id="currentDayWeekType"></div>
+				<div class="column shadow-2">
+					<div class="{{request.user.userprofile.accent}}-bg padding-3 white-fg" style="width: 100%; height: auto;">
+						<div class="horizontal-layout" id="dayTimetableLayout">
+							<div class="column"><div class="helvetica-ultra" style="font-size: 5em;" id="currentDayNumber"></div></div>
+							<div class="column" style="flex: 3">
+								<div class="helvetica-ultra" style="font-size: 3em; text-transform: lowercase;" id="currentDayMonth"></div>
+								<div class="helvetica-medium" style="font-size: 0.8em; text-transform: uppercase;" id="currentDayWeekType"></div>
+							</div>
+						</div>
+					</div>
+					<div class="grid margin-vertical-1">
+						<div class="col-4 align-center">
+							<span class="weather-icons {{request.user.userprofile.accent}}-fg" style="font-size: 6em;">{{weather.icon}}</span>
+						</div>
+						<div class="col-6">
+							<div style="font-size: 3em;" class="helvetica-thin">
+							{{weather.main.temp}} <span class="weather-icons">l</span></div>
+							<br>{{weather.rus}}
 						</div>
 					</div>
 				</div>
-				<div class="grid margin-vertical-1">
-					<div class="col-4 align-center">
-						<span class="weather-icons {{request.user.userprofile.accent}}-fg" style="font-size: 6em;">{{weather.icon}}</span>
-					</div>
-					<div class="col-6">
-						<div style="font-size: 3em;" class="helvetica-thin">
-						{{weather.main.temp}} <span class="weather-icons">l</span></div>
-						<br>{{weather.rus}}
-					</div>
-				</div>
 			</div>
 		</div>
 
-		<div class="grid">
-			<div class="col-12 blue-bg white-fg {{request.user.userprofile.accent}}-bg">
-				<h1 class="pin-right helvetica-thin margin-right-3" style="font-weight: 100;">Нечетная неделя</h1>
-			</div>
-			<div class="col-12">
-				<div class="horizontal-layout week-timetable">
-					<div class="column date"><h1>07</h1>марта</div>
-					<div class="column practice"><h1>Управление данными</h1>
-						1-412<br>
-						<b>14:00</b></div>
-					<div class="column practice"><h1>Управление данными</h1>
-						1-412<br>
-						<b>14:00</b></div>
-					<div class="column lection">
-						<h1>Управление данными</h1>
-						1-412<br>
-						<b>14:00</b>
-
-					</div>
-					<div class="column lection">
-						<h1>Управление данными</h1>
-						1-412<br>
-						<b>14:00</b>
-					</div>
-					<div class="column">-</div>
-					<div class="column">-</div>
+		<div id="week-view">
+			<div class="grid">
+				<div class="col-12 blue-bg white-fg {{request.user.userprofile.accent}}-bg">
+					<h1 class="pin-right helvetica-thin margin-right-3" style="font-weight: 100;">Нечетная неделя</h1>
 				</div>
+				<div class="col-12" id="weekTimetableView"></div>				
 			</div>
-			<div class="col-12">
-				<div class="horizontal-layout week-timetable">
-					<div class="column date"><h1>08</h1>марта</div>
-					<div class="column practice">
-						<h1>Математические методы анализа данных</h1>
-						1-412<br>
-						<b>14:00</b>
-					</div>
-					<div class="column lab">
-						<h1>Инструментальные средства информационных систем</h1>
-						1-412<br>
-						<b>14:00</b>
-					</div>
-					<div class="column practice">
-						<h1>Английский язык</h1>
-						<b>14:00</b> в 1-412
-					</div>
-					<div class="column">-</div>
-					<div class="column">-</div>
-					<div class="column">-</div>
-				</div>
-			</div>
-			<div class="col-12">
-				<div class="horizontal-layout week-timetable">
-					<div class="column date"><h1>09</h1>марта</div>
-					<div class="column lection">
-						<h1>Английский язык</h1>
-						1-412<br>
-						<b>14:00</b>
-					</div>
-					<div class="column practice">
-						<h1>Английский язык</h1>
-						1-412<br>
-						<b>14:00</b>
-					</div>
-					<div class="column lab">
-						<h1>Английский язык</h1>
-						1-412<br>
-						<b>14:00</b>
-					</div>
-					<div class="column">-</div>
-					<div class="column">-</div>
-					<div class="column">-</div>
-				</div>
-			</div>
-		</div>
+		</div>		
 	</div>
 </div>	
 
@@ -150,6 +86,17 @@
 		<h1 class="helvetica-thin"><i class="flaticon-star"></i><br>Выходной</h1>
 		<p class="helvetica-light">На этот день пар не назначено</p>
 		<button class="showNextDay">Расписание на следующий день</button>
+	</div>
+</script>
+
+<script src="text/html" id="WeekTimetableItemTemplate">
+	<div class="horizontal-layout week-timetable">		
+		<div class="column date"><h1>{{date}}</h1>{{month}}</div>
+		{{#each timetable}}
+			<div class="column {{type_css}}"><h1>{{title}}</h1>
+			{{place}} <br>
+			<b> {{time}} </b></div>
+		{{/each}}
 	</div>
 </script>
 

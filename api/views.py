@@ -16,10 +16,12 @@ from user.serializers import *
 from notes.serializers import *
 from favorites.serializers import *
 from timetable.serializers import *
+from feedback.serializers import *
 
 from library.models import *
 from notes.models import Note
 from timetable.models import Timetable
+from feedback.models import *
 
 # Create your views here.
 class LibraryFilesAPI(APIView):	
@@ -249,3 +251,9 @@ class TimetableAPI(APIView):
 		elif data.get("week"):
 			serializer = TimetableWeekSerializer(str(data.get("week")), request.user.userprofile.group, settings.SEMESTER)
 			return Response(serializer.get_data())
+
+class BlogPostAPI(APIView):
+	def get(self, request, format = None):
+		blog = BlogPost.objects.all().order_by('-id')
+		serializer = BlogPostSerializer(blog, many = True)
+		return Response(serializer.data)

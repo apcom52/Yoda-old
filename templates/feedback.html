@@ -4,19 +4,30 @@
 {% endblock %}
 {% block content %}
 <div class="grid">
-	<div class="col-12">
+	<div class="col-12 margin-vertical-1">
 		<div class="tabs tabs--transparent tabs--color-{{request.user.userprofile.accent}} {% if request.user.userprofile.theme == 'dark' %}tabs--invert{% endif%}">
 			<div class="tabs__item tabs__item--active">Блог разработки</div>
 			<div class="tabs__item">Баг-репорты и предложения</div>
 		</div>
 	</div>
-	<div class="col-4 {% if request.user.userprofile.theme == 'dark' %}d-gray-bg{% endif%}">
-		{% if request.user.is_superuser %}
-		<button class="button--color-{{request.user.userprofile.accent}} button--only-borders button--no-smooth button--icon"><i class="flaticon-edit"></i>Добавить запись</button>
-		{% endif %}
+	<div class="col-4 u-gray-bg {% if request.user.userprofile.theme == 'dark' %}d-gray-bg{% endif%}">
+		<div class="vertical-layout vertical-layout--stripped margin-vertical-1">
+			{% if request.user.is_superuser %}
+				<div class="row padding-1"><a href="#add" class="{{request.user.userprofile.accent}}-fg margin-vertical-1">Добавить запись</a></div>				
+			{% endif %}
+			<div class="row padding-1">Вышло обновление 2.3 beta</div>
+			<div class="row padding-1">Вышло обновление 2.3 beta</div>
+			<div class="row padding-1">Вышло обновление 2.3 beta</div>
+			<div class="row padding-1">Вышло обновление 2.3 beta</div>
+			<div class="row padding-1">Вышло обновление 2.3 beta</div>
+			<div class="row padding-1">Вышло обновление 2.3 beta</div>
+		</div>
 	</div>
-	<div class="col-8 padding-1">
-
+	<div class="col-8">
+		<div class="padding-horizontal-1">
+			<h2>Вышло обновление 2.3 beta</h2>
+			<p>Случилось что-то невероятное</p>
+		</div>		
 	</div>
 </div>
 {% endblock %}
